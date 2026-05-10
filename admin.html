@@ -51,7 +51,7 @@
         .admin-craft-slot { border: 2px dashed #475569; background: rgba(0,0,0,0.3); border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #64748b; text-align: center; position: relative;}
         .admin-craft-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 4px;}
         .admin-craft-slot:hover { border-color: var(--gold); }
-        .admin-res-slot { width: 90px; height: 90px; border: 2px solid var(--gold); border-radius: 12px; background: rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;}
+        .admin-res-slot { width: 90px; height: 90px; border: 2px solid var(--gold); border-radius: 12px; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; position: relative;}
         .admin-res-slot img { width: 90%; height: 90%; object-fit: cover;}
         .item-badge-admin { position: absolute; top: 2px; right: 2px; background: var(--red); color: white; font-size: 0.6em; font-weight: bold; padding: 2px 5px; border-radius: 4px; z-index: 5;}
 
@@ -321,7 +321,6 @@
         function nav(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active')); document.getElementById(id).classList.add('active'); event.currentTarget.classList.add('active'); }
         function sair() { localStorage.removeItem('rpg_session'); window.location.href = 'login.html'; }
 
-        // LOAD GLOBAIS
         db.ref('characters').on('value', snap => { DB_CHARS = snap.val() || {}; renderChars(); updateTokenTray(); updateMapTokens(); if(document.getElementById('char-modal').classList.contains('active') && activeCharId) abrirPerfilChar(activeCharId); });
         db.ref('items').on('value', snap => { DB_ITEMS = snap.val() || {}; renderItems(); renderAdminCraftTable(); });
         db.ref('skills').on('value', snap => { DB_SKILLS = snap.val() || {}; renderSkills(); });
@@ -329,24 +328,17 @@
         db.ref(`maps/${currentMapId}`).on('value', snap => { DB_MAPS[currentMapId] = snap.val() || null; renderAdminMap(); });
 
         function criarEntidade() {
-            const id = document.getElementById('c-user').value;
-            if(!id) return alert("Precisa definir um Login / ID!");
+            const id = document.getElementById('c-user').value; if(!id) return alert("Precisa definir um Login / ID!");
             db.ref('characters/' + id).set({
                 tipo: document.getElementById('c-tipo').value, senha: document.getElementById('c-pass').value, nome: document.getElementById('c-nome').value, classe: document.getElementById('c-classe').value, imagem: document.getElementById('c-img').value || 'https://via.placeholder.com/150', pontos: Number(document.getElementById('c-pts').value) || 0,
                 hp: Number(document.getElementById('c-hp').value), hp_max: Number(document.getElementById('c-hp_max').value), mp: Number(document.getElementById('c-mp').value), mp_max: Number(document.getElementById('c-mp_max').value), sp: Number(document.getElementById('c-sp').value), sp_max: Number(document.getElementById('c-sp_max').value),
                 atributos_base: { for: Number(document.getElementById('c-for').value), res: Number(document.getElementById('c-res').value), vel: Number(document.getElementById('c-vel').value), agi: Number(document.getElementById('c-agi').value), per: Number(document.getElementById('c-per').value), resm: Number(document.getElementById('c-resm').value), esp: Number(document.getElementById('c-esp').value), alm: Number(document.getElementById('c-alm').value) }
             }).then(() => { alert("Criado com sucesso!"); nav('sec-lib-chars'); });
         }
-
         function renderChars() {
             const grid = document.getElementById('grid-chars'); grid.innerHTML = '';
-            Object.keys(DB_CHARS).forEach(id => {
-                const c = DB_CHARS[id];
-                let color = '#3b82f6'; if(c.tipo === 'NPC') color = '#ef4444'; if(c.tipo === 'Criatura') color = '#a855f7';
-                grid.innerHTML += `<div class="card" onclick="abrirPerfilChar('${id}')"><div class="badge" style="background:${color}; color:#fff;">${c.tipo}</div><img src="${c.imagem}"><div class="info"><h4>${c.nome}</h4><p style="font-size:0.8em; color:#94a3b8">${c.classe}</p></div></div>`;
-            });
+            Object.keys(DB_CHARS).forEach(id => { const c = DB_CHARS[id]; let color = '#3b82f6'; if(c.tipo === 'NPC') color = '#ef4444'; if(c.tipo === 'Criatura') color = '#a855f7'; grid.innerHTML += `<div class="card" onclick="abrirPerfilChar('${id}')"><div class="badge" style="background:${color}; color:#fff;">${c.tipo}</div><img src="${c.imagem}"><div class="info"><h4>${c.nome}</h4><p style="font-size:0.8em; color:#94a3b8">${c.classe}</p></div></div>`;});
         }
-
         let activeCharId = null;
         function abrirPerfilChar(charId) {
             activeCharId = charId; const c = DB_CHARS[charId]; if(!c) return closeModal('char-modal');
@@ -354,35 +346,20 @@
             let invMap = {}; if(c.inventario) Object.values(c.inventario).forEach(item => { invMap[item.item_id] = (invMap[item.item_id] || 0) + 1; });
             let invHtml = ''; Object.entries(invMap).forEach(([itemId, qtd]) => { const itemDB = DB_ITEMS[itemId]; if(itemDB) invHtml += `<div class="cp-inv-item" onclick="abrirGerenciadorItem('${charId}', '${itemId}', ${qtd})"><img src="${itemDB.imagem}" title="${itemDB.nome}"><div class="item-badge-cp">x${qtd}</div></div>`; });
             let skillsHtml = ''; if(c.skills) Object.keys(c.skills).forEach(sId => { const skill = DB_SKILLS[sId]; if(skill) skillsHtml += `<div class="cp-skill-item"><img src="${skill.imagem}"><div><strong style="color:var(--gold); font-size:0.8em;">${skill.nome}</strong><br><span style="font-size:0.7em; cursor:pointer; color:var(--red);" onclick="removerSkill('${charId}','${sId}')">Remover</span></div></div>`; });
-            const html = `<div class="char-profile-grid"><div class="cp-left"><img class="cp-avatar" src="${c.imagem}"><div class="cp-name">${c.nome}</div><div class="cp-class">${c.classe} | Pontos: ${c.pontos || 0}</div><div class="cp-vitals"><input type="text" value="${c.hp || 0}/${c.hp_max || 0}" onchange="updateVitals('${charId}', 'hp', this.value)"><input type="text" value="${c.mp || 0}/${c.mp_max || 0}" onchange="updateVitals('${charId}', 'mp', this.value)"><input type="text" value="${c.sp || 0}/${c.sp_max || 0}" onchange="updateVitals('${charId}', 'sp', this.value)"></div><div class="cp-stats-grid">${statsHtml}</div><button class="btn btn-red" style="margin-top:20px;" onclick="deletarChar('${charId}')">Excluir Personagem</button></div><div class="cp-right"><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Habilidades</h3><button class="btn" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_skill', '${charId}')">+ Ensinar</button></div><div class="cp-skill-list">${skillsHtml || '<p style="color:#64748b; font-size:0.8em;">Nenhuma.</p>'}</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;"><h3>Bolsa</h3><button class="btn btn-green" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_item', '${charId}')">+ Dar Item</button></div><div class="cp-inv-grid">${invHtml || '<p style="color:#64748b; font-size:0.8em;">Vazia.</p>'}</div></div></div>`;
-            document.getElementById('char-profile-content').innerHTML = html;
-            document.getElementById('char-modal').classList.add('active');
+            const html = `<div class="char-profile-grid"><div class="cp-left"><img class="cp-avatar" src="${c.imagem}"><div class="cp-name">${c.nome}</div><div class="cp-class">${c.classe} | Pontos: ${c.pontos || 0}</div><div class="cp-vitals"><input type="text" value="${c.hp || 0}/${c.hp_max || 0}" onchange="updateVitals('${charId}', 'hp', this.value)"><input type="text" value="${c.mp || 0}/${c.mp_max || 0}" onchange="updateVitals('${charId}', 'mp', this.value)"><input type="text" value="${c.sp || 0}/${c.sp_max || 0}" onchange="updateVitals('${charId}', 'sp', this.value)"></div><div class="cp-stats-grid">${statsHtml}</div><button class="btn btn-red" style="margin-top:20px;" onclick="deletarChar('${charId}')">Excluir</button></div><div class="cp-right"><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Habilidades</h3><button class="btn" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_skill', '${charId}')">+ Ensinar</button></div><div class="cp-skill-list">${skillsHtml || '<p style="color:#64748b; font-size:0.8em;">Nenhuma.</p>'}</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;"><h3>Bolsa</h3><button class="btn btn-green" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_item', '${charId}')">+ Dar Item</button></div><div class="cp-inv-grid">${invHtml || '<p style="color:#64748b; font-size:0.8em;">Vazia.</p>'}</div></div></div>`;
+            document.getElementById('char-profile-content').innerHTML = html; document.getElementById('char-modal').classList.add('active');
         }
         function updateVitals(charId, type, value) { const [current, max] = value.split('/').map(Number); db.ref(`characters/${charId}`).update({ [type]: current, [`${type}_max`]: max }); }
         function removerSkill(charId, skillId) { db.ref(`characters/${charId}/skills/${skillId}`).remove(); }
-        function deletarChar(id) { if(confirm("Apagar personagem permanentemente?")) { db.ref('characters/'+id).remove(); closeModal('char-modal'); activeCharId = null; } }
-
-        function abrirGerenciadorItem(charId, itemId, currentQtd) {
-            document.getElementById('mi-title').innerText = `Gerenciar ${DB_ITEMS[itemId].nome}`;
-            document.getElementById('mi-img').src = DB_ITEMS[itemId].imagem;
-            document.getElementById('mi-current-qtd').innerText = currentQtd;
-            document.getElementById('mi-add-btn').onclick = () => gerenciarQtdItem(charId, itemId, 'add');
-            document.getElementById('mi-remove-btn').onclick = () => gerenciarQtdItem(charId, itemId, 'remove');
-            document.getElementById('manage-item-modal').classList.add('active');
-        }
+        function deletarChar(id) { if(confirm("Apagar permanentemente?")) { db.ref('characters/'+id).remove(); closeModal('char-modal'); activeCharId = null; } }
+        function abrirGerenciadorItem(charId, itemId, currentQtd) { document.getElementById('mi-title').innerText = `Gerenciar ${DB_ITEMS[itemId].nome}`; document.getElementById('mi-img').src = DB_ITEMS[itemId].imagem; document.getElementById('mi-current-qtd').innerText = currentQtd; document.getElementById('mi-add-btn').onclick = () => gerenciarQtdItem(charId, itemId, 'add'); document.getElementById('mi-remove-btn').onclick = () => gerenciarQtdItem(charId, itemId, 'remove'); document.getElementById('manage-item-modal').classList.add('active'); }
         function gerenciarQtdItem(charId, itemId, action) {
             const qtd = Number(document.getElementById('mi-qtd').value);
             if(action === 'add') { for(let i=0; i<qtd; i++) db.ref(`characters/${charId}/inventario`).push({item_id: itemId, equipado: false}); } 
             else { const invRef = db.ref(`characters/${charId}/inventario`); invRef.orderByChild('item_id').equalTo(itemId).limitToFirst(qtd).once('value', snap => { let updates = {}; snap.forEach(child => { updates[child.key] = null; }); invRef.update(updates); }); }
             closeModal('manage-item-modal');
         }
-
-        // ================= ITENS E SKILLS =================
-        function toggleSubcat(catId, wrapperId, consumableId) {
-            const cat = document.getElementById(catId).value;
-            document.getElementById(wrapperId).style.display = (cat === 'Armadura') ? 'block' : 'none';
-            document.getElementById(consumableId).style.display = (cat === 'Consumivel') ? 'block' : 'none';
-        }
+        function toggleSubcat(catId, wrapperId, consumableId) { const cat = document.getElementById(catId).value; document.getElementById(wrapperId).style.display = (cat === 'Armadura') ? 'block' : 'none'; document.getElementById(consumableId).style.display = (cat === 'Consumivel') ? 'block' : 'none'; }
         function criarItem() {
             const id = document.getElementById('i-id').value; if(!id) return alert("Defina o ID do Item!");
             let itemData = { nome: document.getElementById('i-nome').value, imagem: document.getElementById('i-img').value, categoria: document.getElementById('i-cat').value, descricao: document.getElementById('i-desc').value, mods: { for: Number(document.getElementById('m-for').value), res: Number(document.getElementById('m-res').value), vel: Number(document.getElementById('m-vel').value), agi: Number(document.getElementById('m-agi').value), per: Number(document.getElementById('m-per').value), resm: Number(document.getElementById('m-resm').value), esp: Number(document.getElementById('m-esp').value), alm: Number(document.getElementById('m-alm').value) }};
@@ -390,22 +367,13 @@
             if(itemData.categoria === 'Consumivel') itemData.effects = { hp: Number(document.getElementById('i-eff-hp').value), mp: Number(document.getElementById('i-eff-mp').value), sp: Number(document.getElementById('i-eff-sp').value) };
             db.ref('items/' + id).set(itemData).then(() => { alert("Item criado!"); nav('sec-lib-items'); });
         }
-        function renderItems() {
-            const grid = document.getElementById('grid-items'); grid.innerHTML = '';
-            Object.keys(DB_ITEMS).forEach(id => { const i = DB_ITEMS[id]; grid.innerHTML += `<div class="card" onclick="abrirPerfilItem('${id}')"><div class="badge">${i.categoria}</div><img src="${i.imagem}"><div class="info"><h4>${i.nome}</h4></div></div>`; });
-        }
+        function renderItems() { const grid = document.getElementById('grid-items'); grid.innerHTML = ''; Object.keys(DB_ITEMS).forEach(id => { const i = DB_ITEMS[id]; grid.innerHTML += `<div class="card" onclick="abrirPerfilItem('${id}')"><div class="badge">${i.categoria}</div><img src="${i.imagem}"><div class="info"><h4>${i.nome}</h4></div></div>`; });}
         function abrirPerfilItem(itemId) {
-            const item = DB_ITEMS[itemId]; if(!item) return;
-            document.getElementById('e-i-id').value = itemId;
-            document.getElementById('e-i-nome').value = item.nome;
-            document.getElementById('e-i-img').value = item.imagem;
-            document.getElementById('e-i-cat').value = item.categoria;
-            document.getElementById('e-i-desc').value = item.descricao || "";
+            const item = DB_ITEMS[itemId]; if(!item) return; document.getElementById('e-i-id').value = itemId; document.getElementById('e-i-nome').value = item.nome; document.getElementById('e-i-img').value = item.imagem; document.getElementById('e-i-cat').value = item.categoria; document.getElementById('e-i-desc').value = item.descricao || "";
             toggleSubcat('e-i-cat', 'e-i-subcat-wrapper', 'e-i-consumable-wrapper');
             if(item.categoria === 'Armadura') document.getElementById('e-i-subcat').value = item.slot_type;
             if(item.categoria === 'Consumivel') { const eff = item.effects || {}; document.getElementById('e-i-eff-hp').value = eff.hp || 0; document.getElementById('e-i-eff-mp').value = eff.mp || 0; document.getElementById('e-i-eff-sp').value = eff.sp || 0; }
-            const m = item.mods || {};
-            document.getElementById('e-m-for').value = m.for || 0; document.getElementById('e-m-res').value = m.res || 0; document.getElementById('e-m-vel').value = m.vel || 0; document.getElementById('e-m-agi').value = m.agi || 0; document.getElementById('e-m-per').value = m.per || 0; document.getElementById('e-m-resm').value = m.resm || 0; document.getElementById('e-m-esp').value = m.esp || 0; document.getElementById('e-m-alm').value = m.alm || 0;
+            const m = item.mods || {}; document.getElementById('e-m-for').value = m.for || 0; document.getElementById('e-m-res').value = m.res || 0; document.getElementById('e-m-vel').value = m.vel || 0; document.getElementById('e-m-agi').value = m.agi || 0; document.getElementById('e-m-per').value = m.per || 0; document.getElementById('e-m-resm').value = m.resm || 0; document.getElementById('e-m-esp').value = m.esp || 0; document.getElementById('e-m-alm').value = m.alm || 0;
             document.getElementById('edit-item-modal').classList.add('active');
         }
         function salvarEdicaoItem() {
@@ -415,21 +383,12 @@
             if(itemData.categoria === 'Consumivel') itemData.effects = { hp: Number(document.getElementById('e-i-eff-hp').value), mp: Number(document.getElementById('e-i-eff-mp').value), sp: Number(document.getElementById('e-i-eff-sp').value) }; else itemData.effects = null; 
             db.ref('items/' + id).set(itemData).then(() => { alert("Relíquia atualizada!"); closeModal('edit-item-modal'); });
         }
-        function excluirItemMundo() { const id = document.getElementById('e-i-id').value; if(confirm("ATENÇÃO: Excluir esse item vai removê-lo da sua biblioteca. Continuar?")) { db.ref('items/' + id).remove().then(() => closeModal('edit-item-modal')); } }
-        function criarSkill() {
-            const id = document.getElementById('s-id').value; if(!id) return alert("Defina o ID da habilidade!");
-            db.ref('skills/' + id).set({ nome: document.getElementById('s-nome').value, imagem: document.getElementById('s-img').value, descricao: document.getElementById('s-desc').value, buffs: { for: Number(document.getElementById('sb-for').value), res: Number(document.getElementById('sb-res').value), vel: Number(document.getElementById('sb-vel').value), agi: Number(document.getElementById('sb-agi').value), per: Number(document.getElementById('sb-per').value), resm: Number(document.getElementById('sb-resm').value), esp: Number(document.getElementById('sb-esp').value), alm: Number(document.getElementById('sb-alm').value) }
-            }).then(() => alert("Habilidade registrada no Grimório!"));
-        }
-        function renderSkills() {
-            const grid = document.getElementById('grid-skills'); grid.innerHTML = '';
-            Object.keys(DB_SKILLS).forEach(id => { const s = DB_SKILLS[id]; grid.innerHTML += `<div class="card" onclick="abrirPerfilSkill('${id}')" style="display:flex; align-items:center; padding:10px;"><img src="${s.imagem}" style="width:50px; height:50px; border-radius:8px; border:none; margin-right:15px; background:#000;"><h4 style="margin:0; font-size:1em;">${s.nome}</h4></div>`; });
-        }
+        function excluirItemMundo() { const id = document.getElementById('e-i-id').value; if(confirm("Excluir item da biblioteca?")) { db.ref('items/' + id).remove().then(() => closeModal('edit-item-modal')); }}
+        function criarSkill() { const id = document.getElementById('s-id').value; if(!id) return alert("Defina o ID da habilidade!"); db.ref('skills/' + id).set({ nome: document.getElementById('s-nome').value, imagem: document.getElementById('s-img').value, descricao: document.getElementById('s-desc').value, buffs: { for: Number(document.getElementById('sb-for').value), res: Number(document.getElementById('sb-res').value), vel: Number(document.getElementById('sb-vel').value), agi: Number(document.getElementById('sb-agi').value), per: Number(document.getElementById('sb-per').value), resm: Number(document.getElementById('sb-resm').value), esp: Number(document.getElementById('sb-esp').value), alm: Number(document.getElementById('sb-alm').value) }}).then(() => alert("Habilidade registrada!"));}
+        function renderSkills() { const grid = document.getElementById('grid-skills'); grid.innerHTML = ''; Object.keys(DB_SKILLS).forEach(id => { const s = DB_SKILLS[id]; grid.innerHTML += `<div class="card" onclick="abrirPerfilSkill('${id}')" style="display:flex; align-items:center; padding:10px;"><img src="${s.imagem}" style="width:50px; height:50px; border-radius:8px; border:none; margin-right:15px; background:#000;"><h4 style="margin:0; font-size:1em;">${s.nome}</h4></div>`; });}
         function abrirPerfilSkill(skillId) {
-            const skill = DB_SKILLS[skillId]; if(!skill) return;
-            document.getElementById('e-s-id').value = skillId; document.getElementById('e-s-nome').value = skill.nome; document.getElementById('e-s-img').value = skill.imagem; document.getElementById('e-s-desc').value = skill.descricao || "";
-            const b = skill.buffs || {};
-            document.getElementById('e-sb-for').value = b.for || 0; document.getElementById('e-sb-res').value = b.res || 0; document.getElementById('e-sb-vel').value = b.vel || 0; document.getElementById('e-sb-agi').value = b.agi || 0; document.getElementById('e-sb-per').value = b.per || 0; document.getElementById('e-sb-resm').value = b.resm || 0; document.getElementById('e-sb-esp').value = b.esp || 0; document.getElementById('e-sb-alm').value = b.alm || 0;
+            const skill = DB_SKILLS[skillId]; if(!skill) return; document.getElementById('e-s-id').value = skillId; document.getElementById('e-s-nome').value = skill.nome; document.getElementById('e-s-img').value = skill.imagem; document.getElementById('e-s-desc').value = skill.descricao || "";
+            const b = skill.buffs || {}; document.getElementById('e-sb-for').value = b.for || 0; document.getElementById('e-sb-res').value = b.res || 0; document.getElementById('e-sb-vel').value = b.vel || 0; document.getElementById('e-sb-agi').value = b.agi || 0; document.getElementById('e-sb-per').value = b.per || 0; document.getElementById('e-sb-resm').value = b.resm || 0; document.getElementById('e-sb-esp').value = b.esp || 0; document.getElementById('e-sb-alm').value = b.alm || 0;
             document.getElementById('edit-skill-modal').classList.add('active');
         }
         function salvarEdicaoSkill() {
@@ -439,7 +398,7 @@
                 buffs: { for: Number(document.getElementById('e-sb-for').value), res: Number(document.getElementById('e-sb-res').value), vel: Number(document.getElementById('e-sb-vel').value), agi: Number(document.getElementById('e-sb-agi').value), per: Number(document.getElementById('e-sb-per').value), resm: Number(document.getElementById('e-sb-resm').value), esp: Number(document.getElementById('e-sb-esp').value), alm: Number(document.getElementById('e-sb-alm').value) }
             }).then(() => { alert("Habilidade atualizada!"); closeModal('edit-skill-modal'); });
         }
-        function excluirSkillMundo() { const id = document.getElementById('e-s-id').value; if(confirm("ATENÇÃO: Excluir essa habilidade vai removê-la da sua biblioteca. Continuar?")) { db.ref('skills/' + id).remove().then(() => closeModal('edit-skill-modal')); }}
+        function excluirSkillMundo() { const id = document.getElementById('e-s-id').value; if(confirm("Excluir habilidade da biblioteca?")) { db.ref('skills/' + id).remove().then(() => closeModal('edit-skill-modal')); }}
 
         let pickerContext = { type: null, targetId: null, slotIndex: null };
         function abrirPicker(type, targetId = null, slotIndex = null) {
@@ -463,7 +422,6 @@
             closeModal('picker-modal');
         }
         
-        // CRAFTING
         let adminCraftGrid =[null, null, null, null, null, null, null, null, null];
         let adminCraftResult = null; 
         function renderAdminCraftTable() {
@@ -540,19 +498,11 @@
                 }
             });
         }
-        function abrirTokenMenu(tId) {
-            currentTokenId = tId;
-            document.getElementById('token-menu-name').innerText = DB_CHARS[tId].nome;
-            document.getElementById('token-remove-btn').onclick = () => {removeTokenDoMapa(tId); closeModal('token-menu-modal');};
-            document.getElementById('token-menu-modal').classList.add('active');
-        }
+        function abrirTokenMenu(tId) { currentTokenId = tId; document.getElementById('token-menu-name').innerText = DB_CHARS[tId].nome; document.getElementById('token-remove-btn').onclick = () => {removeTokenDoMapa(tId); closeModal('token-menu-modal');}; document.getElementById('token-menu-modal').classList.add('active'); }
         function setTokenSpeech() {
-            const speechText = document.getElementById('token-speech-input').value;
-            if(!speechText || !currentTokenId) return;
-            const speechRef = db.ref(`maps/${currentMapId}/tokens/${currentTokenId}/speech`);
-            speechRef.set(speechText);
-            document.getElementById('token-speech-input').value = '';
-            setTimeout(() => speechRef.set(null), 10000); // Bubble some depois de 10s
+            const speechText = document.getElementById('token-speech-input').value; if(!speechText || !currentTokenId) return;
+            const speechRef = db.ref(`maps/${currentMapId}/tokens/${currentTokenId}/speech`); speechRef.set(speechText);
+            document.getElementById('token-speech-input').value = ''; setTimeout(() => speechRef.set(null), 10000); 
             closeModal('token-menu-modal');
         }
         function removeTokenDoMapa(charId) { db.ref(`maps/${currentMapId}/tokens/${charId}`).remove(); }
