@@ -23,7 +23,7 @@
         .char-class { font-weight: 600; color: var(--blue); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;}
         .pts-pill { display: inline-block; background: var(--purple); padding: 3px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold; margin-top: 5px;}
 
-        /* BARRAS DE VITALS (Esconde vazios por JS) */
+        /* BARRAS DE VITALS */
         .vitals-section { padding: 0 20px 10px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px;}
         .status-bar { width: 100%; height: 22px; background: rgba(0,0,0,0.4); border-radius: 6px; border: 1px solid var(--border); position: relative; overflow: hidden; display:none;}
         .status-bar.active { display:block; }
@@ -59,11 +59,10 @@
         .equip-slot.filled { border: 2px solid var(--gold); box-shadow: 0 0 10px rgba(245,158,11,0.3); background: #000;}
         .equip-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px;}
         .equip-slot-label { position: absolute; bottom: -20px; font-size: 0.6em; color: #94a3b8; font-weight: 600; text-transform: uppercase; white-space: nowrap;}
-        
         .slot-cabeca { grid-column: 2; } .slot-peitoral { grid-column: 2; } .slot-pernas { grid-column: 2; }
         .slot-arma1 { grid-column: 1; grid-row: 2; justify-self: end; margin-right: -10px;}
         .slot-arma2 { grid-column: 3; grid-row: 2; justify-self: start; margin-left: -10px;}
-        .slot-acessorio { grid-column: 1; grid-row: 1; justify-self: end; margin-right: -10px;} /* Ajuste estético */
+        .slot-acessorio { grid-column: 1; grid-row: 1; justify-self: end; margin-right: -10px;} 
 
         .skills-grid, .recipe-book-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .skill-card { display: flex; align-items: center; gap: 15px; background: var(--panel); border: 1px solid var(--border); padding: 10px; border-radius: 10px;}
@@ -87,24 +86,33 @@
         .inv-craft-item { display: inline-block; width: 45px; height: 45px; margin-right: 8px; position: relative; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor:pointer;}
         .inv-craft-item.selected { border-color: var(--blue); box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);}
         .inv-craft-item img { width: 100%; height: 100%; object-fit: cover;}
+        
         .btn-action { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; margin-bottom: 10px; color:white; cursor:pointer;}
         .btn-forge { background: var(--gold); color: #000; }
         .recipe-ready-card { display:flex; align-items:center; gap:10px; background:var(--panel); border: 1px solid var(--green); border-radius:10px; padding:10px; margin-bottom:10px; cursor:pointer;}
         .recipe-ready-card img { width:40px; height:40px; border-radius:6px; background:#000;}
         textarea#diario { width: 100%; height: 350px; background: var(--panel); border: 1px solid var(--border); color: #cbd5e1; padding: 15px; border-radius: 12px; resize: none; font-size: 0.9em; outline:none;}
 
-        /* POV COMBAT MAP (NOVO E MELHORADO) */
-        .pov-viewport { width: 100%; height: 380px; overflow-x: auto; overflow-y: hidden; position: relative; border-radius: 12px; border: 2px solid var(--border); scroll-behavior: smooth; background:#000;}
-        .pov-bg { position: sticky; left: 0; top: 0; width: 100%; height: 100%; background-size: auto 100%; background-repeat: repeat-x; z-index: 1;}
-        .pov-scene { position: absolute; top: 0; left: 0; width: 180%; height: 100%; z-index: 2; display: flex; justify-content: space-between; align-items: flex-end; padding: 20px 5%; pointer-events: none;}
+        /* POV COMBAT MAP MELHORADO */
+        .pov-viewport { width: 100%; height: 420px; overflow-x: auto; overflow-y: hidden; position: relative; border-radius: 12px; border: 2px solid var(--border); scroll-behavior: smooth; background:#000;}
+        .pov-bg { position: sticky; left: 0; top: 0; width: 100%; height: 100%; background-size: cover; background-position: center bottom; z-index: 1;}
+        .pov-scene { position: absolute; top: 0; left: 0; width: 150%; height: 100%; z-index: 2; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 40px; gap: 60px; pointer-events: none;}
         .pov-team { display: flex; gap: 20px; align-items: flex-end; pointer-events: auto; }
-        .pov-team.enemies { flex-direction: row-reverse; }
-        .pov-char-card { text-align: center; position: relative; animation: float 3s ease-in-out infinite; cursor: pointer; transition: 0.2s;}
+        /* Aliados começam do centro e vão para esquerda. Inimigos começam do centro e vão para direita */
+        .pov-team.allies { flex-direction: row-reverse; } 
+        .pov-team.enemies { flex-direction: row; }
+        
+        .pov-char-card { text-align: center; position: relative; animation: float 3s ease-in-out infinite; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center;}
         .pov-char-card:hover { transform: scale(1.05); }
-        .pov-char-card img { width: 75px; height: 100px; object-fit: cover; border-radius: 8px; border: 3px solid; background: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
+        .pov-char-card img { width: 85px; height: 110px; object-fit: cover; border-radius: 8px; border: 3px solid; background: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
         .pov-team.allies img { border-color: var(--blue); }
         .pov-team.enemies img { border-color: var(--red); }
-        .pov-char-card p { background: rgba(0,0,0,0.8); color: white; font-size: 0.65em; font-weight: bold; padding: 2px 5px; border-radius: 5px; margin-top: -10px; position: relative; z-index: 5;}
+        
+        /* Detalhes do Card no Mapa */
+        .pov-char-details { background: rgba(0,0,0,0.85); padding: 6px; border-radius: 8px; width: 100px; margin-top: -15px; z-index: 5; position: relative; border: 1px solid var(--border);}
+        .pov-char-name { color: white; font-size: 0.7em; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px;}
+        .pov-char-hp-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+        .pov-char-hp-fill { height: 100%; background: var(--red); transition: width 0.3s; }
         
         .speech-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); color: #000; padding: 6px 12px; border-radius: 10px; font-size: 0.75em; font-weight: bold; white-space: nowrap; margin-bottom: 8px; animation: popIn 0.3s; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .speech-bubble::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border-width: 6px; border-style: solid; border-color: rgba(255,255,255,0.95) transparent transparent transparent;}
@@ -165,7 +173,7 @@
     
     <div id="tab-equip" class="tab-content">
         <h3 class="section-title"><i class="fas fa-tshirt"></i> Equipamentos Ativos</h3>
-        <p style="font-size:0.8em; text-align:center; color:#94a3b8; margin-bottom:20px;">Clique em um espaço vazio para equipar um item da bolsa.</p>
+        <p style="font-size:0.8em; text-align:center; color:#94a3b8; margin-bottom:20px;">Clique num espaço para equipar um item da bolsa.</p>
         <div class="equip-grid" id="p-equipamentos"></div>
     </div>
 
@@ -178,20 +186,20 @@
         <div class="inv-craft-selector" id="craft-inventory"></div>
         <div class="crafting-bench">
             <div class="craft-grid" id="craft-table"></div>
-            <i class="fas fa-arrow-right"></i>
+            <i class="fas fa-arrow-right" style="color:var(--border); font-size: 1.5em;"></i>
             <div class="craft-result-slot" id="craft-result"></div>
         </div>
         <button class="btn-action btn-forge" onclick="tentarForjar()">Forjar Item</button>
-        <button class="btn-action" style="background:var(--border)" onclick="limparMesa()">Recolher Itens</button>
+        <button class="btn-action" style="background:transparent; border:1px solid var(--border);" onclick="limparMesa()">Recolher Itens</button>
     </div>
 
     <div id="tab-grimorio" class="tab-content"><div id="recipe-book-container"></div></div>
     
     <div id="tab-combat" class="tab-content">
         <h3 class="section-title" id="combat-scene-name"><i class="fas fa-khanda"></i> Em Combate!</h3>
-        <p style="font-size:0.75em; color:#94a3b8; margin-bottom:10px;">Deslize para os lados. Clique nos guerreiros para espiar seus equipamentos.</p>
+        <p style="font-size:0.75em; color:#94a3b8; margin-bottom:10px;">Deslize para ver o campo de batalha. Clique num guerreiro para análise tática.</p>
         
-        <div class="pov-viewport" onscroll="updateParallax(this)">
+        <div class="pov-viewport" id="combat-viewport" onscroll="updateParallax(this)">
             <div class="pov-bg" id="combat-bg"></div>
             <div class="pov-scene">
                 <div class="pov-team allies" id="combat-allies"></div>
@@ -217,7 +225,23 @@
 
     <!-- MODAIS -->
     <div class="modal" id="item-modal"> <div class="modal-card"> <i class="fas fa-times close-btn" onclick="fecharModal('item-modal')"></i> <img id="mod-img" class="mod-img" src=""> <div class="mod-title" id="mod-nome"></div> <div class="mod-cat" id="mod-cat"></div> <div class="mod-desc" id="mod-desc"></div> <div class="mod-stats" id="mod-stats-box"></div> <button id="mod-btn" class="btn-equip" onclick="handleItemAction()">Ação</button> </div> </div>
-    <div class="modal" id="combat-char-modal"> <div class="modal-card" style="padding-top:30px;"> <i class="fas fa-times close-btn" onclick="fecharModal('combat-char-modal')"></i> <img id="cc-img" class="mod-img" src=""> <div class="mod-title" id="cc-nome"></div> <div class="mod-cat" id="cc-classe"></div> <div id="cc-vitals" class="vitals-section" style="padding:0; margin-top:0;"></div> <h4 style="font-family:'Cinzel',serif; color:var(--blue); margin-top:15px; border-bottom:1px solid var(--border); padding-bottom:5px;">Equipamentos</h4> <div id="cc-equips" class="equip-grid" style="margin-top:15px; margin-bottom:0;"></div></div> </div>
+    
+    <div class="modal" id="combat-char-modal"> 
+        <div class="modal-card" style="padding-top:30px;"> 
+            <i class="fas fa-times close-btn" onclick="fecharModal('combat-char-modal')"></i> 
+            <img id="cc-img" class="mod-img" src=""> 
+            <div class="mod-title" id="cc-nome"></div> 
+            <div class="mod-cat" id="cc-classe"></div> 
+            <div id="cc-vitals" class="vitals-section" style="padding:0; margin-top:0;"></div> 
+            
+            <h4 style="font-family:'Cinzel',serif; color:var(--blue); margin-top:15px; border-bottom:1px solid var(--border); padding-bottom:5px;">Equipamentos</h4> 
+            <div id="cc-equips" class="equip-grid" style="margin-top:15px; margin-bottom:15px;"></div>
+            
+            <h4 style="font-family:'Cinzel',serif; color:var(--blue); border-bottom:1px solid var(--border); padding-bottom:5px;">Atributos Totais</h4>
+            <div id="cc-stats" class="attr-grid" style="margin-top:15px; margin-bottom:20px;"></div>
+        </div> 
+    </div>
+    
     <div class="modal" id="picker-modal"> <div class="modal-card" style="max-width:320px;"> <i class="fas fa-times close-btn" onclick="fecharModal('picker-modal')"></i> <h3 id="picker-title" class="section-title" style="justify-content:center;"></h3> <div id="picker-grid" class="picker-grid"></div> </div> </div>
     <div class="modal" id="recipe-modal"><div class="modal-card"><i class="fas fa-times close-btn" onclick="fecharModal('recipe-modal')"></i> <h3 id="recipe-modal-title" class="section-title" style="justify-content:center;"></h3> <div class="crafting-bench" id="recipe-modal-bench" style="background:transparent; border:none; padding:0;"></div></div></div>
     
@@ -240,13 +264,11 @@
         let itemAtualKey = null; let itemAtualDBData = null; let itemAtualAction = 'equip';
         let activeCombatId = null;
 
-        // LOAD GLOBAIS
         db.ref('items').on('value', snap => { itemsDB = snap.val() || {}; checkRender(); });
         db.ref('skills').on('value', snap => { skillsDB = snap.val() || {}; checkRender(); });
         db.ref('recipes').on('value', snap => { recipesDB = snap.val() || {}; });
         db.ref('characters').on('value', snap => { charsDB = snap.val() || {}; });
 
-        // LOAD PLAYER
         db.ref('characters/' + session).on('value', snap => {
             if(!snap.exists()) return (window.location.href = 'login.html');
             pData = snap.val();
@@ -268,6 +290,7 @@
 
             const navCombat = document.getElementById('nav-combat');
             if(myCombat) {
+                const justEntered = activeCombatId !== myCombatId;
                 activeCombatId = myCombatId;
                 navCombat.classList.remove('hidden');
                 document.getElementById('combat-scene-name').innerHTML = `<i class="fas fa-khanda"></i> ${myCombat.name}`;
@@ -287,11 +310,29 @@
                         const isAction = data.speech.startsWith('*') && data.speech.endsWith('*');
                         speechHtml = `<div class="speech-bubble ${isAction?'action':''}">${data.speech.replaceAll('*','')}</div>`;
                     }
-                    return `<div class="pov-char-card" onclick="verStatsCombate('${id}')">${speechHtml}<img src="${char.imagem}"><p>${char.nome.split(' ')[0]}</p></div>`;
+                    const hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, (char.hp / char.hp_max) * 100)) : 100;
+                    const hpDisplay = char.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
+
+                    return `<div class="pov-char-card" onclick="verStatsCombate('${id}', ${myCombat.public_inspection})">
+                        ${speechHtml}
+                        <img src="${char.imagem}">
+                        <div class="pov-char-details">
+                            <div class="pov-char-name">${char.nome.split(' ')[0]}</div>
+                            ${hpDisplay}
+                        </div>
+                    </div>`;
                 };
 
                 if(myTeamObj) Object.entries(myTeamObj).forEach(([id, data]) => { if(id !== session) alliesBox.innerHTML += renderChar(id, data); });
                 if(enemyTeamObj) Object.entries(enemyTeamObj).forEach(([id, data]) => { enemiesBox.innerHTML += renderChar(id, data); });
+
+                // Centraliza a visão se acabou de entrar na aba de combate
+                if(justEntered) {
+                    setTimeout(() => {
+                        const viewport = document.getElementById('combat-viewport');
+                        if (viewport) viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
+                    }, 200);
+                }
 
             } else {
                 activeCombatId = null;
@@ -301,7 +342,6 @@
         });
 
         function updateParallax(el) {
-            // Efeito de movimento do fundo mais lento que o scroll
             const maxScroll = el.scrollWidth - el.clientWidth;
             if(maxScroll <= 0) return;
             const percentage = el.scrollLeft / maxScroll;
@@ -312,18 +352,19 @@
             const input = document.getElementById('combat-speech');
             if(!input.value || !activeCombatId) return;
             
-            // Descobre em qual time estou para salvar a fala
             db.ref(`combat/sessions/${activeCombatId}`).once('value').then(snap => {
                 const combat = snap.val(); if(!combat) return;
                 const team = (combat.team_a && combat.team_a[session]) ? 'team_a' : 'team_b';
                 const speechRef = db.ref(`combat/sessions/${activeCombatId}/${team}/${session}/speech`);
                 speechRef.set(input.value);
                 input.value = '';
-                setTimeout(() => speechRef.set(null), 8000); // Some depois de 8 seg
+                setTimeout(() => speechRef.set(null), 8000); 
             });
         }
 
-        function verStatsCombate(charId) {
+        function verStatsCombate(charId, isPublic) {
+            if(!isPublic && charId !== session) return alert("O mestre ocultou os atributos dos guerreiros nesta batalha.");
+            
             const c = charsDB[charId]; if(!c) return;
             document.getElementById('cc-img').src = c.imagem;
             document.getElementById('cc-nome').innerText = c.nome;
@@ -335,19 +376,37 @@
             if(c.sp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--gold), #b45309); width:${(c.sp/c.sp_max)*100}%"></div><div class="status-bar-text">SP ${c.sp}/${c.sp_max}</div></div>`;
             document.getElementById('cc-vitals').innerHTML = vitalsHtml;
 
-            // Constroi BONECO DE EQUIPAMENTOS do alvo
+            // Constroi BONECO DE EQUIPAMENTOS e BUFFS do alvo
             let eqSlots = { arma1: null, arma2: null, cabeca: null, peitoral: null, pernas: null, acessorio: null };
+            let bonus = { for:0, res:0, vel:0, agi:0, per:0, resm:0, esp:0, alm:0 };
+
             if(c.inventario) Object.values(c.inventario).forEach(item => {
                 if(item.equipado) {
                     const idb = itemsDB[item.item_id]; if(!idb) return;
                     if(idb.categoria === 'Arma') { if(!eqSlots.arma1) eqSlots.arma1 = idb; else if(!eqSlots.arma2) eqSlots.arma2 = idb; }
                     else if(idb.categoria === 'Armadura') { if(idb.slot_type === 'Cabeça' && !eqSlots.cabeca) eqSlots.cabeca = idb; else if(idb.slot_type === 'Peitoral' && !eqSlots.peitoral) eqSlots.peitoral = idb; else if(idb.slot_type === 'Pernas' && !eqSlots.pernas) eqSlots.pernas = idb; }
                     else if(idb.categoria === 'Acessorio' && !eqSlots.acessorio) eqSlots.acessorio = idb;
+                    
+                    if(idb.mods) Object.keys(bonus).forEach(k => bonus[k] += (idb.mods[k] || 0));
                 }
+            });
+
+            if(c.skills) Object.keys(c.skills).forEach(sId => {
+                const skill = skillsDB[sId];
+                if(skill && skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0));
             });
 
             const renderEq = (idb, icon, type) => idb ? `<div class="equip-slot filled slot-${type}" title="${idb.nome}"><img src="${idb.imagem}"></div>` : `<div class="equip-slot slot-${type}"><i class="fas ${icon}" style="color:var(--border);"></i></div>`;
             document.getElementById('cc-equips').innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'acessorio');
+
+            let statsHtml = '';
+            const base = c.atributos_base || {};
+            Object.keys(attrNames).forEach(k => { 
+                const total = (base[k] || 0) + bonus[k];
+                let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : (bonus[k] < 0 ? `<span class="val-bonus val-negative">${bonus[k]}</span>` : '');
+                statsHtml += `<div class="attr-card" style="padding:8px;"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`; 
+            });
+            document.getElementById('cc-stats').innerHTML = statsHtml;
 
             document.getElementById('combat-char-modal').classList.add('active');
         }
@@ -372,7 +431,7 @@
                 if(slotData) return `<div class="equip-slot filled slot-${slotType}" onclick="abrirItem('${slotData.item.key}', '${slotData.item.item_id}', true, 1)"><img src="${slotData.idb.imagem}"><div class="equip-slot-label">${label}</div></div>`;
                 else return `<div class="equip-slot slot-${slotType}" onclick="abrirEquipPicker('${slotType}')"><i class="fas ${emptyIcon}" style="color:var(--border); font-size:1.8em;"></i><div class="equip-slot-label">${label}</div></div>`;
             };
-            document.getElementById('p-equipamentos').innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'Cabeça', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'Peitoral', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'Pernas', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'Mão 1', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'Mão 2', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'Amuleto', 'acessorio');
+            document.getElementById('p-equipamentos').innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'acessorio');
 
             const boxSkills = document.getElementById('p-skills'); boxSkills.innerHTML = '';
             if(pData.skills) Object.keys(pData.skills).forEach(sId => {
@@ -390,7 +449,6 @@
                 boxAtrTotal.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`;
             });
             
-            // Mostra apenas Vitals se Máximo > 0
             ['hp', 'mp', 'sp'].forEach(type => {
                 const bar = document.getElementById(`${type}-bar`);
                 const max = pData[`${type}_max`] || 0;
@@ -436,22 +494,24 @@
                 }
             });
             if(!found) grid.innerHTML = `<p style="color:#64748b; font-size:0.8em;">Nenhum item compatível na bolsa.</p>`;
-            document.getElementById('picker-title').innerText = `Equipar ${slotType.replace('a1', 'a 1').replace('a2', 'a 2')}`; document.getElementById('picker-modal').classList.add('active');
+            document.getElementById('picker-title').innerText = `Equipar`; document.getElementById('picker-modal').classList.add('active');
         }
         function finalizarEquip(itemKey) { db.ref(`characters/${session}/inventario/${itemKey}/equipado`).set(true); closeModal('picker-modal'); }
-        
-        // CRAFTING
+
+        // CRAFTING E GRIMÓRIO
         function inicializarCrafting() {
             inventarioCraftDisponivel = {};
-            if(pData.inventario) Object.values(pData.inventario).forEach(inv => { const idb = itemsDB[inv.item_id]; if(idb && idb.categoria === 'Material' && !inv.equipado) inventarioCraftDisponivel[inv.item_id] = (inventarioCraftDisponivel[inv.item_id] || 0) + 1; });
+            if(pData.inventario) Object.values(pData.inventario).forEach(inv => {
+                const idb = itemsDB[inv.item_id];
+                if(idb && idb.categoria === 'Material' && !inv.equipado) inventarioCraftDisponivel[inv.item_id] = (inventarioCraftDisponivel[inv.item_id] || 0) + 1;
+            });
             craftMesa.forEach(slot => { if(slot && inventarioCraftDisponivel[slot.id]) inventarioCraftDisponivel[slot.id] -= slot.qtd; });
             renderUIForja(); renderReceitasProntas();
         }
         function renderReceitasProntas() {
             const box = document.getElementById('receitas-prontas'); box.innerHTML = ''; let count = 0;
             Object.keys(recipesDB).forEach(rId => {
-                const r = recipesDB[rId]; if (!r.grid) return;
-                let podeCriar = true; let invTemp = {...inventarioCraftDisponivel};
+                const r = recipesDB[rId]; if (!r.grid) return; let podeCriar = true; let invTemp = {...inventarioCraftDisponivel};
                 for(let i=0; i<9; i++) {
                     let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = {id: rSlot, qtd: 1};
                     if (rSlot && typeof rSlot === 'object') { if ((invTemp[rSlot.id] || 0) < rSlot.qtd) podeCriar = false; else invTemp[rSlot.id] -= rSlot.qtd; }
@@ -538,7 +598,6 @@
             db.ref(`characters/${session}/inventario`).update(updates).then(() => { alert("A forja foi um sucesso!"); limparMesa(); }).catch(err => { alert("Erro ao forjar. Verifique se possui os itens."); });
         }
 
-        // GRIMÓRIO
         function renderGrimorio() {
             const container = document.getElementById('recipe-book-container'); container.innerHTML = ''; let recipesByCategory = {};
             Object.entries(recipesDB).forEach(([rId, r]) => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; if(resItem) { if(!recipesByCategory[resItem.categoria]) recipesByCategory[resItem.categoria] = []; recipesByCategory[resItem.categoria].push({rId, ...r}); } });
@@ -587,19 +646,19 @@
             fecharModal('item-modal');
         }
 
-        // EXPORTAÇÃO
+        // EXPORTAÇÃO E OUTROS
         async function exportarFicha() {
             const card = document.getElementById('export-card-container'); const data = { nome: pData.nome, classe: pData.classe, imagem: pData.imagem, atributos: {}, equipamentos: [], habilidades:[] };
             document.querySelectorAll('#p-atributos-total .attr-card').forEach(el => { data.atributos[el.querySelector('.attr-name').innerText] = el.querySelector('.attr-value').innerText; });
             document.querySelectorAll('#p-equipamentos .equip-slot.filled').forEach(el => data.equipamentos.push(el.querySelector('img').src));
             document.querySelectorAll('#p-skills .skill-card').forEach(el => data.habilidades.push({img: el.querySelector('img').src, nome: el.querySelector('h4').innerText}));
             const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold'); const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--blue');
-            let atrHtml = Object.entries(data.atributos).map(([k,v]) => `<div style="flex:1; text-align:center; background:rgba(0,0,0,0.3); padding:5px; border-radius:5px;"><strong style="color:${goldColor}; display:block;">${k}</strong> ${v}</div>`).join('');
-            let eqHtml = data.equipamentos.map(src => `<img src="${src}" style="width:50px; height:50px; border-radius:5px; border:1px solid #334155;">`).join('');
+            let atrHtml = Object.entries(data.atributos).map(([k,v]) => `<div style="flex:1; min-width:80px; text-align:center; background:rgba(0,0,0,0.3); padding:5px; border-radius:5px;"><strong style="color:${goldColor}; display:block;">${k}</strong> ${v}</div>`).join('');
+            let eqHtml = data.equipamentos.map(src => `<img src="${src}" style="width:50px; height:50px; border-radius:5px; border:1px solid #334155; object-fit:cover;">`).join('');
             let skHtml = data.habilidades.map(s => `<div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;"><img src="${s.img}" style="width:30px; height:30px; border-radius:5px;"><span>${s.nome}</span></div>`).join('');
-            card.innerHTML = `<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos</h4><div style="display:flex; gap:8px; font-size:0.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Build</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml || 'Nenhum equipamento.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:0.8em;">${skHtml || 'Nenhuma habilidade.'}</div>`;
-            const canvas = await html2canvas(card, {backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--panel'), useCORS: true});
-            const link = document.createElement('a'); link.download = `card_${session}.png`; link.href = canvas.toDataURL("image/png"); link.click();
+            card.innerHTML = `<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos Totais</h4><div style="display:flex; gap:8px; font-size:0.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Equipamentos</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml || 'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:0.8em;">${skHtml || 'Nenhuma.'}</div>`;
+            const canvas = await html2canvas(card, {backgroundColor: '#1e293b', useCORS: true});
+            const link = document.createElement('a'); link.download = `ficha_${session}.png`; link.href = canvas.toDataURL("image/png"); link.click();
         }
         function salvarDiario() { db.ref(`characters/${session}/anotacoes`).set(document.getElementById('diario').value); }
         function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
@@ -607,4 +666,3 @@
     </script>
 </body>
 </html>
-
