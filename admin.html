@@ -37,9 +37,13 @@
         .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.2s; position: relative; text-align: center;}
         .card:hover { border-color: var(--blue); transform: translateY(-5px); box-shadow: 0 5px 15px rgba(59,130,246,0.2); }
         .card img { width: 100%; height: 160px; object-fit: cover; border-bottom: 1px solid var(--border); background: #000;}
-        .card .info { padding: 15px; }
+        .card .info { padding: 10px 15px; }
         .card h4 { color: #fff; margin-bottom: 5px; font-family: 'Cinzel', serif;}
         .badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 4px 10px; border-radius: 8px; font-size: 0.7em; font-weight: bold; }
+        
+        /* NOVO STATS CARD */
+        .card-stats { display: flex; justify-content: space-around; font-size: 0.75em; background: rgba(0,0,0,0.5); padding: 8px; border-top: 1px solid #333; color: #cbd5e1;}
+        .card-stats span { display: flex; align-items: center; gap: 4px;}
 
         .attr-setup { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .attr-box { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 10px; text-align: center; border-radius: 8px; }
@@ -50,15 +54,34 @@
         .admin-craft-grid { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 5px;}
         .admin-craft-slot { border: 2px dashed #475569; background: rgba(0,0,0,0.3); border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #64748b; text-align: center; position: relative;}
         .admin-craft-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 4px;}
-        .admin-craft-slot:hover { border-color: var(--gold); }
         .admin-res-slot { width: 90px; height: 90px; border: 2px solid var(--gold); border-radius: 12px; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; position: relative;}
         .admin-res-slot img { width: 90%; height: 90%; object-fit: cover;}
         .item-badge-admin { position: absolute; top: 2px; right: 2px; background: var(--red); color: white; font-size: 0.6em; font-weight: bold; padding: 2px 5px; border-radius: 4px; z-index: 5;}
 
+        /* MULTI COMBAT SETUP */
+        .combat-manager-grid { display: grid; grid-template-columns: 300px 1fr; gap: 30px;}
+        .combat-list { border-right: 1px solid var(--border); padding-right: 20px;}
+        .combat-session-btn { width: 100%; text-align:left; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; position:relative;}
+        .combat-session-btn:hover { border-color: var(--purple); }
+        .combat-session-btn.active { border-color: var(--green); background: rgba(16, 185, 129, 0.1); }
+        .combat-session-btn .status { position: absolute; right: 10px; top: 15px; font-size: 0.7em; font-weight: bold; padding: 2px 8px; border-radius: 10px;}
+        
+        .combat-setup-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .combat-team-box { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px; border: 1px solid var(--border); min-height: 200px;}
+        .combat-team-box h3 { font-family:'Cinzel', serif; margin-bottom:15px; }
+        #combat-team-a h3 { color: var(--green); } #combat-team-b h3 { color: var(--red); }
+        .combatant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
+        .char-tray-card { text-align:center; cursor:grab; position: relative;}
+        .char-tray-card img { width: 60px; height:60px; border-radius: 50%; border: 2px solid var(--border); object-fit:cover; background:#000; transition: 0.2s;}
+        .char-tray-card p { font-size:0.7em; color:#94a3b8; }
+        .char-tray { display: flex; gap: 15px; overflow-x: auto; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--border); margin-top:20px; }
+        
+        .char-tray-card.defeated img { filter: grayscale(100%); border-color: #555 !important; transform: rotate(90deg); }
+
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; padding: 20px;}
         .modal.active { display: flex; animation: fadeIn 0.2s;}
         .modal-content { background: var(--panel); padding: 30px; border-radius: 16px; border: 1px solid var(--border); width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; position: relative;}
-        .close-modal { position: absolute; top: 15px; right: 20px; color: var(--red); font-size: 1.8em; cursor: pointer; }
+        .close-modal { position: absolute; top: 15px; right: 20px; color: var(--red); font-size: 1.8em; cursor: pointer; z-index:50;}
         
         .char-profile-grid { display: grid; grid-template-columns: 300px 1fr; gap: 30px;}
         .cp-left { text-align: center; border-right: 1px solid var(--border); padding-right: 20px;}
@@ -70,6 +93,7 @@
         .cp-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;}
         .cp-stat { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 8px; font-size: 0.9em;}
         .cp-stat span { display: block; color: var(--gold); font-size: 1.4em; font-weight: bold;}
+        
         .cp-right h3 { color: var(--blue); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-bottom: 15px; margin-top: 15px;}
         .cp-inv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px;}
         .cp-inv-item { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 5px; text-align: center; position: relative; cursor: pointer;}
@@ -89,24 +113,6 @@
         .picker-item { text-align: center; cursor: pointer; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 5px;}
         .picker-item img { width: 100%; aspect-ratio:1; object-fit: cover; border: 2px solid transparent; border-radius: 8px;}
         .picker-item:hover img { border-color: var(--blue); }
-
-        /* MULTI COMBAT SETUP */
-        .combat-manager-grid { display: grid; grid-template-columns: 300px 1fr; gap: 30px;}
-        .combat-list { border-right: 1px solid var(--border); padding-right: 20px;}
-        .combat-session-btn { width: 100%; text-align:left; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; position:relative;}
-        .combat-session-btn:hover { border-color: var(--purple); }
-        .combat-session-btn.active { border-color: var(--green); background: rgba(16, 185, 129, 0.1); }
-        .combat-session-btn .status { position: absolute; right: 10px; top: 15px; font-size: 0.7em; font-weight: bold; padding: 2px 8px; border-radius: 10px;}
-        
-        .combat-setup-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .combat-team-box { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px; border: 1px solid var(--border); min-height: 200px;}
-        .combat-team-box h3 { font-family:'Cinzel', serif; margin-bottom:15px; }
-        #combat-team-a h3 { color: var(--green); } #combat-team-b h3 { color: var(--red); }
-        .combatant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
-        .char-tray-card { text-align:center; cursor:grab; }
-        .char-tray-card img { width: 60px; height:60px; border-radius: 50%; border: 2px solid var(--border); object-fit:cover; background:#000; }
-        .char-tray-card p { font-size:0.7em; color:#94a3b8; }
-        .char-tray { display: flex; gap: 15px; overflow-x: auto; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--border); margin-top:20px; }
     </style>
 </head>
 <body>
@@ -126,13 +132,63 @@
 
     <div class="main-content">
         
-        <!-- HABITANTES -->
-        <div id="sec-lib-chars" class="section active"><h2>Habitantes do Mundo</h2><p style="color:#94a3b8; margin-bottom: 20px;">Clique em um personagem para gerenciar ficha e itens.</p><div class="visual-grid" id="grid-chars"></div></div>
+        <div id="sec-lib-chars" class="section active">
+            <h2>Habitantes do Mundo</h2>
+            <p style="color:#94a3b8; margin-bottom: 20px;">Clique em um personagem para gerenciar ficha e itens.</p>
+            <div class="visual-grid" id="grid-chars"></div>
+        </div>
         
-        <!-- CRIAR PERSONAGEM -->
-        <div id="sec-create-char" class="section"><h2>Criar Personagem ou Criatura</h2><div class="glass-panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;"><div><label>Categoria</label><select id="c-tipo"><option value="Jogador">Jogador</option><option value="NPC">NPC</option><option value="Criatura">Criatura</option></select><input type="text" id="c-user" placeholder="Login / ID Único"><input type="text" id="c-pass" placeholder="Senha (Para Jogadores)"><input type="text" id="c-nome" placeholder="Nome Verdadeiro"><input type="text" id="c-classe" placeholder="Classe (Guerreiro, Besta, etc)"><input type="text" id="c-img" placeholder="URL da Imagem"><input type="number" id="c-pts" placeholder="Pontos de Atributo Livres" value="0"><h4 style="color:var(--cyan); margin-top:10px; margin-bottom:10px; font-family:'Cinzel',serif;">Status Iniciais</h4><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><input type="number" id="c-hp" placeholder="HP Atual" value="10"><input type="number" id="c-hp_max" placeholder="HP Máximo" value="10"><input type="number" id="c-mp" placeholder="MP Atual" value="0"><input type="number" id="c-mp_max" placeholder="MP Máximo" value="0"><input type="number" id="c-sp" placeholder="SP Atual" value="0"><input type="number" id="c-sp_max" placeholder="SP Máximo" value="0"></div></div><div><h4 style="color:var(--gold); margin-bottom: 15px; font-family:'Cinzel',serif;">Atributos Iniciais</h4><div class="attr-setup"><div class="attr-box"><label>Força</label><input type="number" id="c-for" value="0"></div><div class="attr-box"><label>Resist</label><input type="number" id="c-res" value="0"></div><div class="attr-box"><label>Veloc</label><input type="number" id="c-vel" value="0"></div><div class="attr-box"><label>Agilid</label><input type="number" id="c-agi" value="0"></div><div class="attr-box"><label>Percep</label><input type="number" id="c-per" value="0"></div><div class="attr-box"><label>R. Mág</label><input type="number" id="c-resm" value="0"></div><div class="attr-box"><label>Espír</label><input type="number" id="c-esp" value="0"></div><div class="attr-box"><label>Alma</label><input type="number" id="c-alm" value="0"></div></div><button class="btn btn-green" onclick="criarEntidade()">Salvar Personagem</button></div></div></div>
+        <div id="sec-create-char" class="section">
+            <h2>Criar Personagem ou Criatura</h2>
+            <div class="glass-panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <label>Categoria</label>
+                    <select id="c-tipo" onchange="toggleLootDiv()">
+                        <option value="Jogador">Jogador</option><option value="NPC">NPC</option><option value="Criatura">Criatura</option>
+                    </select>
+                    
+                    <!-- LOOT SETUP (SÓ PARA CRIATURA) -->
+                    <div id="c-loot-div" style="display:none; margin:15px 0; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; border:1px solid var(--border);">
+                        <h4 style="color:var(--gold); margin-bottom:5px;">Item de Drop (Loot)</h4>
+                        <input type="hidden" id="c-loot-id">
+                        <button class="btn" style="background:var(--panel); border:1px solid var(--blue); font-size:0.8em; padding:8px;" onclick="abrirPicker('set_loot')">Selecionar Item de Drop</button>
+                        <p id="c-loot-display" style="font-size:0.8em; color:#94a3b8; margin:8px 0; font-weight:bold;">Nenhum item selecionado</p>
+                        <input type="number" id="c-loot-qtd" placeholder="Quantidade Dropada" value="1">
+                    </div>
+
+                    <input type="text" id="c-user" placeholder="Login / ID Único">
+                    <input type="text" id="c-pass" placeholder="Senha (Para Jogadores)">
+                    <input type="text" id="c-nome" placeholder="Nome Verdadeiro">
+                    <input type="text" id="c-classe" placeholder="Classe (Guerreiro, Besta, etc)">
+                    <input type="text" id="c-img" placeholder="URL da Imagem">
+                    <input type="number" id="c-pts" placeholder="Pontos de Atributo Livres" value="0">
+                    <h4 style="color:var(--cyan); margin-top:10px; margin-bottom:10px; font-family:'Cinzel',serif;">Status Iniciais</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <input type="number" id="c-hp" placeholder="HP Atual" value="10">
+                        <input type="number" id="c-hp_max" placeholder="HP Máximo" value="10">
+                        <input type="number" id="c-mp" placeholder="MP Atual" value="0">
+                        <input type="number" id="c-mp_max" placeholder="MP Máximo" value="0">
+                        <input type="number" id="c-sp" placeholder="SP Atual" value="0">
+                        <input type="number" id="c-sp_max" placeholder="SP Máximo" value="0">
+                    </div>
+                </div>
+                <div>
+                    <h4 style="color:var(--gold); margin-bottom: 15px; font-family:'Cinzel',serif;">Atributos Iniciais</h4>
+                    <div class="attr-setup">
+                        <div class="attr-box"><label>Força</label><input type="number" id="c-for" value="0"></div>
+                        <div class="attr-box"><label>Resist</label><input type="number" id="c-res" value="0"></div>
+                        <div class="attr-box"><label>Veloc</label><input type="number" id="c-vel" value="0"></div>
+                        <div class="attr-box"><label>Agilid</label><input type="number" id="c-agi" value="0"></div>
+                        <div class="attr-box"><label>Percep</label><input type="number" id="c-per" value="0"></div>
+                        <div class="attr-box"><label>R. Mág</label><input type="number" id="c-resm" value="0"></div>
+                        <div class="attr-box"><label>Espír</label><input type="number" id="c-esp" value="0"></div>
+                        <div class="attr-box"><label>Alma</label><input type="number" id="c-alm" value="0"></div>
+                    </div>
+                    <button class="btn btn-green" onclick="criarEntidade()">Salvar Entidade</button>
+                </div>
+            </div>
+        </div>
         
-        <!-- CRIAR ITEM -->
         <div id="sec-create-item" class="section">
             <h2 style="color:var(--gold);"><i class="fas fa-hammer"></i> Forja de Itens</h2>
             <div class="glass-panel" style="border-color:var(--gold);">
@@ -151,7 +207,9 @@
                         </select>
                         <div id="i-subcat-wrapper" style="display:none;">
                             <label>Sub-categoria (Slot)</label>
-                            <select id="i-subcat"><option value="Cabeça">Cabeça</option><option value="Peitoral">Peitoral</option><option value="Pernas">Pernas</option></select>
+                            <select id="i-subcat">
+                                <option value="Cabeça">Cabeça</option><option value="Peitoral">Peitoral</option><option value="Pernas">Pernas</option>
+                            </select>
                         </div>
                         <div id="i-consumable-wrapper" style="display:none;">
                             <h4 style="color:var(--cyan); margin-bottom:10px;">Efeitos de Consumo</h4>
@@ -168,16 +226,13 @@
             </div>
         </div>
         
-        <!-- BIBLIOTECA DE ITENS -->
         <div id="sec-lib-items" class="section"><h2>Todos os Itens do Mundo</h2><p style="color:#94a3b8; margin-bottom: 20px;">Clique em uma relíquia para Editar ou Excluir.</p><div class="visual-grid" id="grid-items"></div></div>
         
-        <!-- HABILIDADES -->
         <div id="sec-skills" class="section"><h2>Criação de Habilidades & Dons</h2><div class="glass-panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;"><div><input type="text" id="s-id" placeholder="ID (ex: furia_orc)"><input type="text" id="s-nome" placeholder="Nome da Habilidade"><input type="text" id="s-img" placeholder="URL do Ícone"><textarea id="s-desc" rows="4" placeholder="Descrição do efeito..."></textarea></div><div><h4 style="color:var(--green); margin-bottom: 15px; font-family:'Cinzel',serif;">Buffs Passivos</h4><div class="attr-setup"><div class="attr-box"><label>Força</label><input type="number" id="sb-for" value="0"></div><div class="attr-box"><label>Resist</label><input type="number" id="sb-res" value="0"></div><div class="attr-box"><label>Veloc</label><input type="number" id="sb-vel" value="0"></div><div class="attr-box"><label>Agilid</label><input type="number" id="sb-agi" value="0"></div><div class="attr-box"><label>Percep</label><input type="number" id="sb-per" value="0"></div><div class="attr-box"><label>R. Mág</label><input type="number" id="sb-resm" value="0"></div><div class="attr-box"><label>Espír</label><input type="number" id="sb-esp" value="0"></div><div class="attr-box"><label>Alma</label><input type="number" id="sb-alm" value="0"></div></div><button class="btn btn-green" onclick="criarSkill()">Salvar Habilidade</button></div></div><h3 style="color:var(--blue); margin-bottom: 20px;">Habilidades Cadastradas</h3><p style="color:#94a3b8; margin-bottom: 20px;">Clique em uma habilidade para Editar ou Excluir.</p><div class="visual-grid" id="grid-skills"></div></div>
         
-        <!-- RECEITAS DE CRAFTING -->
         <div id="sec-crafting" class="section"><h2>Montar Receitas de Crafting</h2><div class="glass-panel"><p style="color:#94a3b8; text-align:center;">Clique nos slots para escolher os itens da receita.</p><div class="admin-craft-bench"><div class="admin-craft-grid" id="admin-craft-table"></div><i class="fas fa-arrow-right" style="font-size:2.5em; color:var(--border);"></i><div class="admin-res-slot" id="admin-craft-res" onclick="abrirPicker('resultado_craft')"></div></div><button class="btn btn-blue" onclick="salvarReceitaGrid()">Gravar Receita no Mundo</button></div><h3 style="margin-top:20px; color:var(--gold);">Receitas Existentes</h3><div id="list-recipes" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:15px;"></div></div>
         
-        <!-- GERENCIADOR MULTI-COMBATES -->
+        <!-- GERENCIADOR DE COMBATES -->
         <div id="sec-combat" class="section">
             <h2 style="color:var(--purple);"><i class="fas fa-khanda"></i> Central de Combates</h2>
             
@@ -231,6 +286,15 @@
     <div class="modal" id="picker-modal"><div class="modal-content" style="max-width: 600px;"><i class="fas fa-times close-modal" onclick="closeModal('picker-modal')"></i><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><h2 id="picker-title" style="margin:0; border:none; padding:0;">Selecione...</h2><div id="picker-qtd-box" style="display:none; align-items:center; gap:10px;"><label style="color:var(--gold); font-weight:bold;">Quantidade:</label><input type="number" id="picker-qtd" value="1" min="1" style="width:80px; margin:0; text-align:center; font-size:1.2em;"></div></div><div class="picker-grid" id="picker-grid"></div></div></div>
     
     <div class="modal" id="manage-item-modal"><div class="modal-content" style="max-width: 400px; text-align:center;"><i class="fas fa-times close-modal" onclick="closeModal('manage-item-modal')"></i><h2 id="mi-title" style="border:none; padding:0;">Gerenciar</h2><img id="mi-img" style="width:80px; height:80px; border-radius:10px; border:2px solid var(--gold); margin-bottom:10px;"><p>Em estoque: <strong id="mi-current-qtd" style="color:var(--gold)"></strong></p><div style="display:flex; gap:15px; margin-top:20px;"><input type="number" id="mi-qtd" value="1" min="1" style="text-align:center;"><button id="mi-remove-btn" class="btn btn-red" style="width:auto; flex:1;">Remover</button><button id="mi-add-btn" class="btn btn-green" style="width:auto; flex:1;">Adicionar</button></div></div></div>
+    
+    <div class="modal" id="token-menu-modal"><div class="modal-content" style="max-width: 400px; text-align:center;">
+        <i class="fas fa-times close-btn" onclick="closeModal('token-menu-modal')"></i>
+        <h2 id="token-menu-name" style="border:none; padding:0; margin-bottom:15px; font-family:'Cinzel',serif; color:var(--gold);"></h2>
+        <div id="token-status-controls" style="margin-bottom:20px;"></div>
+        <input type="text" id="token-speech-input" placeholder="Falar ou Agir (*ação*)" style="margin-bottom:10px;">
+        <button class="btn" style="background:var(--cyan); margin-bottom:15px;" onclick="setTokenSpeech()"><i class="fas fa-paper-plane"></i> Enviar Fala no Mapa</button>
+        <button class="btn btn-red" id="token-remove-btn"><i class="fas fa-trash"></i> Remover do Mapa</button>
+    </div></div>
 
     <script>
         const firebaseConfig = { databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/" };
@@ -240,7 +304,6 @@
         let DB_CHARS = {}; let DB_ITEMS = {}; let DB_SKILLS = {}; let DB_RECIPES = {}; let DB_COMBATS = {};
         const attrNames = { for: 'FOR', res: 'RES', vel: 'VEL', agi: 'AGI', per: 'PER', resm: 'RSM', esp: 'ESP', alm: 'ALM' };
 
-        // ======================= NAVEGAÇÃO E INICIALIZAÇÃO =======================
         function nav(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active')); document.getElementById(id).classList.add('active'); event.currentTarget.classList.add('active'); }
         function sair() { localStorage.removeItem('rpg_session'); window.location.href = 'login.html'; }
 
@@ -250,23 +313,48 @@
         db.ref('recipes').on('value', snap => { DB_RECIPES = snap.val() || {}; renderReceitasGrid(); });
         db.ref('combat/sessions').on('value', snap => { DB_COMBATS = snap.val() || {}; renderCombatList(); if(activeCombatId && DB_COMBATS[activeCombatId]) updateActiveCombatView(); else hideCombatEditor(); });
 
-        // ======================= PERSONAGENS (CRIAR E GERENCIAR) =======================
+        // ======================= PERSONAGENS E CARDS =======================
+        function toggleLootDiv() {
+            const tipo = document.getElementById('c-tipo').value;
+            document.getElementById('c-loot-div').style.display = tipo === 'Criatura' ? 'block' : 'none';
+        }
+
         function criarEntidade() {
             const id = document.getElementById('c-user').value; if(!id) return alert("Precisa definir um Login / ID!");
-            db.ref('characters/' + id).set({
+            let charData = {
                 tipo: document.getElementById('c-tipo').value, senha: document.getElementById('c-pass').value, nome: document.getElementById('c-nome').value, classe: document.getElementById('c-classe').value, imagem: document.getElementById('c-img').value || 'https://via.placeholder.com/150', pontos: Number(document.getElementById('c-pts').value) || 0,
                 hp: Number(document.getElementById('c-hp').value), hp_max: Number(document.getElementById('c-hp_max').value), mp: Number(document.getElementById('c-mp').value), mp_max: Number(document.getElementById('c-mp_max').value), sp: Number(document.getElementById('c-sp').value), sp_max: Number(document.getElementById('c-sp_max').value),
                 atributos_base: { for: Number(document.getElementById('c-for').value), res: Number(document.getElementById('c-res').value), vel: Number(document.getElementById('c-vel').value), agi: Number(document.getElementById('c-agi').value), per: Number(document.getElementById('c-per').value), resm: Number(document.getElementById('c-resm').value), esp: Number(document.getElementById('c-esp').value), alm: Number(document.getElementById('c-alm').value) }
-            }).then(() => { alert("Criado com sucesso!"); nav('sec-lib-chars'); });
+            };
+            if(charData.tipo === 'Criatura') {
+                const lId = document.getElementById('c-loot-id').value; const lQtd = Number(document.getElementById('c-loot-qtd').value) || 1;
+                if(lId) charData.loot = { item_id: lId, qtd: lQtd };
+            }
+            db.ref('characters/' + id).set(charData).then(() => { alert("Criado com sucesso!"); nav('sec-lib-chars'); });
         }
+        
         function renderChars() {
             const grid = document.getElementById('grid-chars'); grid.innerHTML = '';
-            Object.keys(DB_CHARS).forEach(id => { const c = DB_CHARS[id]; let color = '#3b82f6'; if(c.tipo === 'NPC') color = '#ef4444'; if(c.tipo === 'Criatura') color = '#a855f7'; grid.innerHTML += `<div class="card" onclick="abrirPerfilChar('${id}')"><div class="badge" style="background:${color}; color:#fff;">${c.tipo}</div><img src="${c.imagem}"><div class="info"><h4>${c.nome}</h4><p style="font-size:0.8em; color:#94a3b8">${c.classe}</p></div></div>`;});
+            Object.keys(DB_CHARS).forEach(id => {
+                const c = DB_CHARS[id];
+                let color = '#3b82f6'; if(c.tipo === 'NPC') color = '#ef4444'; if(c.tipo === 'Criatura') color = '#a855f7';
+                const b = c.atributos_base || {};
+                const statsHtml = `<div class="card-stats"><span>❤️${c.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
+                grid.innerHTML += `<div class="card" onclick="abrirPerfilChar('${id}')"><div class="badge" style="background:${color}; color:#fff;">${c.tipo}</div><img src="${c.imagem}"><div class="info"><h4>${c.nome}</h4><p style="font-size:0.8em; color:#94a3b8; margin-bottom:8px;">${c.classe}</p></div>${statsHtml}</div>`;
+            });
         }
+        
         let activeCharId = null;
         function abrirPerfilChar(charId) {
             activeCharId = charId; const c = DB_CHARS[charId]; if(!c) return closeModal('char-modal');
             let statsHtml = ''; Object.keys(attrNames).forEach(k => { statsHtml += `<div class="cp-stat">${attrNames[k]}<span>${(c.atributos_base || {})[k] || 0}</span></div>`; });
+            
+            let lootHtml = '';
+            if(c.tipo === 'Criatura' && c.loot) {
+                const itemLoot = DB_ITEMS[c.loot.item_id];
+                if(itemLoot) lootHtml = `<p style="color:var(--gold); font-size:0.8em; margin-top:-10px; margin-bottom:10px;"><b>Loot/Drop:</b> ${itemLoot.nome} x${c.loot.qtd}</p>`;
+            }
+
             let invMap = {}; let equipableInv = {};
             if(c.inventario) Object.entries(c.inventario).forEach(([key,item]) => { 
                 const idb = DB_ITEMS[item.item_id];
@@ -278,8 +366,9 @@
             Object.entries(equipableInv).forEach(([key, item]) => { const itemDB = DB_ITEMS[item.item_id]; if(itemDB) invHtml += `<div class="cp-inv-item ${item.equipado ? 'equipped' : ''}" onclick="adminEquipItem('${key}')" style="${item.equipado ? 'border-color:var(--green)' : ''}"><img src="${itemDB.imagem}" title="${itemDB.nome}"></div>`; });
 
             let skillsHtml = ''; if(c.skills) Object.keys(c.skills).forEach(sId => { const skill = DB_SKILLS[sId]; if(skill) skillsHtml += `<div class="cp-skill-item"><img src="${skill.imagem}"><div><strong style="color:var(--gold); font-size:0.8em;">${skill.nome}</strong><br><span style="font-size:0.7em; cursor:pointer; color:var(--red);" onclick="removerSkill('${charId}','${sId}')">Remover</span></div></div>`; });
-            const vitalsHtml = `<input type="text" value="${c.hp || 0}/${c.hp_max || 0}" onchange="updateVitals('${charId}', 'hp', this.value)">` + `<input type="text" value="${c.mp || 0}/${c.mp_max || 0}" onchange="updateVitals('${charId}', 'mp', this.value)">` + `<input type="text" value="${c.sp || 0}/${c.sp_max || 0}" onchange="updateVitals('${charId}', 'sp', this.value)">`;
-            const html = `<div class="char-profile-grid"><div class="cp-left"><img class="cp-avatar" src="${c.imagem}"><div class="cp-name">${c.nome}</div><div class="cp-class">${c.classe} | Pontos: ${c.pontos || 0}</div><div class="cp-vitals">${vitalsHtml}</div><div class="cp-stats-grid">${statsHtml}</div><button class="btn btn-red" style="margin-top:20px;" onclick="deletarChar('${charId}')">Excluir</button></div><div class="cp-right"><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Equipamentos</h3></div><div id="cp-equip-grid" class="cp-equip-grid"></div><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Habilidades</h3><button class="btn" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_skill', '${charId}')">+ Ensinar</button></div><div class="cp-skill-list">${skillsHtml || '<p style="color:#64748b; font-size:0.8em;">Nenhuma.</p>'}</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;"><h3>Bolsa</h3><button class="btn btn-green" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_item', '${charId}')">+ Dar Item</button></div><div class="cp-inv-grid">${invHtml || '<p style="color:#64748b; font-size:0.8em;">Vazia.</p>'}</div></div></div>`;
+            const vitalsHtml = `<input type="text" value="${c.hp || 0}/${c.hp_max || 0}" onchange="updateVitals('${charId}', 'hp', this.value)">` + (c.mp_max>0?`<input type="text" value="${c.mp || 0}/${c.mp_max || 0}" onchange="updateVitals('${charId}', 'mp', this.value)">`:'') + (c.sp_max>0?`<input type="text" value="${c.sp || 0}/${c.sp_max || 0}" onchange="updateVitals('${charId}', 'sp', this.value)">`:'');
+            
+            const html = `<div class="char-profile-grid"><div class="cp-left"><img class="cp-avatar" src="${c.imagem}"><div class="cp-name">${c.nome}</div><div class="cp-class">${c.classe} | Pontos: ${c.pontos || 0}</div>${lootHtml}<div class="cp-vitals">${vitalsHtml}</div><div class="cp-stats-grid">${statsHtml}</div><button class="btn btn-red" style="margin-top:20px;" onclick="deletarChar('${charId}')">Excluir</button></div><div class="cp-right"><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Equipamentos</h3></div><div id="cp-equip-grid" class="cp-equip-grid"></div><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Habilidades</h3><button class="btn" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_skill', '${charId}')">+ Ensinar</button></div><div class="cp-skill-list">${skillsHtml || '<p style="color:#64748b; font-size:0.8em;">Nenhuma.</p>'}</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;"><h3>Bolsa</h3><button class="btn btn-green" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_item', '${charId}')">+ Dar Item</button></div><div class="cp-inv-grid">${invHtml || '<p style="color:#64748b; font-size:0.8em;">Vazia.</p>'}</div></div></div>`;
             document.getElementById('char-profile-content').innerHTML = html; document.getElementById('char-modal').classList.add('active');
             renderAdminEquipGrid(c);
         }
@@ -320,9 +409,7 @@
                 }
             });
             if(!found) pickerGrid.innerHTML = `<p style="color:#64748b; font-size:0.8em;">Nenhum item compatível na bolsa deste personagem.</p>`;
-            document.getElementById('picker-title').innerText = `Equipar`;
-            document.getElementById('picker-qtd-box').style.display = 'none';
-            document.getElementById('picker-modal').classList.add('active');
+            document.getElementById('picker-title').innerText = `Equipar`; document.getElementById('picker-qtd-box').style.display = 'none'; document.getElementById('picker-modal').classList.add('active');
         }
         function adminFinalizeEquip(itemKey) { db.ref(`characters/${activeCharId}/inventario/${itemKey}/equipado`).set(true); closeModal('picker-modal'); }
         function adminUnequipItem(itemKey) { if(confirm("Desequipar este item?")) db.ref(`characters/${activeCharId}/inventario/${itemKey}/equipado`).set(false); }
@@ -375,8 +462,8 @@
         let pickerContext = { type: null, targetId: null, slotIndex: null };
         function abrirPicker(type, targetId = null, slotIndex = null) {
             pickerContext = { type, targetId, slotIndex }; const grid = document.getElementById('picker-grid'); grid.innerHTML = ''; const qtdBox = document.getElementById('picker-qtd-box'); document.getElementById('picker-qtd').value = 1; 
-            if(type === 'give_item' || type === 'craft_ing' || type === 'resultado_craft') {
-                document.getElementById('picker-title').innerText = "Selecione o Item"; qtdBox.style.display = 'flex'; 
+            if(type === 'give_item' || type === 'craft_ing' || type === 'resultado_craft' || type === 'set_loot') {
+                document.getElementById('picker-title').innerText = "Selecione o Item"; qtdBox.style.display = type === 'set_loot' ? 'none' : 'flex'; 
                 if(type === 'craft_ing') grid.innerHTML += `<div class="picker-item" onclick="selecionarPicker(null)"><div style="height:100%; min-height:80px; border:2px dashed var(--red); display:flex; align-items:center; justify-content:center; border-radius:8px; color:var(--red); font-weight:bold;">VAZIO</div></div>`;
                 Object.keys(DB_ITEMS).forEach(id => { grid.innerHTML += `<div class="picker-item" onclick="selecionarPicker('${id}')"><img src="${DB_ITEMS[id].imagem}"><br><span style="font-size:0.6em; color:#94a3b8;">${DB_ITEMS[id].nome}</span></div>`; });
             } else if (type === 'give_skill') {
@@ -386,6 +473,12 @@
             document.getElementById('picker-modal').classList.add('active');
         }
         function selecionarPicker(id_selecionado) {
+            if(pickerContext.type === 'set_loot') {
+                document.getElementById('c-loot-id').value = id_selecionado;
+                document.getElementById('c-loot-display').innerHTML = id_selecionado ? `<span style="color:var(--green)">Item de Drop Configurado:</span> ${DB_ITEMS[id_selecionado].nome}` : 'Nenhum item selecionado';
+                closeModal('picker-modal'); return;
+            }
+            
             const qtd = parseInt(document.getElementById('picker-qtd').value) || 1;
             if(pickerContext.type === 'give_item') { for(let i=0; i<qtd; i++) { db.ref(`characters/${pickerContext.targetId}/inventario`).push({ item_id: id_selecionado, equipado: false }); } }
             else if(pickerContext.type === 'give_skill') { db.ref(`characters/${pickerContext.targetId}/skills/${id_selecionado}`).set(true); } 
@@ -443,7 +536,7 @@
 
         function criarNovoCombate() {
             const id = 'combat_' + Date.now();
-            db.ref(`combat/sessions/${id}`).set({ name: 'Nova Batalha', background: '', status: 'paused', team_a: {}, team_b: {} });
+            db.ref(`combat/sessions/${id}`).set({ name: 'Nova Batalha', background: '', status: 'paused', tokens: {} });
             abrirCombateEditor(id);
         }
 
@@ -451,7 +544,6 @@
             activeCombatId = id;
             document.querySelectorAll('.combat-session-btn').forEach(btn => btn.style.borderColor = 'var(--border)');
             event.currentTarget.style.borderColor = 'var(--purple)';
-            
             document.getElementById('active-combat-editor').style.display = 'block';
             updateActiveCombatView();
         }
@@ -459,13 +551,17 @@
         function updateActiveCombatView() {
             if(!activeCombatId || !DB_COMBATS[activeCombatId]) return hideCombatEditor();
             const combat = DB_COMBATS[activeCombatId];
-            
             document.getElementById('edit-combat-name').value = combat.name || "";
             document.getElementById('edit-combat-bg').value = combat.background || "";
             document.getElementById('token-public').checked = combat.public_inspection || false;
-
-            combatTeamA = combat.team_a || {};
-            combatTeamB = combat.team_b || {};
+            
+            combatTeamA = {}; combatTeamB = {};
+            if(combat.tokens) {
+                Object.entries(combat.tokens).forEach(([tId, tData]) => {
+                    if(tData.team === 'A') combatTeamA[tId] = tData;
+                    if(tData.team === 'B') combatTeamB[tId] = tData;
+                });
+            }
             renderCombatSetup();
         }
 
@@ -486,7 +582,15 @@
             const teamB_box = document.getElementById('combat-team-b'); teamB_box.innerHTML = '';
             
             Object.entries(DB_CHARS).forEach(([id, char]) => {
-                const cardHtml = `<div class="char-tray-card" draggable="true" ondragstart="drag(event, '${id}')"><img src="${char.imagem}"><p>${char.nome.split(' ')[0]}</p></div>`;
+                const b = char.atributos_base || {};
+                const statsHtml = `<div class="card-stats"><span>❤️${char.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
+                
+                let inCombatClass = '';
+                if(combatTeamA[id] && combatTeamA[id].status === 'defeated') inCombatClass = 'defeated';
+                if(combatTeamB[id] && combatTeamB[id].status === 'defeated') inCombatClass = 'defeated';
+
+                const cardHtml = `<div class="char-tray-card ${inCombatClass}" draggable="true" ondragstart="drag(event, '${id}')" onclick="abrirTokenMenu('${id}')"><img src="${char.imagem}"><p>${char.nome.split(' ')[0]}</p></div>`;
+                
                 if (combatTeamA[id]) teamA_box.innerHTML += cardHtml;
                 else if (combatTeamB[id]) teamB_box.innerHTML += cardHtml;
                 else tray.innerHTML += cardHtml;
@@ -498,11 +602,11 @@
         function drop(ev, team) {
             ev.preventDefault(); const charId = ev.dataTransfer.getData("charId");
             if(!activeCombatId) return;
-            delete combatTeamA[charId]; delete combatTeamB[charId]; 
-            if(team === 'A') combatTeamA[charId] = { x: 50, y: 50 }; // Add com posição padrão
-            else if(team === 'B') combatTeamB[charId] = { x: 50, y: 50 };
-            
-            db.ref(`combat/sessions/${activeCombatId}`).update({ team_a: combatTeamA, team_b: combatTeamB });
+            if(team === 'tray') {
+                db.ref(`combat/sessions/${activeCombatId}/tokens/${charId}`).remove();
+            } else {
+                db.ref(`combat/sessions/${activeCombatId}/tokens/${charId}`).update({ team: team, status: 'alive' });
+            }
         }
 
         function iniciarCombate() {
@@ -518,6 +622,53 @@
                 db.ref(`combat/sessions/${activeCombatId}`).remove();
                 hideCombatEditor();
             }
+        }
+
+        function abrirTokenMenu(tId) {
+            const combat = DB_COMBATS[activeCombatId];
+            if(!combat || !combat.tokens || !combat.tokens[tId]) return; // Só abre se tiver no combate
+
+            currentTokenId = tId;
+            const token = combat.tokens[tId];
+            
+            document.getElementById('token-menu-name').innerText = DB_CHARS[tId].nome;
+            
+            const controls = document.getElementById('token-status-controls');
+            if(token.status === 'defeated') {
+                controls.innerHTML = `<button class="btn" style="background:var(--green);" onclick="setTokenStatus('${tId}', 'alive')">Reviver Personagem</button>`;
+            } else {
+                controls.innerHTML = `<button class="btn btn-red" onclick="setTokenStatus('${tId}', 'defeated')">Marcar como Derrotado (Gera Loot)</button>`;
+            }
+
+            document.getElementById('token-remove-btn').onclick = () => { db.ref(`combat/sessions/${activeCombatId}/tokens/${tId}`).remove(); closeModal('token-menu-modal'); };
+            document.getElementById('token-menu-modal').classList.add('active');
+        }
+
+        function setTokenStatus(tId, status) {
+            if(!activeCombatId) return;
+            db.ref(`combat/sessions/${activeCombatId}/tokens/${tId}/status`).set(status);
+            
+            if(status === 'defeated') {
+                const char = DB_CHARS[tId];
+                if(char && char.tipo === 'Criatura' && char.loot && char.loot.item_id) {
+                    db.ref(`combat/sessions/${activeCombatId}/loots/${tId}`).set({
+                        item_id: char.loot.item_id,
+                        qtd: char.loot.qtd || 1,
+                        collected: false
+                    });
+                }
+            }
+            closeModal('token-menu-modal');
+        }
+
+        function setTokenSpeech() {
+            const speechText = document.getElementById('token-speech-input').value;
+            if(!speechText || !currentTokenId || !activeCombatId) return;
+            const speechRef = db.ref(`combat/sessions/${activeCombatId}/tokens/${currentTokenId}/speech`);
+            speechRef.set(speechText);
+            document.getElementById('token-speech-input').value = '';
+            setTimeout(() => speechRef.set(null), 10000); 
+            closeModal('token-menu-modal');
         }
 
         function closeModal(id) { document.getElementById(id).classList.remove('active'); if(id === 'char-modal') activeCharId = null; }
