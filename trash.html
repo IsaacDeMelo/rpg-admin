@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RPG - Painel do Sistema</title>
+
+    <!-- Fonte Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Ícones FontAwesome (Deixa o design RICO) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase V8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        /* VARIÁVEIS DE CORES SÓLIDAS - SEM GRADIENTES */
+        :root {
+            --bg-color: #121214;
+            --surface-color: #202024;
+            --surface-hover: #29292E;
+            --primary-color: #6366F1;
+            --primary-hover: #818CF8;
+            --danger-color: #EF4444;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            
+            /* Moedas */
+            --ruby: #EF4444;
+            --diamond: #06B6D4;
+            --gold: #F59E0B;
+            --silver: #9CA3AF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+
+        /* SCROLLBAR CUSTOMIZADA */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+
+        input, select, textarea {
+            width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 8px;
+            background-color: var(--bg-color); border: 1px solid #323238; color: var(--text-main);
+            font-size: 0.95em; outline: none; transition: border 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary-color); }
+
+        button.btn {
+            width: 100%; padding: 14px; background-color: var(--primary-color); color: #fff;
+            border: none; border-radius: 8px; font-weight: 600; font-size: 1em;
+            cursor: pointer; transition: background 0.2s;
+        }
+        button.btn:hover { background-color: var(--primary-hover); }
+        button.btn-danger { background-color: var(--danger-color); margin-top: 10px; }
+
+        /* ================= TELAS (VIEWS) ================= */
+        .view { display: none; width: 100%; min-height: 100vh; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ================= LOGIN ================= */
+        #login-view { display: flex; justify-content: center; align-items: center; }
+        .login-box { background-color: var(--surface-color); padding: 40px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .login-box h2 { text-align: center; margin-bottom: 30px; font-weight: 700; color: var(--primary-color); }
+
+        /* ================= TELA DO JOGADOR (MOBILE FIRST) ================= */
+        .player-container { max-width: 600px; margin: 0 auto; padding: 20px; padding-bottom: 80px; }
+        
+        .profile-card { background-color: var(--surface-color); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 20px; margin-bottom: 20px; position: relative; overflow: hidden;}
+        .profile-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color); }
+        .profile-info h2 { font-size: 1.4em; margin-bottom: 4px; }
+        .profile-info p { color: var(--text-muted); font-size: 0.9em; font-weight: 500; }
+        .pts-badge { display: inline-block; background-color: var(--primary-color); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; margin-top: 8px; }
+
+        .section-title { font-size: 1.1em; font-weight: 600; margin: 25px 0 15px 0; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--surface-color); padding-bottom: 8px;}
+
+        /* Moedas */
+        .currency-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .currency-card { background-color: var(--surface-color); padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 12px; font-weight: 600; }
+        .currency-card i { font-size: 1.5em; }
+        .c-ruby { color: var(--ruby); } .c-diamond { color: var(--diamond); } .c-gold { color: var(--gold); } .c-silver { color: var(--silver); }
+
+        /* Atributos */
+        .attr-list { background-color: var(--surface-color); border-radius: 12px; padding: 15px; }
+        .attr-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #323238; }
+        .attr-item:last-child { border-bottom: none; }
+        .attr-name { font-weight: 500; }
+        .attr-controls { display: flex; align-items: center; gap: 15px; }
+        .attr-val { font-size: 1.2em; font-weight: 700; width: 30px; text-align: center; }
+        .btn-plus { background-color: #323238; border: none; color: #fff; width: 36px; height: 36px; border-radius: 8px; font-size: 1.2em; cursor: pointer; transition: 0.2s; }
+        .btn-plus:active { background-color: var(--primary-color); transform: scale(0.95); }
+
+        /* Inventário */
+        .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; }
+        .item-slot { background-color: var(--surface-color); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+        .item-slot:hover { border-color: var(--primary-color); }
+        .item-slot img { width: 100%; height: 70px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; background-color: var(--bg-color); }
+        .item-slot span { font-size: 0.75em; font-weight: 500; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* ================= TELA DO ADMIN (PC FIRST) ================= */
+        .admin-layout { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--surface-color); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar h2 { color: var(--primary-color); margin-bottom: 30px; font-size: 1.5em; text-align: center; }
+        .menu-item { padding: 15px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-weight: 500; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .menu-item:hover, .menu-item.active { background-color: var(--bg-color); color: var(--primary-color); }
+        
+        .admin-content { flex: 1; padding: 40px; overflow-y: auto; height: 100vh; }
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; animation: fadeIn 0.3s; }
+
+        /* Grid de formulário e visualização do Admin */
+        .split-grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
+        .form-card { background-color: var(--surface-color); padding: 25px; border-radius: 12px; }
+        .list-card { background-color: var(--surface-color); padding: 25px; border-radius: 12px; }
+        
+        .admin-item-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .admin-item-card { background-color: var(--bg-color); border-radius: 8px; padding: 15px; text-align: center; position: relative; }
+        .admin-item-card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin-bottom: 10px; }
+        .admin-item-card h4 { font-size: 0.9em; margin-bottom: 5px; }
+        .admin-item-card p { font-size: 0.75em; color: var(--text-muted); }
+
+        /* ================= MODAIS (CUSTOMIZADOS, NADA DE ALERT) ================= */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-content { background-color: var(--surface-color); width: 90%; max-width: 400px; border-radius: 16px; padding: 30px; text-align: center; transform: translateY(20px); transition: 0.3s; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-content img { width: 120px; height: 120px; border-radius: 12px; object-fit: cover; margin-bottom: 15px; border: 2px solid var(--primary-color); }
+        .modal-content h3 { font-size: 1.5em; margin-bottom: 10px; }
+        .modal-content p { color: var(--text-muted); font-size: 0.95em; margin-bottom: 25px; line-height: 1.5; }
+        
+        /* Toast (Notificações) */
+        #toast { position: fixed; bottom: 30px; right: 30px; background-color: var(--primary-color); color: white; padding: 15px 25px; border-radius: 8px; font-weight: 500; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transform: translateX(150%); transition: 0.3s; z-index: 2000; }
+        #toast.show { transform: translateX(0); }
+        #toast.error { background-color: var(--danger-color); }
+
+        /* Responsividade Admin */
+        @media (max-width: 900px) {
+            .split-grid { grid-template-columns: 1fr; }
+            .admin-layout { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 15px; }
+            .admin-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NOTIFICAÇÃO TOAST -->
+    <div id="toast"><i class="fas fa-info-circle"></i> <span id="toast-msg">Mensagem</span></div>
+
+    <!-- MODAL DE DETALHES DE ITEM -->
+    <div class="modal-overlay" id="item-modal">
+        <div class="modal-content">
+            <img id="m-item-img" src="" alt="Item">
+            <h3 id="m-item-name">Nome do Item</h3>
+            <p id="m-item-desc">Descrição / Buffs / Efeitos do item vão aparecer aqui de forma rica.</p>
+            <button class="btn" onclick="fecharModal()">Fechar Detalhes</button>
+        </div>
+    </div>
+
+    <!-- ================= 1. CAMADA DE LOGIN ================= -->
+    <div id="login-view" class="view active">
+        <div class="login-box">
+            <h2>Acesso ao Reino</h2>
+            <input type="text" id="login-user" placeholder="Usuário ou 'admin'" autocomplete="off">
+            <input type="password" id="login-pass" placeholder="Senha">
+            <button class="btn" onclick="fazerLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+        </div>
+    </div>
+
+    <!-- ================= 2. CAMADA DO JOGADOR (MOBILE) ================= -->
+    <div id="player-view" class="view">
+        <div class="player-container">
+            
+            <div class="profile-card">
+                <img id="p-img" class="profile-img" src="" alt="Avatar">
+                <div class="profile-info">
+                    <h2 id="p-nome">Carregando...</h2>
+                    <p><i class="fas fa-khanda"></i> <span id="p-classe">Classe</span></p>
+                    <div class="pts-badge"><span id="p-pontos">0</span> Pts Livres</div>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-coins"></i> Riquezas</div>
+            <div class="currency-grid">
+                <div class="currency-card c-ruby"><i class="fas fa-gem"></i> <span id="m-rubis">0</span> Rubis</div>
+                <div class="currency-card c-diamond"><i class="fas fa-gem" style="color:var(--diamond)"></i> <span id="m-diamantes">0</span> Diamantes</div>
+                <div class="currency-card c-gold"><i class="fas fa-coins"></i> <span id="m-ouro">0</span> Ouro</div>
+                <div class="currency-card c-silver"><i class="fas fa-coins" style="color:var(--silver)"></i> <span id="m-prata">0</span> Prata</div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-chart-bar"></i> Atributos</div>
+            <div class="attr-list" id="p-atributos">
+                <!-- Gerado pelo JS -->
+            </div>
+
+            <div class="section-title"><i class="fas fa-shopping-bag"></i> Inventário</div>
+            <div class="inventory-grid" id="p-inventario">
+                <!-- Gerado pelo JS -->
+            </div>
+
+            <br><br>
+            <button class="btn btn-danger" onclick="fazerLogout()"><i class="fas fa-power-off"></i> Sair da Conta</button>
+        </div>
+    </div>
+
+    <!-- ================= 3. CAMADA DO ADMINISTRADOR (PC) ================= -->
+    <div id="admin-view" class="view">
+        <div class="admin-layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2><i class="fas fa-dragon"></i> Master</h2>
+                <div class="menu-item active" onclick="switchAdminTab('tab-chars', this)"><i class="fas fa-users"></i> Personagens</div>
+                <div class="menu-item" onclick="switchAdminTab('tab-items', this)"><i class="fas fa-sword"></i> Criar Itens</div>
+                <div class="menu-item" onclick="switchAdminTab('tab-distribute', this)"><i class="fas fa-gift"></i> Gerenciar Inventário</div>
+                <div style="flex: 1;"></div>
+                <div class="menu-item" style="color: var(--danger-color);" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i> Sair</div>
+            </div>
+
+            <!-- Conteúdo Admin -->
+            <div class="admin-content">
+                
+                <!-- ABA: GERENCIAR PERSONAGENS -->
+                <div id="tab-chars" class="admin-panel active">
+                    <h3 style="margin-bottom: 20px; font-size: 1.8em;">Gerenciamento de Personagens</h3>
+                    <div class="split-grid">
+                        <div class="form-card">
+                            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Criar Novo</h4>
+                            <input type="text" id="a-c-user" placeholder="Login único (ex: joao123)">
+                            <input type="text" id="a-c-pass" placeholder="Senha do jogador">
+                            <input type="text" id="a-c-nome" placeholder="Nome do Personagem">
+                            <select id="a-c-classe">
+                                <option value="Mentiroso">O Mentiroso</option>
+                                <option value="Esotérico">O Esotérico</option>
+                                <option value="Furtivo">O Furtivo</option>
+                                <option value="Político">O Político</option>
+                                <option value="Valente">O Valente</option>
+                            </select>
+                            <input type="text" id="a-c-img" placeholder="URL da Imagem de Aparência">
+                            <input type="number" id="a-c-pts" placeholder="Pontos de Atributo Iniciais" value="20">
+                            <button class="btn" onclick="criarPersonagem()"><i class="fas fa-user-plus"></i> Registrar</button>
+                        </div>
+                        <div class="list-card">
+                            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Contas Registradas no Banco</h4>
+                            <div class="admin-item-list" id="admin-chars-list">
+                                <!-- Preenchido via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA: CRIAR ITENS / CRAFTS -->
+                <div id="tab-items" class="admin-panel">
+                    <h3 style="margin-bottom: 20px; font-size: 1.8em;">Registro de Itens, Equipamentos e Habilidades</h3>
+                    <div class="split-grid">
+                        <div class="form-card">
+                            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Forjar Item</h4>
+                            <input type="text" id="a-i-id" placeholder="ID único (ex: espada_fogo)">
+                            <input type="text" id="a-i-nome" placeholder="Nome de Exibição">
+                            <input type="text" id="a-i-img" placeholder="URL da Imagem do Item">
+                            <textarea id="a-i-desc" rows="4" placeholder="Descrição / Efeitos (Ex: +5 de Força e Habilidade 'Corte Flamejante')"></textarea>
+                            <button class="btn" onclick="criarItem()"><i class="fas fa-hammer"></i> Salvar Item no Banco</button>
+                        </div>
+                        <div class="list-card">
+                            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Enciclopédia de Itens Existentes</h4>
+                            <div class="admin-item-list" id="admin-items-list">
+                                <!-- Preenchido via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA: DISTRIBUIR -->
+                <div id="tab-distribute" class="admin-panel">
+                    <h3 style="margin-bottom: 20px; font-size: 1.8em;">Intervenção do Mestre (Inventário e Moedas)</h3>
+                    <div class="split-grid">
+                        <div class="form-card">
+                            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Dar Item para Jogador</h4>
+                            <select id="a-g-user">
+                                <option value="">Carregando Jogadores...</option>
+                            </select>
+                            <select id="a-g-item">
+                                <option value="">Carregando Itens...</option>
+                            </select>
+                            <button class="btn" onclick="darItem()"><i class="fas fa-box-open"></i> Enviar para o Jogador</button>
+                            
+                            <hr style="border:0; border-top: 1px solid #323238; margin: 25px 0;">
+
+                            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Remover Item (Crafting)</h4>
+                            <small style="color: var(--text-muted); display:block; margin-bottom: 10px;">Para crafts, remova os itens base daqui e dê o item final acima.</small>
+                            <select id="a-r-user" onchange="carregarItensJogadorParaRemover()">
+                                <option value="">Selecione o Jogador...</option>
+                            </select>
+                            <select id="a-r-item">
+                                <option value="">Selecione um item da bolsa dele...</option>
+                            </select>
+                            <button class="btn btn-danger" onclick="removerItem()"><i class="fas fa-trash"></i> Destruir Item</button>
+
+                        </div>
+                        <div class="list-card">
+                            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Alterar Moedas do Jogador</h4>
+                            <select id="a-m-user" onchange="carregarMoedasAdmin()">
+                                <option value="">Selecione o Jogador...</option>
+                            </select>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="a-m-rubis" placeholder="Rubis">
+                                <input type="number" id="a-m-diamantes" placeholder="Diamantes">
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="a-m-ouro" placeholder="Ouro">
+                                <input type="number" id="a-m-prata" placeholder="Prata">
+                            </div>
+                            <button class="btn" onclick="atualizarMoedas()"><i class="fas fa-save"></i> Atualizar Bolsa de Moedas</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+        // 1. FIREBASE CONFIG
+        const firebaseConfig = {
+            databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Variáveis de Estado
+        let currentUserId = null;
+        let currentUserData = null;
+        const listaAtributos =[
+            { id: 'for', nome: 'Força' }, { id: 'res', nome: 'Resistência' },
+            { id: 'vel', nome: 'Velocidade' }, { id: 'agi', nome: 'Agilidade' },
+            { id: 'per', nome: 'Percepção' }, { id: 'resm', nome: 'Resistência Mágica' },
+            { id: 'esp', nome: 'Espírito' }, { id: 'alm', nome: 'Alma' }
+        ];
+
+        // 2. UTILITÁRIOS DE UI (Toasts, Modais, Views)
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            if(isError) toast.classList.add('error'); else toast.classList.remove('error');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function switchAdminTab(tabId, el) {
+            document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        function abrirModalItem(img, nome, desc) {
+            document.getElementById('m-item-img').src = img;
+            document.getElementById('m-item-name').innerText = nome;
+            document.getElementById('m-item-desc').innerText = desc;
+            document.getElementById('item-modal').classList.add('active');
+        }
+        function fecharModal() { document.getElementById('item-modal').classList.remove('active'); }
+
+        // 3. SISTEMA DE LOGIN E SESSÃO
+        window.onload = () => {
+            const savedUser = localStorage.getItem('rpg_session');
+            if (savedUser) {
+                if (savedUser === 'admin') { loadAdminData(); switchView('admin-view'); } 
+                else { loadPlayerData(savedUser); switchView('player-view'); }
+            }
+        };
+
+        function fazerLogin() {
+            const user = document.getElementById('login-user').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if (!user || !pass) return showToast("Preencha todos os campos!", true);
+
+            if (user === 'admin' && pass === 'admin') {
+                localStorage.setItem('rpg_session', 'admin');
+                loadAdminData();
+                switchView('admin-view');
+                showToast("Bem-vindo, Mestre.");
+                return;
+            }
+
+            db.ref('characters/' + user).once('value').then(snap => {
+                if (snap.exists() && snap.val().senha === pass) {
+                    localStorage.setItem('rpg_session', user);
+                    loadPlayerData(user);
+                    switchView('player-view');
+                    showToast("Login realizado com sucesso!");
+                } else { showToast("Usuário ou senha incorretos!", true); }
+            });
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('rpg_session');
+            location.reload();
+        }
+
+        // ================= 4. LÓGICA DO JOGADOR (MOBILE) =================
+        function loadPlayerData(userId) {
+            currentUserId = userId;
+            db.ref('characters/' + userId).on('value', snap => {
+                if(!snap.exists()) return fazerLogout();
+                currentUserData = snap.val();
+                
+                // Header Profile
+                document.getElementById('p-nome').innerText = currentUserData.nome;
+                document.getElementById('p-classe').innerText = currentUserData.classe;
+                document.getElementById('p-img').src = currentUserData.imagem || 'https://via.placeholder.com/150';
+                document.getElementById('p-pontos').innerText = currentUserData.pontos;
+
+                // Moedas
+                document.getElementById('m-rubis').innerText = currentUserData.moedas.rubis || 0;
+                document.getElementById('m-diamantes').innerText = currentUserData.moedas.diamantes || 0;
+                document.getElementById('m-ouro').innerText = currentUserData.moedas.ouro || 0;
+                document.getElementById('m-prata').innerText = currentUserData.moedas.prata || 0;
+
+                renderizarAtributosJogador();
+                renderizarInventarioJogador();
+            });
+        }
+
+        function renderizarAtributosJogador() {
+            const box = document.getElementById('p-atributos');
+            box.innerHTML = '';
+            listaAtributos.forEach(attr => {
+                const val = currentUserData.atributos[attr.id] || 0;
+                box.innerHTML += `
+                    <div class="attr-item">
+                        <span class="attr-name">${attr.nome}</span>
+                        <div class="attr-controls">
+                            <span class="attr-val">${val}</span>
+                            <button class="btn-plus" onclick="uparAtributo('${attr.id}')"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function uparAtributo(attrId) {
+            if (currentUserData.pontos <= 0) return showToast("Você não possui pontos livres!", true);
+            
+            // A REGRA EXCLUSIVA: Políticos não têm alma.
+            if (currentUserData.classe === 'Político' && attrId === 'alm') {
+                return showToast("Restrição: O Político não possui Alma. Impossível investir.", true);
+            }
+
+            const novoVal = (currentUserData.atributos[attrId] || 0) + 1;
+            const novosPts = currentUserData.pontos - 1;
+
+            db.ref(`characters/${currentUserId}`).update({ pontos: novosPts });
+            db.ref(`characters/${currentUserId}/atributos`).update({ [attrId]: novoVal });
+        }
+
+        function renderizarInventarioJogador() {
+            const box = document.getElementById('p-inventario');
+            box.innerHTML = '';
+            const inv = currentUserData.inventario;
+            
+            if(!inv) {
+                box.innerHTML = '<span style="color:var(--text-muted); font-size:0.9em; grid-column: 1/-1;">Inventário vazio.</span>';
+                return;
+            }
+
+            Object.keys(inv).forEach(uniqId => {
+                const itemId = inv[uniqId];
+                db.ref('items/' + itemId).once('value').then(s => {
+                    if(s.exists()){
+                        const item = s.val();
+                        const div = document.createElement('div');
+                        div.className = 'item-slot';
+                        div.innerHTML = `<img src="${item.imagem}" alt="item"><span>${item.nome}</span>`;
+                        // Clicar abre o modal bonito
+                        div.onclick = () => abrirModalItem(item.imagem, item.nome, item.descricao);
+                        box.appendChild(div);
+                    }
+                });
+            });
+        }
+
+        // ================= 5. LÓGICA DO ADMINISTRADOR =================
+        function loadAdminData() {
+            // Carregar Personagens
+            db.ref('characters').on('value', snap => {
+                const list = document.getElementById('admin-chars-list');
+                const selects =[document.getElementById('a-g-user'), document.getElementById('a-r-user'), document.getElementById('a-m-user')];
+                
+                list.innerHTML = ''; selects.forEach(sel => sel.innerHTML = '<option value="">Selecione o Jogador...</option>');
+                
+                if(snap.exists()) {
+                    snap.forEach(child => {
+                        const data = child.val();
+                        const id = child.key;
+                        
+                        // Lista Visual
+                        list.innerHTML += `
+                            <div class="admin-item-card">
+                                <img src="${data.imagem}" alt="img">
+                                <h4>${data.nome}</h4>
+                                <p>${data.classe}</p>
+                                <p style="color:var(--primary-color)">ID: ${id}</p>
+                            </div>
+                        `;
+                        // Popula os Selects
+                        selects.forEach(sel => sel.innerHTML += `<option value="${id}">${data.nome} (${id})</option>`);
+                    });
+                }
+            });
+
+            // Carregar Itens Globais
+            db.ref('items').on('value', snap => {
+                const list = document.getElementById('admin-items-list');
+                const select = document.getElementById('a-g-item');
+                
+                list.innerHTML = ''; select.innerHTML = '<option value="">Selecione o Item...</option>';
+                
+                if(snap.exists()) {
+                    snap.forEach(child => {
+                        const data = child.val();
+                        const id = child.key;
+                        
+                        list.innerHTML += `
+                            <div class="admin-item-card" onclick="abrirModalItem('${data.imagem}', '${data.nome}', '${data.descricao}')" style="cursor:pointer">
+                                <img src="${data.imagem}" alt="img">
+                                <h4>${data.nome}</h4>
+                                <p>ID: ${id}</p>
+                            </div>
+                        `;
+                        select.innerHTML += `<option value="${id}">${data.nome}</option>`;
+                    });
+                }
+            });
+        }
+
+        function criarPersonagem() {
+            const user = document.getElementById('a-c-user').value;
+            const pass = document.getElementById('a-c-pass').value;
+            const nome = document.getElementById('a-c-nome').value;
+            const img = document.getElementById('a-c-img').value;
+
+            if(!user || !pass || !nome) return showToast("Preencha Login, Senha e Nome!", true);
+
+            db.ref('characters/' + user).set({
+                senha: pass, nome: nome,
+                classe: document.getElementById('a-c-classe').value,
+                imagem: img || 'https://via.placeholder.com/150',
+                pontos: parseInt(document.getElementById('a-c-pts').value) || 0,
+                moedas: { rubis: 0, diamantes: 0, ouro: 0, prata: 0 },
+                atributos: { for: 0, res: 0, vel: 0, agi: 0, per: 0, resm: 0, esp: 0, alm: 0 }
+            }).then(() => {
+                showToast("Personagem forjado com sucesso!");
+                document.querySelectorAll('#tab-chars input').forEach(i => i.value='');
+            });
+        }
+
+        function criarItem() {
+            const id = document.getElementById('a-i-id').value;
+            const nome = document.getElementById('a-i-nome').value;
+            
+            if(!id || !nome) return showToast("Preencha ID e Nome do Item!", true);
+
+            db.ref('items/' + id).set({
+                nome: nome,
+                imagem: document.getElementById('a-i-img').value || 'https://via.placeholder.com/100',
+                descricao: document.getElementById('a-i-desc').value
+            }).then(() => {
+                showToast("Novo item registrado no banco!");
+                document.querySelectorAll('#tab-items input, #tab-items textarea').forEach(i => i.value='');
+            });
+        }
+
+        function darItem() {
+            const user = document.getElementById('a-g-user').value;
+            const item = document.getElementById('a-g-item').value;
+            if(!user || !item) return showToast("Selecione Jogador e Item!", true);
+
+            db.ref(`characters/${user}/inventario`).push(item).then(() => {
+                showToast("Item enviado diretamente para a bolsa do jogador!");
+            });
+        }
+
+        // ================= SISTEMA DE REMOÇÃO / CRAFTS MESTRE =================
+        let inventarioTempRemocao = {};
+        function carregarItensJogadorParaRemover() {
+            const user = document.getElementById('a-r-user').value;
+            const selectItem = document.getElementById('a-r-item');
+            selectItem.innerHTML = '<option value="">Buscando bolsa...</option>';
+            inventarioTempRemocao = {};
+
+            if(!user) return;
+
+            db.ref(`characters/${user}/inventario`).once('value').then(snap => {
+                selectItem.innerHTML = '<option value="">Selecione um item da bolsa dele...</option>';
+                if(snap.exists()) {
+                    const inv = snap.val();
+                    Object.keys(inv).forEach(uniqKey => {
+                        const itemId = inv[uniqKey];
+                        // Salva para podermos apagar pela chave unica do firebase
+                        inventarioTempRemocao[uniqKey] = itemId; 
+                        
+                        db.ref(`items/${itemId}`).once('value').then(iSnap => {
+                            if(iSnap.exists()) {
+                                selectItem.innerHTML += `<option value="${uniqKey}">${iSnap.val().nome}</option>`;
+                            }
+                        });
+                    });
+                } else { selectItem.innerHTML = '<option value="">Inventário Vazio</option>'; }
+            });
+        }
+
+        function removerItem() {
+            const user = document.getElementById('a-r-user').value;
+            const uniqKey = document.getElementById('a-r-item').value;
+            
+            if(!user || !uniqKey) return showToast("Selecione o jogador e o item!", true);
+
+            db.ref(`characters/${user}/inventario/${uniqKey}`).remove().then(() => {
+                showToast("Item removido com sucesso!");
+                carregarItensJogadorParaRemover(); // recarrega a lista
+            });
+        }
+
+        // Moedas
+        function carregarMoedasAdmin() {
+            const user = document.getElementById('a-m-user').value;
+            if(!user) return;
+            db.ref(`characters/${user}/moedas`).once('value').then(snap => {
+                const m = snap.val() || {rubis:0, diamantes:0, ouro:0, prata:0};
+                document.getElementById('a-m-rubis').value = m.rubis;
+                document.getElementById('a-m-diamantes').value = m.diamantes;
+                document.getElementById('a-m-ouro').value = m.ouro;
+                document.getElementById('a-m-prata').value = m.prata;
+            });
+        }
+
+        function atualizarMoedas() {
+            const user = document.getElementById('a-m-user').value;
+            if(!user) return showToast("Selecione um jogador!", true);
+
+            db.ref(`characters/${user}/moedas`).update({
+                rubis: parseInt(document.getElementById('a-m-rubis').value) || 0,
+                diamantes: parseInt(document.getElementById('a-m-diamantes').value) || 0,
+                ouro: parseInt(document.getElementById('a-m-ouro').value) || 0,
+                prata: parseInt(document.getElementById('a-m-prata').value) || 0
+            }).then(() => showToast("Bolsa de moedas atualizada!"));
+        }
+    </script>
+</body>
+</html>

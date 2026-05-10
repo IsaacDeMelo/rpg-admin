@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG - Os Portões</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { height: 100vh; display: flex; justify-content: center; align-items: center; background: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat; color: #fff; }
+        .overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15,23,42,0.7), rgba(15,23,42,0.95)); z-index: 1; }
+        .login-glass { position: relative; z-index: 2; background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 25px 50px rgba(0,0,0,0.5); padding: 50px 40px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
+        .login-glass h1 { font-family: 'Cinzel', serif; font-size: 2.2em; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.5); margin-bottom: 5px; }
+        .login-glass p { color: #cbd5e1; margin-bottom: 30px; font-size: 0.9em; }
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 1em; outline: none; }
+        input:focus { border-color: #38bdf8; }
+        button { width: 100%; padding: 15px; border-radius: 10px; border: none; font-size: 1.1em; font-weight: 700; background: linear-gradient(135deg, #10b981, #059669); color: #fff; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        #msg { color: #f87171; font-size: 0.9em; margin-top: 15px; min-height: 20px; }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="login-glass">
+        <h1>Crônicas do Reino</h1>
+        <p>Entre usando as credenciais</p>
+        <input type="text" id="user" placeholder="Usuário" autocomplete="off">
+        <input type="password" id="pass" placeholder="Senha">
+        <button onclick="entrar()">Adentrar</button>
+        <div id="msg"></div>
+    </div>
+    <script>
+        const firebaseConfig = { databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        window.onload = () => {
+            const session = localStorage.getItem('rpg_session');
+            if(session === 'admin') window.location.href = 'admin.html';
+            else if(session) window.location.href = 'player.html';
+        };
+
+        function entrar() {
+            const u = document.getElementById('user').value.trim();
+            const p = document.getElementById('pass').value.trim();
+            if(u === 'admin' && p === 'admin') { localStorage.setItem('rpg_session', 'admin'); return window.location.href = 'admin.html'; }
+            db.ref('characters/' + u).once('value').then(snap => {
+                if(snap.exists() && snap.val().senha === p && snap.val().tipo === 'Jogador') {
+                    localStorage.setItem('rpg_session', u); window.location.href = 'player.html';
+                } else { document.getElementById('msg').innerText = "Credenciais inválidas ou você é um NPC."; }
+            });
+        }
+    </script>
+</body>
+</html>
