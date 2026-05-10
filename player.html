@@ -23,7 +23,6 @@
         .char-class { font-weight: 600; color: var(--blue); text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;}
         .pts-pill { display: inline-block; background: var(--purple); padding: 3px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold; margin-top: 5px;}
 
-        /* BARRAS DE VITALS */
         .vitals-section { padding: 0 20px 10px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px;}
         .status-bar { width: 100%; height: 22px; background: rgba(0,0,0,0.4); border-radius: 6px; border: 1px solid var(--border); position: relative; overflow: hidden; display:none;}
         .status-bar.active { display:block; }
@@ -53,7 +52,6 @@
         @keyframes fade { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
         .section-title { font-family: 'Cinzel', serif; color: var(--blue); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 1.1em; display:flex; align-items:center; gap:8px;}
         
-        /* BONECO DE EQUIPAMENTOS */
         .equip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; justify-items: center; margin-bottom: 25px; }
         .equip-slot { width: 65px; height: 65px; background: rgba(0,0,0,0.4); border: 2px dashed var(--border); border-radius: 10px; display: flex; justify-content: center; align-items: center; position: relative; cursor: pointer; transition: 0.2s;}
         .equip-slot.filled { border: 2px solid var(--gold); box-shadow: 0 0 10px rgba(245,158,11,0.3); background: #000;}
@@ -68,7 +66,6 @@
         .skill-card { display: flex; align-items: center; gap: 15px; background: var(--panel); border: 1px solid var(--border); padding: 10px; border-radius: 10px;}
         .skill-img { width: 45px; height: 45px; border-radius: 8px; border: 1px solid var(--gold); object-fit: cover; background: #000;}
 
-        /* INVENTÁRIO & FORJA */
         .inv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .item-slot { background: var(--panel); border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--border); aspect-ratio: 1; cursor:pointer; display:flex; justify-content:center; align-items:center;}
         .item-slot.equipped { border-color: var(--green); box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); opacity: 0.6;}
@@ -81,39 +78,40 @@
         .craft-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 4px;}
         .craft-result-slot { width: 60px; height: 60px; background: rgba(0,0,0,0.4); border: 2px solid var(--gold); border-radius: 10px; position: relative; display: flex; justify-content: center; align-items: center;}
         .craft-result-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 6px;}
-        
         .inv-craft-selector { width: 100%; overflow-x: auto; white-space: nowrap; padding: 10px; background: var(--panel); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; min-height: 70px;}
         .inv-craft-item { display: inline-block; width: 45px; height: 45px; margin-right: 8px; position: relative; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor:pointer;}
         .inv-craft-item.selected { border-color: var(--blue); box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);}
         .inv-craft-item img { width: 100%; height: 100%; object-fit: cover;}
-        
         .btn-action { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; margin-bottom: 10px; color:white; cursor:pointer;}
         .btn-forge { background: var(--gold); color: #000; }
         .recipe-ready-card { display:flex; align-items:center; gap:10px; background:var(--panel); border: 1px solid var(--green); border-radius:10px; padding:10px; margin-bottom:10px; cursor:pointer;}
         .recipe-ready-card img { width:40px; height:40px; border-radius:6px; background:#000;}
         textarea#diario { width: 100%; height: 350px; background: var(--panel); border: 1px solid var(--border); color: #cbd5e1; padding: 15px; border-radius: 12px; resize: none; font-size: 0.9em; outline:none;}
 
-        /* POV COMBAT MAP MELHORADO */
-        .pov-viewport { width: 100%; height: 420px; overflow-x: auto; overflow-y: hidden; position: relative; border-radius: 12px; border: 2px solid var(--border); scroll-behavior: smooth; background:#000;}
+        /* POV COMBAT MAP */
+        .pov-viewport { width: 100%; height: 450px; overflow-x: auto; overflow-y: hidden; position: relative; border-radius: 12px; border: 2px solid var(--border); scroll-behavior: smooth; background:#000;}
         .pov-bg { position: sticky; left: 0; top: 0; width: 100%; height: 100%; background-size: cover; background-position: center bottom; z-index: 1;}
-        .pov-scene { position: absolute; top: 0; left: 0; width: 150%; height: 100%; z-index: 2; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 40px; gap: 60px; pointer-events: none;}
+        .pov-scene { position: absolute; top: 0; left: 0; width: 150%; height: 100%; z-index: 2; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 40px; gap: 80px; pointer-events: none;}
         .pov-team { display: flex; gap: 20px; align-items: flex-end; pointer-events: auto; }
-        /* Aliados começam do centro e vão para esquerda. Inimigos começam do centro e vão para direita */
-        .pov-team.allies { flex-direction: row-reverse; } 
-        .pov-team.enemies { flex-direction: row; }
+        .pov-team.allies { flex-direction: row-reverse; } .pov-team.enemies { flex-direction: row; }
         
-        .pov-char-card { text-align: center; position: relative; animation: float 3s ease-in-out infinite; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center;}
+        .pov-char-card { text-align: center; position: relative; animation: float 3s ease-in-out infinite; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; width: 100px;}
         .pov-char-card:hover { transform: scale(1.05); }
-        .pov-char-card img { width: 85px; height: 110px; object-fit: cover; border-radius: 8px; border: 3px solid; background: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
-        .pov-team.allies img { border-color: var(--blue); }
-        .pov-team.enemies img { border-color: var(--red); }
+        .pov-char-card img { width: 90px; height: 120px; object-fit: cover; border-radius: 8px; border: 3px solid; background: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
+        .pov-team.allies img { border-color: var(--blue); } .pov-team.enemies img { border-color: var(--red); }
         
-        /* Detalhes do Card no Mapa */
-        .pov-char-details { background: rgba(0,0,0,0.85); padding: 6px; border-radius: 8px; width: 100px; margin-top: -15px; z-index: 5; position: relative; border: 1px solid var(--border);}
-        .pov-char-name { color: white; font-size: 0.7em; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px;}
-        .pov-char-hp-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
-        .pov-char-hp-fill { height: 100%; background: var(--red); transition: width 0.3s; }
-        
+        .pov-char-details { background: rgba(0,0,0,0.85); padding: 8px; border-radius: 8px; width: 110px; margin-top: -15px; z-index: 5; position: relative; border: 1px solid var(--border);}
+        .pov-char-name { color: white; font-size: 0.7em; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;}
+        .card-stats { display: flex; justify-content: space-around; font-size: 0.6em; background: rgba(0,0,0,0.5); padding: 4px; border-top: 1px solid #333; border-radius: 4px; color: #cbd5e1;}
+        .card-stats span { display: flex; align-items: center; gap: 2px;}
+
+        /* ESTADOS DO MAPA: DERROTADO E LOOT */
+        .pov-char-card.defeated { animation: none; z-index: 1;}
+        .pov-char-card.defeated img { filter: grayscale(100%); transform: rotate(90deg) scale(0.7); border-color: #555 !important; margin-bottom: 20px;}
+        .pov-char-card.defeated .pov-char-details { display: none; }
+        .loot-btn { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); background: var(--gold); color: black; font-weight: bold; padding: 8px 12px; border-radius: 8px; z-index: 20; border: 2px solid white; cursor: pointer; animation: pulse 1s infinite; white-space: nowrap; font-size: 0.8em; box-shadow: 0 0 15px var(--gold);}
+        @keyframes pulse { 0% {transform: translate(-50%, -50%) scale(1);} 50% {transform: translate(-50%, -50%) scale(1.1);} 100% {transform: translate(-50%, -50%) scale(1);} }
+
         .speech-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); color: #000; padding: 6px 12px; border-radius: 10px; font-size: 0.75em; font-weight: bold; white-space: nowrap; margin-bottom: 8px; animation: popIn 0.3s; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .speech-bubble::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border-width: 6px; border-style: solid; border-color: rgba(255,255,255,0.95) transparent transparent transparent;}
         .speech-bubble.action { background: var(--purple); color: white;}
@@ -121,7 +119,6 @@
         @keyframes float { 0% {transform: translateY(0);} 50% {transform: translateY(-8px);} 100% {transform: translateY(0);} }
         @keyframes popIn { from {opacity:0; transform: translate(-50%, 10px) scale(0.8);} to {opacity:1; transform: translate(-50%, 0) scale(1);} }
 
-        /* MODAIS */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; padding: 10px;}
         .modal.active { display: flex; animation: fade 0.2s;}
         .modal-card { background: var(--panel); width: 100%; max-width: 380px; border-radius: 16px; padding: 20px; text-align: center; border: 1px solid var(--blue); position: relative; max-height: 90vh; overflow-y:auto;}
@@ -140,6 +137,13 @@
         .picker-item:hover img { border-color: var(--blue); }
 
         #export-card-container { position: fixed; left: -9999px; top: -9999px; width:350px; background: var(--panel); border: 2px solid var(--gold); border-radius: 10px; padding:15px; color:white; }
+
+        .trade-grid { display:grid; grid-template-columns: 1fr auto 1fr; gap:10px; align-items: center;}
+        .trade-offer { background:rgba(0,0,0,0.3); border-radius:10px; padding:10px; min-height: 200px;}
+        .trade-offer h4 { font-size:0.9em; color:var(--gold); }
+        .trade-items { display:grid; grid-template-columns: repeat(3, 1fr); gap:5px; margin-top:10px;}
+        .trade-item { width:100%; aspect-ratio:1; background:var(--bg); border-radius:6px; background-size:cover; background-position:center; position:relative;}
+        .trade-item-qtd { position:absolute; bottom:2px; right:2px; background:rgba(0,0,0,0.8); color:white; font-size:0.6em; padding:1px 4px; border-radius:4px; font-weight:bold;}
     </style>
 </head>
 <body>
@@ -152,8 +156,6 @@
             <div class="char-class" id="p-classe">Classe</div>
         </div>
     </div>
-    
-    <!-- FIXO NO TOPO: VITALS E TOTAIS -->
     <div class="vitals-section">
         <div id="hp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">HP</div></div>
         <div id="mp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">MP</div></div>
@@ -162,56 +164,12 @@
     </div>
 
     <!-- TABS -->
-    <div id="tab-status" class="tab-content active">
-        <div class="pts-pill" style="margin-bottom:20px; text-align:center; display:block;"><i class="fas fa-star"></i> <span id="p-pontos">0</span> Pts de Atributo Livre</div>
-        <h3 class="section-title"><i class="fas fa-heartbeat"></i> Atributos Base</h3>
-        <div id="p-atributos-base" class="attr-grid"></div>
-        <h3 class="section-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3>
-        <div id="p-skills" class="skills-grid"></div>
-        <button class="btn-action" style="background:var(--cyan); margin-top:20px;" onclick="exportarFicha()"><i class="fas fa-camera"></i> Exportar Card</button>
-    </div>
-    
-    <div id="tab-equip" class="tab-content">
-        <h3 class="section-title"><i class="fas fa-tshirt"></i> Equipamentos Ativos</h3>
-        <p style="font-size:0.8em; text-align:center; color:#94a3b8; margin-bottom:20px;">Clique num espaço para equipar um item da bolsa.</p>
-        <div class="equip-grid" id="p-equipamentos"></div>
-    </div>
-
+    <div id="tab-status" class="tab-content active"><div class="pts-pill" style="margin-bottom:20px; text-align:center; display:block;"><i class="fas fa-star"></i> <span id="p-pontos">0</span> Pts de Atributo</div><h3 class="section-title"><i class="fas fa-heartbeat"></i> Atributos Base</h3><div id="p-atributos-base" class="attr-grid"></div><h3 class="section-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3><div id="p-skills" class="skills-grid"></div><button class="btn-action" style="background:var(--cyan); margin-top:20px;" onclick="exportarFicha()"><i class="fas fa-camera"></i> Exportar Card</button></div>
+    <div id="tab-equip" class="tab-content"><h3 class="section-title"><i class="fas fa-tshirt"></i> Equipamentos Ativos</h3><p style="font-size:0.8em; text-align:center; color:#94a3b8; margin-bottom:20px;">Clique em um espaço vazio para equipar um item da bolsa.</p><div class="equip-grid" id="p-equipamentos"></div></div>
     <div id="tab-bolsa" class="tab-content"><div class="inv-grid" id="p-inventario"></div></div>
-    
-    <div id="tab-forja" class="tab-content">
-        <h3 class="section-title"><i class="fas fa-lightbulb"></i> Receitas Prontas</h3>
-        <div id="receitas-prontas"></div>
-        <h3 class="section-title" style="margin-top:20px;"><i class="fas fa-hammer"></i> Mesa de Trabalho</h3>
-        <div class="inv-craft-selector" id="craft-inventory"></div>
-        <div class="crafting-bench">
-            <div class="craft-grid" id="craft-table"></div>
-            <i class="fas fa-arrow-right" style="color:var(--border); font-size: 1.5em;"></i>
-            <div class="craft-result-slot" id="craft-result"></div>
-        </div>
-        <button class="btn-action btn-forge" onclick="tentarForjar()">Forjar Item</button>
-        <button class="btn-action" style="background:transparent; border:1px solid var(--border);" onclick="limparMesa()">Recolher Itens</button>
-    </div>
-
+    <div id="tab-forja" class="tab-content"><h3 class="section-title"><i class="fas fa-lightbulb"></i> Receitas Prontas</h3><div id="receitas-prontas"></div><h3 class="section-title" style="margin-top:20px;"><i class="fas fa-hammer"></i> Mesa de Trabalho</h3><div class="inv-craft-selector" id="craft-inventory"></div><div class="crafting-bench"><div class="craft-grid" id="craft-table"></div><i class="fas fa-arrow-right"></i><div class="craft-result-slot" id="craft-result"></div></div><button class="btn-action btn-forge" onclick="tentarForjar()">Forjar</button><button class="btn-action btn-clear" onclick="limparMesa()">Limpar Mesa</button></div>
     <div id="tab-grimorio" class="tab-content"><div id="recipe-book-container"></div></div>
-    
-    <div id="tab-combat" class="tab-content">
-        <h3 class="section-title" id="combat-scene-name"><i class="fas fa-khanda"></i> Em Combate!</h3>
-        <p style="font-size:0.75em; color:#94a3b8; margin-bottom:10px;">Deslize para ver o campo de batalha. Clique num guerreiro para análise tática.</p>
-        
-        <div class="pov-viewport" id="combat-viewport" onscroll="updateParallax(this)">
-            <div class="pov-bg" id="combat-bg"></div>
-            <div class="pov-scene">
-                <div class="pov-team allies" id="combat-allies"></div>
-                <div class="pov-team enemies" id="combat-enemies"></div>
-            </div>
-        </div>
-
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <input type="text" id="combat-speech" placeholder="Diga ou aja (*saca a espada*)..." style="flex:1; margin:0; padding:10px; border-radius:8px; background:var(--panel); color:white; border:1px solid var(--border); outline:none;">
-            <button class="btn-action" style="width:auto; margin:0; background:var(--cyan)" onclick="falarNoCombate()"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
+    <div id="tab-combat" class="tab-content"><h3 class="section-title" id="combat-scene-name"><i class="fas fa-khanda"></i> Batalha</h3><p style="font-size:0.75em; color:#94a3b8; margin-bottom:10px;">Deslize para ver. Clique num guerreiro para análise tática.</p><div class="map-wrapper"><div class="pov-viewport" id="combat-viewport" onscroll="updateParallax(this)"><div class="pov-bg" id="combat-bg"></div><div class="pov-scene"><div class="pov-team allies" id="combat-allies"></div><div class="pov-team enemies" id="combat-enemies"></div></div></div></div><div style="display:flex; gap:10px; margin-top:15px;"><input type="text" id="combat-speech" placeholder="Falar ou agir (*saca espada*)" style="flex:1; margin:0; padding:10px; border-radius:8px; background:var(--panel); color:white; border:1px solid var(--border); outline:none;"><button class="btn-action" style="width:auto; margin:0; background:var(--cyan)" onclick="falarNoCombate()"><i class="fas fa-paper-plane"></i></button></div></div>
     
     <!-- BOTTOM NAV -->
     <div class="bottom-nav">
@@ -220,7 +178,7 @@
         <div class="nav-item" onclick="mudarAba('tab-bolsa', this)"><i class="fas fa-shopping-bag"></i>Bolsa</div>
         <div class="nav-item" onclick="mudarAba('tab-forja', this)"><i class="fas fa-hammer"></i>Forja</div>
         <div class="nav-item" onclick="mudarAba('tab-grimorio', this)"><i class="fas fa-book-open"></i>Grimório</div>
-        <div class="nav-item hidden" id="nav-combat" onclick="mudarAba('tab-combat', this)" style="color:var(--red)"><i class="fas fa-fire"></i>Cena</div>
+        <div class="nav-item hidden" id="nav-combat" onclick="mudarAba('tab-combat', this)"><i class="fas fa-fire" style="color:var(--red);"></i>Combate</div>
     </div>
 
     <!-- MODAIS -->
@@ -232,11 +190,10 @@
             <img id="cc-img" class="mod-img" src=""> 
             <div class="mod-title" id="cc-nome"></div> 
             <div class="mod-cat" id="cc-classe"></div> 
+            <p id="cc-loot" style="color:var(--gold); font-size:0.8em; margin-bottom:10px; font-weight:bold;"></p>
             <div id="cc-vitals" class="vitals-section" style="padding:0; margin-top:0;"></div> 
-            
             <h4 style="font-family:'Cinzel',serif; color:var(--blue); margin-top:15px; border-bottom:1px solid var(--border); padding-bottom:5px;">Equipamentos</h4> 
             <div id="cc-equips" class="equip-grid" style="margin-top:15px; margin-bottom:15px;"></div>
-            
             <h4 style="font-family:'Cinzel',serif; color:var(--blue); border-bottom:1px solid var(--border); padding-bottom:5px;">Atributos Totais</h4>
             <div id="cc-stats" class="attr-grid" style="margin-top:15px; margin-bottom:20px;"></div>
         </div> 
@@ -245,14 +202,15 @@
     <div class="modal" id="picker-modal"> <div class="modal-card" style="max-width:320px;"> <i class="fas fa-times close-btn" onclick="fecharModal('picker-modal')"></i> <h3 id="picker-title" class="section-title" style="justify-content:center;"></h3> <div id="picker-grid" class="picker-grid"></div> </div> </div>
     <div class="modal" id="recipe-modal"><div class="modal-card"><i class="fas fa-times close-btn" onclick="fecharModal('recipe-modal')"></i> <h3 id="recipe-modal-title" class="section-title" style="justify-content:center;"></h3> <div class="crafting-bench" id="recipe-modal-bench" style="background:transparent; border:none; padding:0;"></div></div></div>
     
-    <!-- CONTAINER EXPORTAÇÃO -->
+    <!-- TROCA -->
+    <div class="modal" id="trade-modal"><div class="modal-card" style="max-width: 95%;"><i class="fas fa-times close-btn" onclick="cancelarTroca()"></i><h3 class="section-title" style="justify-content:center;">Troca de Itens</h3><div class="trade-grid"><div class="trade-offer"><h4>Sua Oferta <button onclick="abrirPickerTroca()" style="background:var(--green); color:white; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer;">+</button></h4><div id="trade-my-offer" class="trade-items"></div></div><i class="fas fa-exchange-alt"></i><div class="trade-offer"><h4>De <span id="trade-other-name"></span></h4><div id="trade-other-offer" class="trade-items"></div></div></div><button id="trade-accept-btn" class="btn-action" style="margin-top:15px; background:var(--green);" onclick="aceitarTroca()">Aceitar Troca</button></div></div>
+
     <div id="export-card-container"></div>
     
     <script>
         const firebaseConfig = { databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
         const session = localStorage.getItem('rpg_session');
         if(!session || session === 'admin') window.location.href = 'login.html';
 
@@ -262,7 +220,7 @@
         let craftMesa =[null, null, null, null, null, null, null, null, null]; 
         let itemCraftSelecionado = null; let inventarioCraftDisponivel = {};
         let itemAtualKey = null; let itemAtualDBData = null; let itemAtualAction = 'equip';
-        let activeCombatId = null;
+        let activeCombatId = null; let activeTradeId = null;
 
         db.ref('items').on('value', snap => { itemsDB = snap.val() || {}; checkRender(); });
         db.ref('skills').on('value', snap => { skillsDB = snap.val() || {}; checkRender(); });
@@ -276,22 +234,22 @@
             document.getElementById('p-classe').innerText = pData.classe || "Aventureiro";
             document.getElementById('p-pontos').innerText = pData.pontos || 0;
             if(pData.imagem) document.getElementById('p-img').src = pData.imagem;
+            if(document.activeElement !== document.getElementById('diario')) document.getElementById('diario').value = pData.anotacoes || "";
             checkRender();
         });
 
-        // ================= CENA DE COMBATE (POV 3D) =================
+        // ================= CENA DE COMBATE (POV 3D E LOOT) =================
+        let combatLootListener = null; let currentCombatData = null;
         db.ref('combat/sessions').on('value', snap => {
             const sessions = snap.val() || {}; let myCombat = null; let myCombatId = null;
             Object.entries(sessions).forEach(([cId, combat]) => {
-                if(combat.status === 'active' && ((combat.team_a && combat.team_a[session]) || (combat.team_b && combat.team_b[session]))) {
-                    myCombat = combat; myCombatId = cId;
-                }
+                if(combat.status === 'active' && combat.tokens && combat.tokens[session]) { myCombat = combat; myCombatId = cId; }
             });
 
             const navCombat = document.getElementById('nav-combat');
             if(myCombat) {
                 const justEntered = activeCombatId !== myCombatId;
-                activeCombatId = myCombatId;
+                activeCombatId = myCombatId; currentCombatData = myCombat;
                 navCombat.classList.remove('hidden');
                 document.getElementById('combat-scene-name').innerHTML = `<i class="fas fa-khanda"></i> ${myCombat.name}`;
                 document.getElementById('combat-bg').style.backgroundImage = `url(${myCombat.background})`;
@@ -299,125 +257,173 @@
                 const alliesBox = document.getElementById('combat-allies'); alliesBox.innerHTML = '';
                 const enemiesBox = document.getElementById('combat-enemies'); enemiesBox.innerHTML = '';
 
-                const isTeamA = myCombat.team_a && myCombat.team_a[session];
-                const myTeamObj = isTeamA ? myCombat.team_a : myCombat.team_b;
-                const enemyTeamObj = isTeamA ? myCombat.team_b : myCombat.team_a;
+                const myTeam = myCombat.tokens[session].team;
 
                 const renderChar = (id, data) => {
                     const char = charsDB[id]; if(!char) return '';
                     let speechHtml = '';
-                    if(data.speech) {
-                        const isAction = data.speech.startsWith('*') && data.speech.endsWith('*');
-                        speechHtml = `<div class="speech-bubble ${isAction?'action':''}">${data.speech.replaceAll('*','')}</div>`;
-                    }
-                    const hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, (char.hp / char.hp_max) * 100)) : 100;
-                    const hpDisplay = char.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
+                    if(data.speech) { const isAction = data.speech.startsWith('*') && data.speech.endsWith('*'); speechHtml = `<div class="speech-bubble ${isAction?'action':''}">${data.speech.replaceAll('*','')}</div>`; }
+                    
+                    let cardClass = "pov-char-card"; let lootHtml = "";
+                    let hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, ((char.hp || 0) / char.hp_max) * 100)) : 100;
+                    let hpDisplay = char.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
+                    const b = char.atributos_base || {};
+                    const statsBar = `<div class="card-stats"><span>❤️${char.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
 
-                    return `<div class="pov-char-card" onclick="verStatsCombate('${id}', ${myCombat.public_inspection})">
-                        ${speechHtml}
-                        <img src="${char.imagem}">
-                        <div class="pov-char-details">
-                            <div class="pov-char-name">${char.nome.split(' ')[0]}</div>
-                            ${hpDisplay}
-                        </div>
-                    </div>`;
+                    if(data.status === 'defeated') {
+                        cardClass += " defeated"; hpDisplay = `<div class="pov-char-name" style="color:var(--red);">MORTO</div>`;
+                        const loot = (myCombat.loots || {})[id];
+                        if(loot && !loot.collected) { lootHtml = `<button class="loot-btn" onclick="coletarLoot('${id}')"><i class="fas fa-gem"></i> Coletar Loot</button>`; }
+                    }
+
+                    return `<div class="${cardClass}">${lootHtml}${speechHtml}<img src="${char.imagem}" onclick="handleTokenClick('${id}', ${myCombat.public_inspection}, '${data.status}')"><div class="pov-char-details"><div class="pov-char-name">${char.nome.split(' ')[0]}</div>${hpDisplay}${data.status!=='defeated'?statsBar:''}</div></div>`;
                 };
 
-                if(myTeamObj) Object.entries(myTeamObj).forEach(([id, data]) => { if(id !== session) alliesBox.innerHTML += renderChar(id, data); });
-                if(enemyTeamObj) Object.entries(enemyTeamObj).forEach(([id, data]) => { enemiesBox.innerHTML += renderChar(id, data); });
+                Object.entries(myCombat.tokens).forEach(([id, data]) => {
+                    if(data.team === myTeam) { if(id !== session) alliesBox.innerHTML += renderChar(id, data); } 
+                    else { enemiesBox.innerHTML += renderChar(id, data); }
+                });
 
-                // Centraliza a visão se acabou de entrar na aba de combate
-                if(justEntered) {
-                    setTimeout(() => {
-                        const viewport = document.getElementById('combat-viewport');
-                        if (viewport) viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
-                    }, 200);
-                }
-
-            } else {
-                activeCombatId = null;
-                navCombat.classList.add('hidden');
-                if(document.getElementById('tab-combat').classList.contains('active')) mudarAba('tab-status', document.querySelector('.nav-item')); 
-            }
+                if(justEntered) setTimeout(() => { const v = document.getElementById('combat-viewport'); if(v) v.scrollLeft = (v.scrollWidth - v.clientWidth) / 2; }, 200);
+            } else { activeCombatId = null; currentCombatData = null; navCombat.classList.add('hidden'); if(document.getElementById('tab-combat').classList.contains('active')) mudarAba('tab-status', document.querySelector('.nav-item')); }
         });
 
-        function updateParallax(el) {
-            const maxScroll = el.scrollWidth - el.clientWidth;
-            if(maxScroll <= 0) return;
-            const percentage = el.scrollLeft / maxScroll;
-            document.getElementById('combat-bg').style.backgroundPosition = `${percentage * 100}% center`;
+        function updateParallax(el) { const max = el.scrollWidth - el.clientWidth; if(max <= 0) return; document.getElementById('combat-bg').style.backgroundPosition = `${(el.scrollLeft / max) * 100}% center`; }
+
+        function handleTokenClick(tId, isPublic, status) {
+            if(status === 'defeated') return; // Não clica em morto
+            const char = charsDB[tId];
+            if(char.tipo === 'Jogador' && tId !== session) {
+                if(confirm(`Deseja propor uma troca com ${char.nome}?`)) proporTroca(tId);
+            } else {
+                verStatsCombate(tId, isPublic);
+            }
         }
 
         function falarNoCombate() {
-            const input = document.getElementById('combat-speech');
-            if(!input.value || !activeCombatId) return;
-            
-            db.ref(`combat/sessions/${activeCombatId}`).once('value').then(snap => {
-                const combat = snap.val(); if(!combat) return;
-                const team = (combat.team_a && combat.team_a[session]) ? 'team_a' : 'team_b';
-                const speechRef = db.ref(`combat/sessions/${activeCombatId}/${team}/${session}/speech`);
-                speechRef.set(input.value);
-                input.value = '';
-                setTimeout(() => speechRef.set(null), 8000); 
+            const input = document.getElementById('combat-speech'); if(!input.value || !activeCombatId) return;
+            const speechRef = db.ref(`combat/sessions/${activeCombatId}/tokens/${session}/speech`);
+            speechRef.set(input.value); input.value = ''; setTimeout(() => speechRef.set(null), 8000); 
+        }
+
+        function coletarLoot(tId) {
+            if(!activeCombatId) return;
+            const lootRef = db.ref(`combat/sessions/${activeCombatId}/loots/${tId}`);
+            lootRef.transaction(loot => {
+                if (loot && loot.collected === false) { loot.collected = session; return loot; } return undefined;
+            }, (error, committed, snapshot) => {
+                if (committed && snapshot.val() && snapshot.val().collected === session) {
+                    const lData = snapshot.val(); let updates = {};
+                    for(let i=0; i<lData.qtd; i++){ updates[db.ref().push().key] = { item_id: lData.item_id, equipado: false }; }
+                    db.ref(`characters/${session}/inventario`).update(updates); alert("Loot coletado! Olhe sua bolsa.");
+                } else { alert("Alguém foi mais rápido ou o loot acabou!"); }
             });
         }
 
         function verStatsCombate(charId, isPublic) {
-            if(!isPublic && charId !== session) return alert("O mestre ocultou os atributos dos guerreiros nesta batalha.");
-            
+            if(!isPublic && charId !== session) return alert("O mestre ocultou os atributos nesta batalha.");
             const c = charsDB[charId]; if(!c) return;
-            document.getElementById('cc-img').src = c.imagem;
-            document.getElementById('cc-nome').innerText = c.nome;
-            document.getElementById('cc-classe').innerText = c.classe;
+            document.getElementById('cc-img').src = c.imagem; document.getElementById('cc-nome').innerText = c.nome; document.getElementById('cc-classe').innerText = c.classe;
             
+            if(c.tipo === 'Criatura' && c.loot) {
+                const itemDb = itemsDB[c.loot.item_id];
+                if(itemDb) document.getElementById('cc-loot').innerText = `Dropa: ${itemDb.nome} x${c.loot.qtd}`;
+            } else { document.getElementById('cc-loot').innerText = ''; }
+
             let vitalsHtml = '';
             if(c.hp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--red), #b91c1c); width:${(c.hp/c.hp_max)*100}%"></div><div class="status-bar-text">HP ${c.hp}/${c.hp_max}</div></div>`;
             if(c.mp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--blue), #1d4ed8); width:${(c.mp/c.mp_max)*100}%"></div><div class="status-bar-text">MP ${c.mp}/${c.mp_max}</div></div>`;
             if(c.sp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--gold), #b45309); width:${(c.sp/c.sp_max)*100}%"></div><div class="status-bar-text">SP ${c.sp}/${c.sp_max}</div></div>`;
             document.getElementById('cc-vitals').innerHTML = vitalsHtml;
 
-            // Constroi BONECO DE EQUIPAMENTOS e BUFFS do alvo
             let eqSlots = { arma1: null, arma2: null, cabeca: null, peitoral: null, pernas: null, acessorio: null };
             let bonus = { for:0, res:0, vel:0, agi:0, per:0, resm:0, esp:0, alm:0 };
-
             if(c.inventario) Object.values(c.inventario).forEach(item => {
                 if(item.equipado) {
                     const idb = itemsDB[item.item_id]; if(!idb) return;
                     if(idb.categoria === 'Arma') { if(!eqSlots.arma1) eqSlots.arma1 = idb; else if(!eqSlots.arma2) eqSlots.arma2 = idb; }
                     else if(idb.categoria === 'Armadura') { if(idb.slot_type === 'Cabeça' && !eqSlots.cabeca) eqSlots.cabeca = idb; else if(idb.slot_type === 'Peitoral' && !eqSlots.peitoral) eqSlots.peitoral = idb; else if(idb.slot_type === 'Pernas' && !eqSlots.pernas) eqSlots.pernas = idb; }
                     else if(idb.categoria === 'Acessorio' && !eqSlots.acessorio) eqSlots.acessorio = idb;
-                    
                     if(idb.mods) Object.keys(bonus).forEach(k => bonus[k] += (idb.mods[k] || 0));
                 }
             });
-
-            if(c.skills) Object.keys(c.skills).forEach(sId => {
-                const skill = skillsDB[sId];
-                if(skill && skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0));
-            });
+            if(c.skills) Object.keys(c.skills).forEach(sId => { const skill = skillsDB[sId]; if(skill && skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0)); });
 
             const renderEq = (idb, icon, type) => idb ? `<div class="equip-slot filled slot-${type}" title="${idb.nome}"><img src="${idb.imagem}"></div>` : `<div class="equip-slot slot-${type}"><i class="fas ${icon}" style="color:var(--border);"></i></div>`;
             document.getElementById('cc-equips').innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'acessorio');
 
-            let statsHtml = '';
-            const base = c.atributos_base || {};
-            Object.keys(attrNames).forEach(k => { 
-                const total = (base[k] || 0) + bonus[k];
-                let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : (bonus[k] < 0 ? `<span class="val-bonus val-negative">${bonus[k]}</span>` : '');
-                statsHtml += `<div class="attr-card" style="padding:8px;"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`; 
-            });
+            let statsHtml = ''; const base = c.atributos_base || {};
+            Object.keys(attrNames).forEach(k => { const total = (base[k] || 0) + bonus[k]; let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : (bonus[k] < 0 ? `<span class="val-bonus val-negative">${bonus[k]}</span>` : ''); statsHtml += `<div class="attr-card" style="padding:8px;"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`; });
             document.getElementById('cc-stats').innerHTML = statsHtml;
-
             document.getElementById('combat-char-modal').classList.add('active');
         }
 
-        // ================= FUNÇÕES PADRÃO DO JOGADOR =================
-        function checkRender() { if(pData) { renderStatusEInv(); inicializarCrafting(); renderGrimorio(); } }
+        // ======================= SISTEMA DE TROCA =======================
+        let tradeListener = null;
+        db.ref('trades').on('value', snap => {
+            const trades = snap.val() || {}; let myTradeId = null;
+            Object.entries(trades).forEach(([id, trade]) => {
+                if(trade.receiver === session && trade.status === 'pending') {
+                    if(confirm(`${charsDB[trade.initiator].nome} quer trocar itens com você. Aceitar?`)) db.ref(`trades/${id}/status`).set('active');
+                    else db.ref(`trades/${id}`).remove();
+                }
+                if((trade.initiator === session || trade.receiver === session) && trade.status !== 'confirmed') myTradeId = id;
+            });
+            activeTradeId = myTradeId;
+            if(activeTradeId) {
+                if(tradeListener) tradeListener.off(); tradeListener = db.ref(`trades/${activeTradeId}`); tradeListener.on('value', updateTradeUI);
+                document.getElementById('trade-modal').classList.add('active');
+            } else { if(tradeListener) tradeListener.off(); document.getElementById('trade-modal').classList.remove('active'); }
+        });
+        function proporTroca(otherPlayerId) { const newTradeId = db.ref('trades').push().key; db.ref(`trades/${newTradeId}`).set({ initiator: session, receiver: otherPlayerId, status: 'pending' }); }
+        function updateTradeUI(snap) {
+            const trade = snap.val(); if(!trade) { closeModal('trade-modal'); return; }
+            const isInitiator = trade.initiator === session; const myOffer = isInitiator ? trade.offer_initiator : trade.offer_receiver; const otherOffer = isInitiator ? trade.offer_receiver : trade.offer_initiator; const otherPlayerId = isInitiator ? trade.receiver : trade.initiator;
+            document.getElementById('trade-other-name').innerText = charsDB[otherPlayerId].nome;
+            const renderTradeBox = (boxId, offer, canRemove) => {
+                const box = document.getElementById(boxId); box.innerHTML = '';
+                if(offer) {
+                    let grouped = {};
+                    Object.keys(offer).forEach(key => { const item = (canRemove ? pData.inventario : charsDB[otherPlayerId].inventario)[key]; if(item) { grouped[item.item_id] = (grouped[item.item_id] || {count:0, keys:[]}); grouped[item.item_id].count++; grouped[item.item_id].keys.push(key); } });
+                    Object.entries(grouped).forEach(([itemId, data]) => { const idb = itemsDB[itemId]; const badge = data.count > 1 ? `<span class="trade-item-qtd">x${data.count}</span>` : ''; const onclick = canRemove ? `onclick="removerItemTroca('${data.keys[0]}')"` : ''; box.innerHTML += `<div class="trade-item" style="background-image:url(${idb.imagem})" ${onclick}>${badge}</div>`; });
+                }
+            };
+            renderTradeBox('trade-my-offer', myOffer, true); renderTradeBox('trade-other-offer', otherOffer, false);
+            const acceptBtn = document.getElementById('trade-accept-btn'); const myStatus = isInitiator ? trade.status_initiator : trade.status_receiver;
+            if (myStatus === 'accepted') { acceptBtn.innerText = 'Aguardando...'; acceptBtn.style.background = 'var(--gold)'; } else { acceptBtn.innerText = 'Aceitar Troca'; acceptBtn.style.background = 'var(--green)'; }
+        }
+        function abrirPickerTroca() {
+            const grid = document.getElementById('picker-grid'); grid.innerHTML = ''; let grouped = {};
+            Object.entries(pData.inventario || {}).forEach(([key, item]) => { if (!item.equipado) { grouped[item.item_id] = (grouped[item.item_id] || {count:0, key: key}); grouped[item.item_id].count++; } });
+            Object.entries(grouped).forEach(([itemId, data]) => { grid.innerHTML += `<div class="picker-item" onclick="adicionarItemTroca('${data.key}')"><img src="${itemsDB[itemId].imagem}"><div class="item-badge">x${data.count}</div></div>`; });
+            document.getElementById('picker-title').innerText = 'Adicionar à Oferta'; document.getElementById('picker-modal').classList.add('active');
+        }
+        function adicionarItemTroca(itemKey) { const isInitiator = db.ref(`trades/${activeTradeId}`).once('value').then(snap => snap.val().initiator === session); isInitiator.then(isIni => { const path = isIni ? 'offer_initiator' : 'offer_receiver'; db.ref(`trades/${activeTradeId}/${path}/${itemKey}`).set(true); }); closeModal('picker-modal'); }
+        function removerItemTroca(itemKey) { const isInitiator = db.ref(`trades/${activeTradeId}`).once('value').then(snap => snap.val().initiator === session); isInitiator.then(isIni => { const path = isIni ? 'offer_initiator' : 'offer_receiver'; db.ref(`trades/${activeTradeId}/${path}/${itemKey}`).remove(); }); }
+        function aceitarTroca() {
+            db.ref(`trades/${activeTradeId}`).transaction(trade => {
+                if(trade) {
+                    const isInitiator = trade.initiator === session; if(isInitiator) trade.status_initiator = 'accepted'; else trade.status_receiver = 'accepted';
+                    if(trade.status_initiator === 'accepted' && trade.status_receiver === 'accepted') {
+                        let updates = {};
+                        if(trade.offer_initiator) Object.keys(trade.offer_initiator).forEach(k => updates[`/characters/${trade.initiator}/inventario/${k}`] = null);
+                        if(trade.offer_receiver) Object.keys(trade.offer_receiver).forEach(k => updates[`/characters/${trade.receiver}/inventario/${k}`] = null);
+                        if(trade.offer_initiator) Object.keys(trade.offer_initiator).forEach(k => { updates[`/characters/${trade.receiver}/inventario/${db.ref().push().key}`] = charsDB[trade.initiator].inventario[k]; });
+                        if(trade.offer_receiver) Object.keys(trade.offer_receiver).forEach(k => { updates[`/characters/${trade.initiator}/inventario/${db.ref().push().key}`] = charsDB[trade.receiver].inventario[k]; });
+                        db.ref().update(updates); return null; 
+                    }
+                }
+                return trade;
+            });
+        }
+        function cancelarTroca() { if(activeTradeId) db.ref(`trades/${activeTradeId}`).remove(); }
 
+        // ================= FUNÇÕES DE STATUS E INVENTÁRIO =================
+        function checkRender() { if(pData) { renderStatusEInv(); inicializarCrafting(); renderGrimorio(); } }
         function renderStatusEInv() {
             let bonus = { for:0, res:0, vel:0, agi:0, per:0, resm:0, esp:0, alm:0 };
             let eqSlots = { arma1: null, arma2: null, cabeca: null, peitoral: null, pernas: null, acessorio: null };
-            let equippedItems =[];
+            let equippedItems = [];
             if(pData.inventario) Object.entries(pData.inventario).forEach(([key, invItem]) => { if(invItem.equipado) equippedItems.push({key, ...invItem}); });
             equippedItems.forEach(item => {
                 const idb = itemsDB[item.item_id]; if(!idb) return; let placed = false;
@@ -426,52 +432,33 @@
                 else if(idb.categoria === 'Acessorio' && !eqSlots.acessorio) { eqSlots.acessorio = {item, idb}; placed = true; }
                 if(placed && idb.mods) Object.keys(bonus).forEach(k => bonus[k] += (idb.mods[k] || 0));
             });
-            
             const renderEq = (slotData, emptyIcon, label, slotType) => {
-                if(slotData) return `<div class="equip-slot filled slot-${slotType}" onclick="abrirItem('${slotData.item.key}', '${slotData.item.item_id}', true, 1)"><img src="${slotData.idb.imagem}"><div class="equip-slot-label">${label}</div></div>`;
-                else return `<div class="equip-slot slot-${slotType}" onclick="abrirEquipPicker('${slotType}')"><i class="fas ${emptyIcon}" style="color:var(--border); font-size:1.8em;"></i><div class="equip-slot-label">${label}</div></div>`;
+                if(slotData) return `<div id="slot-${slotType}" class="equip-slot filled" onclick="abrirItem('${slotData.item.key}', '${slotData.item.item_id}', true, 1)"><img src="${slotData.idb.imagem}"><div class="equip-slot-label">${label}</div></div>`;
+                else return `<div id="slot-${slotType}" class="equip-slot" onclick="abrirEquipPicker('${slotType}')"><i class="fas ${emptyIcon}" style="color:var(--border); font-size:1.8em;"></i><div class="equip-slot-label">${label}</div></div>`;
             };
-            document.getElementById('p-equipamentos').innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'acessorio');
+            document.getElementById('p-equipamentos').innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'Cabeça', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'Peitoral', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'Pernas', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'Mão 1', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'Mão 2', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'Amuleto', 'acessorio');
 
             const boxSkills = document.getElementById('p-skills'); boxSkills.innerHTML = '';
-            if(pData.skills) Object.keys(pData.skills).forEach(sId => {
-                const skill = skillsDB[sId];
-                if(skill) { if(skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0)); boxSkills.innerHTML += `<div class="skill-card"><img class="skill-img" src="${skill.imagem}"><div class="skill-info"><h4>${skill.nome}</h4><p>${skill.descricao}</p></div></div>`;}
-            });
+            if(pData.skills) Object.keys(pData.skills).forEach(sId => { const skill = skillsDB[sId]; if(skill) { if(skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0)); boxSkills.innerHTML += `<div class="skill-card"><img class="skill-img" src="${skill.imagem}"><div class="skill-info"><h4>${skill.nome}</h4><p>${skill.descricao}</p></div></div>`;}});
             
             const atributosBase = pData.atributos_base || {};
-            const boxAtrBase = document.getElementById('p-atributos-base'); boxAtrBase.innerHTML = '';
-            const boxAtrTotal = document.getElementById('p-atributos-total'); boxAtrTotal.innerHTML = '';
+            const boxAtrBase = document.getElementById('p-atributos-base'); boxAtrBase.innerHTML = ''; const boxAtrTotal = document.getElementById('p-atributos-total'); boxAtrTotal.innerHTML = '';
             Object.keys(attrNames).forEach(k => {
-                const total = (atributosBase[k] || 0) + bonus[k];
-                let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : '';
+                const total = (atributosBase[k] || 0) + bonus[k]; let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : '';
                 boxAtrBase.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${atributosBase[k] || 0}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;
                 boxAtrTotal.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`;
             });
             
             ['hp', 'mp', 'sp'].forEach(type => {
-                const bar = document.getElementById(`${type}-bar`);
-                const max = pData[`${type}_max`] || 0;
-                if(max > 0) {
-                    bar.classList.add('active');
-                    const val = pData[type] || 0;
-                    bar.querySelector('.status-bar-inner').style.width = `${(val/max)*100}%`;
-                    bar.querySelector('.status-bar-text').innerText = `${type.toUpperCase()} ${val}/${max}`;
-                } else {
-                    bar.classList.remove('active');
-                }
+                const bar = document.getElementById(`${type}-bar`); const max = pData[`${type}_max`] || 0;
+                if(max > 0) { bar.classList.add('active'); const val = pData[type] || 0; bar.querySelector('.status-bar-inner').style.width = `${(val/max)*100}%`; bar.querySelector('.status-bar-text').innerText = `${type.toUpperCase()} ${val}/${max}`; } else { bar.classList.remove('active'); }
             });
             
-            const boxInv = document.getElementById('p-inventario'); boxInv.innerHTML = '';
-            let qtdMap = {};
+            const boxInv = document.getElementById('p-inventario'); boxInv.innerHTML = ''; let qtdMap = {};
             if (pData.inventario) {
                 Object.entries(pData.inventario).forEach(([key, invItem]) => {
                     const idb = itemsDB[invItem.item_id];
-                    if (idb) {
-                        if (idb.categoria === 'Material' || idb.categoria === 'Consumivel') {
-                            if (!qtdMap[invItem.item_id]) qtdMap[invItem.item_id] = { count: 0, sampleKey: key }; qtdMap[invItem.item_id].count++;
-                        } else { boxInv.innerHTML += renderItemSlot(key, invItem.item_id, invItem.equipado, 1); }
-                    }
+                    if (idb) { if (idb.categoria === 'Material' || idb.categoria === 'Consumivel') { if (!qtdMap[invItem.item_id]) qtdMap[invItem.item_id] = { count: 0, sampleKey: key }; qtdMap[invItem.item_id].count++; } else { boxInv.innerHTML += renderItemSlot(key, invItem.item_id, invItem.equipado, 1); } }
                 });
                 Object.keys(qtdMap).forEach(itemId => boxInv.innerHTML += renderItemSlot(qtdMap[itemId].sampleKey, itemId, false, qtdMap[itemId].count));
             }
@@ -494,159 +481,30 @@
                 }
             });
             if(!found) grid.innerHTML = `<p style="color:#64748b; font-size:0.8em;">Nenhum item compatível na bolsa.</p>`;
-            document.getElementById('picker-title').innerText = `Equipar`; document.getElementById('picker-modal').classList.add('active');
+            document.getElementById('picker-title').innerText = `Equipar ${slotType.replace('a1', 'a 1').replace('a2', 'a 2')}`; document.getElementById('picker-modal').classList.add('active');
         }
         function finalizarEquip(itemKey) { db.ref(`characters/${session}/inventario/${itemKey}/equipado`).set(true); closeModal('picker-modal'); }
 
-        // CRAFTING E GRIMÓRIO
-        function inicializarCrafting() {
-            inventarioCraftDisponivel = {};
-            if(pData.inventario) Object.values(pData.inventario).forEach(inv => {
-                const idb = itemsDB[inv.item_id];
-                if(idb && idb.categoria === 'Material' && !inv.equipado) inventarioCraftDisponivel[inv.item_id] = (inventarioCraftDisponivel[inv.item_id] || 0) + 1;
-            });
-            craftMesa.forEach(slot => { if(slot && inventarioCraftDisponivel[slot.id]) inventarioCraftDisponivel[slot.id] -= slot.qtd; });
-            renderUIForja(); renderReceitasProntas();
-        }
-        function renderReceitasProntas() {
-            const box = document.getElementById('receitas-prontas'); box.innerHTML = ''; let count = 0;
-            Object.keys(recipesDB).forEach(rId => {
-                const r = recipesDB[rId]; if (!r.grid) return; let podeCriar = true; let invTemp = {...inventarioCraftDisponivel};
-                for(let i=0; i<9; i++) {
-                    let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = {id: rSlot, qtd: 1};
-                    if (rSlot && typeof rSlot === 'object') { if ((invTemp[rSlot.id] || 0) < rSlot.qtd) podeCriar = false; else invTemp[rSlot.id] -= rSlot.qtd; }
-                }
-                if(podeCriar) {
-                    count++;
-                    const addResult = (res) => {
-                        let resId = res.id || res; const resItem = itemsDB[resId];
-                        if(resItem) box.innerHTML += `<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${resItem.imagem}"> <div><strong style="color:var(--gold); font-size:0.9em;">${resItem.nome}</strong><br><small style="color:#94a3b8">Clique para preparar</small></div></div>`;
-                    };
-                    if(r.resultados) r.resultados.forEach(addResult); else if(r.resultado) addResult(r.resultado);
-                }
-            });
-            if(count === 0) box.innerHTML = `<p style="color:#64748b; font-size:0.8em; text-align:center;">Nenhum material para receitas conhecidas.</p>`;
-        }
-        function autoPreencherCraft(rId) {
-            const r = recipesDB[rId]; limparMesa();
-            for(let i=0; i<9; i++) { let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = {id: rSlot, qtd: 1}; if(rSlot && typeof rSlot === 'object') craftMesa[i] = {...rSlot}; }
-            inicializarCrafting();
-        }
-        function renderUIForja() {
-            const barra = document.getElementById('craft-inventory'); barra.innerHTML = '';
-            Object.keys(inventarioCraftDisponivel).forEach(itemId => { if(inventarioCraftDisponivel[itemId] > 0 && itemsDB[itemId]) { const selectedClass = itemCraftSelecionado === itemId ? ' selected' : ''; barra.innerHTML += `<div class="inv-craft-item${selectedClass}" onclick="selecionarItemCraft('${itemId}')"><span class="item-badge">x${inventarioCraftDisponivel[itemId]}</span><img src="${itemsDB[itemId].imagem}"></div>`; } });
-            if(barra.innerHTML === '') barra.innerHTML = '<div style="color:#64748b; font-size:0.8em; text-align:center; margin-top:20px;">Nenhum material na bolsa.</div>';
-            const mesa = document.getElementById('craft-table'); mesa.innerHTML = '';
-            for(let i=0; i<9; i++) { const slot = craftMesa[i]; let imgHtml = slot && itemsDB[slot.id] ? `<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">` : ''; mesa.innerHTML += `<div class="craft-slot" onclick="clicarSlotMesa(${i})">${imgHtml}</div>`; }
-            verificarReceitaEmTempoReal();
-        }
+        // ================= CRAFTING & GRIMÓRIO =================
+        function inicializarCrafting() { inventarioCraftDisponivel = {}; if(pData.inventario) Object.values(pData.inventario).forEach(inv => { const idb = itemsDB[inv.item_id]; if(idb && idb.categoria === 'Material' && !inv.equipado) inventarioCraftDisponivel[inv.item_id] = (inventarioCraftDisponivel[inv.item_id] || 0) + 1; }); craftMesa.forEach(slot => { if(slot && inventarioCraftDisponivel[slot.id]) inventarioCraftDisponivel[slot.id] -= slot.qtd; }); renderUIForja(); renderReceitasProntas(); }
+        function renderReceitasProntas() { const box = document.getElementById('receitas-prontas'); box.innerHTML = ''; let count = 0; Object.keys(recipesDB).forEach(rId => { const r = recipesDB[rId]; if (!r.grid) return; let podeCriar = true; let invTemp = {...inventarioCraftDisponivel}; for(let i=0; i<9; i++) { let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = {id: rSlot, qtd: 1}; if (rSlot && typeof rSlot === 'object') { if ((invTemp[rSlot.id] || 0) < rSlot.qtd) podeCriar = false; else invTemp[rSlot.id] -= rSlot.qtd; } } if(podeCriar) { count++; const addResult = (res) => { let resId = res.id || res; const resItem = itemsDB[resId]; if(resItem) box.innerHTML += `<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${resItem.imagem}"> <div><strong style="color:var(--gold); font-size:0.9em;">${resItem.nome}</strong><br><small style="color:#94a3b8">Clique para preparar</small></div></div>`; }; if(r.resultados) r.resultados.forEach(addResult); else if(r.resultado) addResult(r.resultado); } }); if(count === 0) box.innerHTML = `<p style="color:#64748b; font-size:0.8em; text-align:center;">Nenhum material para receitas conhecidas.</p>`; }
+        function autoPreencherCraft(rId) { const r = recipesDB[rId]; limparMesa(); for(let i=0; i<9; i++) { let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = {id: rSlot, qtd: 1}; if(rSlot && typeof rSlot === 'object') craftMesa[i] = {...rSlot}; } inicializarCrafting(); }
+        function renderUIForja() { const barra = document.getElementById('craft-inventory'); barra.innerHTML = ''; Object.keys(inventarioCraftDisponivel).forEach(itemId => { if(inventarioCraftDisponivel[itemId] > 0 && itemsDB[itemId]) { const selectedClass = itemCraftSelecionado === itemId ? ' selected' : ''; barra.innerHTML += `<div class="inv-craft-item${selectedClass}" onclick="selecionarItemCraft('${itemId}')"><span class="item-badge">x${inventarioCraftDisponivel[itemId]}</span><img src="${itemsDB[itemId].imagem}"></div>`; } }); if(barra.innerHTML === '') barra.innerHTML = '<div style="color:#64748b; font-size:0.8em; text-align:center; margin-top:20px;">Nenhum material na bolsa.</div>'; const mesa = document.getElementById('craft-table'); mesa.innerHTML = ''; for(let i=0; i<9; i++) { const slot = craftMesa[i]; let imgHtml = slot && itemsDB[slot.id] ? `<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">` : ''; mesa.innerHTML += `<div class="craft-slot" onclick="clicarSlotMesa(${i})">${imgHtml}</div>`; } verificarReceitaEmTempoReal(); }
         function selecionarItemCraft(itemId) { itemCraftSelecionado = itemCraftSelecionado === itemId ? null : itemId; renderUIForja(); }
-        function clicarSlotMesa(index) {
-            if (itemCraftSelecionado && inventarioCraftDisponivel[itemCraftSelecionado] > 0) {
-                if (!craftMesa[index]) craftMesa[index] = { id: itemCraftSelecionado, qtd: 1 };
-                else if (craftMesa[index].id === itemCraftSelecionado) craftMesa[index].qtd++;
-                else { inventarioCraftDisponivel[craftMesa[index].id] += craftMesa[index].qtd; craftMesa[index] = { id: itemCraftSelecionado, qtd: 1 }; }
-                inventarioCraftDisponivel[itemCraftSelecionado]--;
-                if(inventarioCraftDisponivel[itemCraftSelecionado] === 0) itemCraftSelecionado = null;
-            } else if (!itemCraftSelecionado && craftMesa[index]) {
-                craftMesa[index].qtd--; inventarioCraftDisponivel[craftMesa[index].id] = (inventarioCraftDisponivel[craftMesa[index].id] || 0) + 1;
-                if(craftMesa[index].qtd <= 0) craftMesa[index] = null;
-            }
-            renderUIForja();
-        }
+        function clicarSlotMesa(index) { if (itemCraftSelecionado && inventarioCraftDisponivel[itemCraftSelecionado] > 0) { if (!craftMesa[index]) craftMesa[index] = { id: itemCraftSelecionado, qtd: 1 }; else if (craftMesa[index].id === itemCraftSelecionado) craftMesa[index].qtd++; else { inventarioCraftDisponivel[craftMesa[index].id] += craftMesa[index].qtd; craftMesa[index] = { id: itemCraftSelecionado, qtd: 1 }; } inventarioCraftDisponivel[itemCraftSelecionado]--; if(inventarioCraftDisponivel[itemCraftSelecionado] === 0) itemCraftSelecionado = null; } else if (!itemCraftSelecionado && craftMesa[index]) { craftMesa[index].qtd--; inventarioCraftDisponivel[craftMesa[index].id] = (inventarioCraftDisponivel[craftMesa[index].id] || 0) + 1; if(craftMesa[index].qtd <= 0) craftMesa[index] = null; } renderUIForja(); }
         function limparMesa() { craftMesa =[null,null,null,null,null,null,null,null,null]; itemCraftSelecionado = null; inicializarCrafting(); }
-
         let receitaValidaId = null; let receitaMultipla = false;
-        function verificarReceitaEmTempoReal() {
-            receitaValidaId = null; receitaMultipla = false; const resSlot = document.getElementById('craft-result');
-            Object.keys(recipesDB).forEach(rId => {
-                const r = recipesDB[rId]; if (!r.grid) return; let match = true;
-                for(let i=0; i<9; i++) {
-                    let rSlot = r.grid[i]; if(typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 };
-                    const cSlot = craftMesa[i]; const rTem = rSlot && typeof rSlot === 'object'; const cTem = cSlot && cSlot !== null;
-                    if ((rTem && !cTem) || (!rTem && cTem) || (rTem && cTem && (rSlot.id !== cSlot.id || cSlot.qtd < rSlot.qtd))) match = false;
-                }
-                if(match) receitaValidaId = rId;
-            });
-            if(receitaValidaId && (recipesDB[receitaValidaId].resultado || recipesDB[receitaValidaId].resultados)) {
-                const r = recipesDB[receitaValidaId];
-                if(r.resultados) { receitaMultipla = true; resSlot.innerHTML = `<i class="fas fa-question" style="font-size:2em; color:var(--gold);"></i>`; resSlot.style.borderColor = 'var(--gold)'; } 
-                else { let resId = r.resultado.id || r.resultado; let resQtd = r.resultado.qtd || 1; if(itemsDB[resId]) { resSlot.innerHTML = `<div class="item-badge" style="top:2px; bottom:auto;">x${resQtd}</div><img src="${itemsDB[resId].imagem}">`; resSlot.style.borderColor = "#10b981"; } }
-            } else { resSlot.innerHTML = ''; resSlot.style.borderColor = "#f59e0b"; }
-        }
-        function tentarForjar() {
-            if(!receitaValidaId) return alert("Sua mesa não gerou nenhuma receita válida!");
-            const r = recipesDB[receitaValidaId];
-            if(receitaMultipla) {
-                const pickerGrid = document.getElementById('picker-grid'); pickerGrid.innerHTML = '';
-                r.resultados.forEach((res, index) => { const item = itemsDB[res.id]; if(item) pickerGrid.innerHTML += `<div class="picker-item" onclick="finalizarCraftMultiplo(${index})"><img src="${item.imagem}"><span style="font-size:0.7em">${item.nome}</span><div class="item-badge">x${res.qtd}</div></div>`; });
-                document.getElementById('picker-title').innerText = 'Escolha o que criar:'; document.getElementById('picker-modal').classList.add('active');
-            } else { finalizarCraftUnico(); }
-        }
+        function verificarReceitaEmTempoReal() { receitaValidaId = null; receitaMultipla = false; const resSlot = document.getElementById('craft-result'); Object.keys(recipesDB).forEach(rId => { const r = recipesDB[rId]; if (!r.grid) return; let match = true; for(let i=0; i<9; i++) { let rSlot = r.grid[i]; if(typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 }; const cSlot = craftMesa[i]; const rTem = rSlot && typeof rSlot === 'object'; const cTem = cSlot && cSlot !== null; if ((rTem && !cTem) || (!rTem && cTem) || (rTem && cTem && (rSlot.id !== cSlot.id || cSlot.qtd < rSlot.qtd))) match = false; } if(match) receitaValidaId = rId; }); if(receitaValidaId && (recipesDB[receitaValidaId].resultado || recipesDB[receitaValidaId].resultados)) { const r = recipesDB[receitaValidaId]; if(r.resultados) { receitaMultipla = true; resSlot.innerHTML = `<i class="fas fa-question" style="font-size:2em; color:var(--gold);"></i>`; resSlot.style.borderColor = 'var(--gold)'; } else { let resId = r.resultado.id || r.resultado; let resQtd = r.resultado.qtd || 1; if(itemsDB[resId]) { resSlot.innerHTML = `<div class="item-badge" style="top:2px; bottom:auto;">x${resQtd}</div><img src="${itemsDB[resId].imagem}">`; resSlot.style.borderColor = "#10b981"; } } } else { resSlot.innerHTML = ''; resSlot.style.borderColor = "#f59e0b"; } }
+        function tentarForjar() { if(!receitaValidaId) return alert("Sua mesa não gerou nenhuma receita válida!"); const r = recipesDB[receitaValidaId]; if(receitaMultipla) { const pickerGrid = document.getElementById('picker-grid'); pickerGrid.innerHTML = ''; r.resultados.forEach((res, index) => { const item = itemsDB[res.id]; if(item) pickerGrid.innerHTML += `<div class="picker-item" onclick="finalizarCraftMultiplo(${index})"><img src="${item.imagem}"><span style="font-size:0.7em">${item.nome}</span><div class="item-badge">x${res.qtd}</div></div>`; }); document.getElementById('picker-title').innerText = 'Escolha o que criar:'; document.getElementById('picker-modal').classList.add('active'); } else { finalizarCraftUnico(); } }
         function finalizarCraftMultiplo(resultadoIndex) { finalizarCraftUnico(resultadoIndex); closeModal('picker-modal'); }
-        function finalizarCraftUnico(resultadoIndex = null) {
-            const r = recipesDB[receitaValidaId]; let updates = {}; let tempInv = JSON.parse(JSON.stringify(pData.inventario || {})); 
-            for(let i=0; i<9; i++) {
-                let rSlot = r.grid[i]; if(typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 };
-                if(rSlot && typeof rSlot === 'object') {
-                    const idNeeded = rSlot.id; let amountNeeded = rSlot.qtd || 1; let keys = Object.keys(tempInv);
-                    for(let k=0; k<keys.length && amountNeeded > 0; k++) { const key = keys[k]; if(tempInv[key].item_id === idNeeded && !tempInv[key].equipado) { updates[`${key}`] = null; delete tempInv[key]; amountNeeded--; } }
-                }
-            }
-            let finalResult = resultadoIndex !== null ? r.resultados[resultadoIndex] : (r.resultado.id ? r.resultado : {id: r.resultado, qtd: 1});
-            for(let j=0; j<finalResult.qtd; j++) { const newKey = db.ref(`characters/${session}/inventario`).push().key; updates[`${newKey}`] = { item_id: finalResult.id, equipado: false }; }
-            db.ref(`characters/${session}/inventario`).update(updates).then(() => { alert("A forja foi um sucesso!"); limparMesa(); }).catch(err => { alert("Erro ao forjar. Verifique se possui os itens."); });
-        }
+        function finalizarCraftUnico(resultadoIndex = null) { const r = recipesDB[receitaValidaId]; let updates = {}; let tempInv = JSON.parse(JSON.stringify(pData.inventario || {})); for(let i=0; i<9; i++) { let rSlot = r.grid[i]; if(typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 }; if(rSlot && typeof rSlot === 'object') { const idNeeded = rSlot.id; let amountNeeded = rSlot.qtd || 1; let keys = Object.keys(tempInv); for(let k=0; k<keys.length && amountNeeded > 0; k++) { const key = keys[k]; if(tempInv[key].item_id === idNeeded && !tempInv[key].equipado) { updates[`${key}`] = null; delete tempInv[key]; amountNeeded--; } } } } let finalResult = resultadoIndex !== null ? r.resultados[resultadoIndex] : (r.resultado.id ? r.resultado : {id: r.resultado, qtd: 1}); for(let j=0; j<finalResult.qtd; j++) { const newKey = db.ref(`characters/${session}/inventario`).push().key; updates[`${newKey}`] = { item_id: finalResult.id, equipado: false }; } db.ref(`characters/${session}/inventario`).update(updates).then(() => { alert("Forjado com sucesso!"); limparMesa(); }); }
+        function renderGrimorio() { const container = document.getElementById('recipe-book-container'); container.innerHTML = ''; let recipesByCategory = {}; Object.entries(recipesDB).forEach(([rId, r]) => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; if(resItem) { if(!recipesByCategory[resItem.categoria]) recipesByCategory[resItem.categoria] = []; recipesByCategory[resItem.categoria].push({rId, ...r}); } }); Object.entries(recipesByCategory).forEach(([category, recipes]) => { container.innerHTML += `<h3 class="section-title">${category}</h3>`; let grid = document.createElement('div'); grid.className = 'recipe-book-grid'; recipes.forEach(r => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; grid.innerHTML += `<div class="skill-card" onclick="verReceita('${r.rId}')"><img class="skill-img" src="${resItem.imagem}"><h4>${resItem.nome}</h4></div>`; }); container.appendChild(grid); }); if(container.innerHTML === '') container.innerHTML = '<p style="color:#64748b; text-align:center;">O grimório está vazio.</p>'; }
+        function verReceita(rId) { const r = recipesDB[rId]; let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; document.getElementById('recipe-modal-title').innerText = `Receita de ${itemsDB[resId].nome}`; const bench = document.getElementById('recipe-modal-bench'); let gridHtml = '<div class="craft-grid">'; for(let i=0; i<9; i++) { let slot = r.grid[i]; let imgHtml = ''; if(slot && typeof slot === 'object' && itemsDB[slot.id]) { imgHtml = `<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`; } gridHtml += `<div class="craft-slot">${imgHtml}</div>`; } gridHtml += '</div>'; bench.innerHTML = gridHtml; document.getElementById('recipe-modal').classList.add('active'); }
 
-        function renderGrimorio() {
-            const container = document.getElementById('recipe-book-container'); container.innerHTML = ''; let recipesByCategory = {};
-            Object.entries(recipesDB).forEach(([rId, r]) => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; if(resItem) { if(!recipesByCategory[resItem.categoria]) recipesByCategory[resItem.categoria] = []; recipesByCategory[resItem.categoria].push({rId, ...r}); } });
-            Object.entries(recipesByCategory).forEach(([category, recipes]) => {
-                container.innerHTML += `<h3 class="section-title">${category}</h3>`; let grid = document.createElement('div'); grid.className = 'recipe-book-grid';
-                recipes.forEach(r => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; grid.innerHTML += `<div class="skill-card" onclick="verReceita('${r.rId}')"><img class="skill-img" src="${resItem.imagem}"><h4>${resItem.nome}</h4></div>`; });
-                container.appendChild(grid);
-            });
-            if(container.innerHTML === '') container.innerHTML = '<p style="color:#64748b; text-align:center;">O grimório está vazio.</p>';
-        }
-        function verReceita(rId) {
-            const r = recipesDB[rId]; let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado;
-            document.getElementById('recipe-modal-title').innerText = `Receita de ${itemsDB[resId].nome}`;
-            const bench = document.getElementById('recipe-modal-bench'); let gridHtml = '<div class="craft-grid">';
-            for(let i=0; i<9; i++) {
-                let slot = r.grid[i]; let imgHtml = '';
-                if(slot && typeof slot === 'object' && itemsDB[slot.id]) { imgHtml = `<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`; }
-                gridHtml += `<div class="craft-slot">${imgHtml}</div>`;
-            }
-            gridHtml += '</div>'; bench.innerHTML = gridHtml; document.getElementById('recipe-modal').classList.add('active');
-        }
+        // AÇÕES ITEM
+        function abrirItem(uniqKey, itemId, equipado, count) { itemAtualKey = uniqKey; itemAtualDBData = itemsDB[itemId]; if(!itemAtualDBData) return; document.getElementById('mod-img').src = itemAtualDBData.imagem; document.getElementById('mod-nome').innerText = itemAtualDBData.nome; document.getElementById('mod-cat').innerText = itemAtualDBData.categoria + (count > 1 ? ` (Possui ${count})` : ''); document.getElementById('mod-desc').innerText = itemAtualDBData.descricao; const sBox = document.getElementById('mod-stats-box'); sBox.innerHTML = ''; if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k => { if(itemAtualDBData.mods[k] > 0) sBox.innerHTML += `<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`; }); if(itemAtualDBData.effects) Object.entries(itemAtualDBData.effects).forEach(([key,val]) => { if(val > 0) sBox.innerHTML += `<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>`}); const btn = document.getElementById('mod-btn'); if(itemAtualDBData.categoria === 'Consumivel') { btn.style.display = 'block'; btn.style.background = 'var(--cyan)'; btn.innerText = 'Usar'; itemAtualAction = 'usar'; } else if(['Arma','Armadura','Acessorio'].includes(itemAtualDBData.categoria)) { btn.style.display = 'block'; if(equipado) { btn.style.background = '#ef4444'; btn.innerText = 'Desequipar'; } else { btn.style.background = '#10b981'; btn.innerText = 'Equipar'; } itemAtualAction = 'equip'; } else { btn.style.display = 'none'; } document.getElementById('item-modal').classList.add('active'); }
+        function handleItemAction() { if(itemAtualAction === 'equip') db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado); else if(itemAtualAction === 'usar') { const effects = itemAtualDBData.effects; if(!effects) return; let updates = {}; if(effects.hp > 0 && pData.hp_max > 0) updates.hp = Math.min(pData.hp_max, (pData.hp || 0) + effects.hp); if(effects.mp > 0 && pData.mp_max > 0) updates.mp = Math.min(pData.mp_max, (pData.mp || 0) + effects.mp); if(effects.sp > 0 && pData.sp_max > 0) updates.sp = Math.min(pData.sp_max, (pData.sp || 0) + effects.sp); db.ref(`characters/${session}`).update(updates); db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove(); } fecharModal('item-modal'); }
 
-        // AÇÕES DE ITEM
-        function abrirItem(uniqKey, itemId, equipado, count) {
-            itemAtualKey = uniqKey; itemAtualDBData = itemsDB[itemId]; if(!itemAtualDBData) return;
-            document.getElementById('mod-img').src = itemAtualDBData.imagem; document.getElementById('mod-nome').innerText = itemAtualDBData.nome; document.getElementById('mod-cat').innerText = itemAtualDBData.categoria + (count > 1 ? ` (Possui ${count})` : ''); document.getElementById('mod-desc').innerText = itemAtualDBData.descricao;
-            const sBox = document.getElementById('mod-stats-box'); sBox.innerHTML = '';
-            if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k => { if(itemAtualDBData.mods[k] > 0) sBox.innerHTML += `<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`; });
-            if(itemAtualDBData.effects) Object.entries(itemAtualDBData.effects).forEach(([key,val]) => { if(val > 0) sBox.innerHTML += `<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>`});
-            const btn = document.getElementById('mod-btn');
-            if(itemAtualDBData.categoria === 'Consumivel') { btn.style.display = 'block'; btn.style.background = 'var(--cyan)'; btn.innerText = 'Usar'; itemAtualAction = 'usar'; } 
-            else if(['Arma','Armadura','Acessorio'].includes(itemAtualDBData.categoria)) { btn.style.display = 'block'; if(equipado) { btn.style.background = '#ef4444'; btn.innerText = 'Desequipar'; } else { btn.style.background = '#10b981'; btn.innerText = 'Equipar'; } itemAtualAction = 'equip'; } 
-            else { btn.style.display = 'none'; }
-            document.getElementById('item-modal').classList.add('active');
-        }
-        function handleItemAction() {
-            if(itemAtualAction === 'equip') db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado);
-            else if(itemAtualAction === 'usar') {
-                const effects = itemAtualDBData.effects; if(!effects) return;
-                let updates = {};
-                if(effects.hp > 0 && pData.hp_max > 0) updates.hp = Math.min(pData.hp_max, (pData.hp || 0) + effects.hp);
-                if(effects.mp > 0 && pData.mp_max > 0) updates.mp = Math.min(pData.mp_max, (pData.mp || 0) + effects.mp);
-                if(effects.sp > 0 && pData.sp_max > 0) updates.sp = Math.min(pData.sp_max, (pData.sp || 0) + effects.sp);
-                db.ref(`characters/${session}`).update(updates); db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove();
-            }
-            fecharModal('item-modal');
-        }
-
-        // EXPORTAÇÃO E OUTROS
         async function exportarFicha() {
             const card = document.getElementById('export-card-container'); const data = { nome: pData.nome, classe: pData.classe, imagem: pData.imagem, atributos: {}, equipamentos: [], habilidades:[] };
             document.querySelectorAll('#p-atributos-total .attr-card').forEach(el => { data.atributos[el.querySelector('.attr-name').innerText] = el.querySelector('.attr-value').innerText; });
