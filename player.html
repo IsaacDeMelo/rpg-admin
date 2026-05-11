@@ -831,7 +831,7 @@ body {
 <div class="char-header">
   <div class="char-avatar-wrap">
     <div class="avatar-ring"></div>
-    <img id="p-img" class="char-avatar" src="https://via.placeholder.com/150" onerror="this.src='https://via.placeholder.com/150'">
+    <img id="p-img" class="char-avatar" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%2310141f'/%3E%3Ccircle cx='75' cy='62' r='18' fill='%232a3555'/%3E%3Cpath d='M32 118c10-20 24-30 43-30s33 10 43 30' fill='none' stroke='%232a3555' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M42 108l17-22 13 16 9-10 16 16' fill='none' stroke='%236b7599' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" onerror="this.onerror=null;this.src=FALLBACK_IMG">
   </div>
   <div class="char-texts">
     <div class="char-name" id="p-nome">Carregando...</div>
@@ -980,6 +980,7 @@ let craftMesa = Array(9).fill(null);
 let itemCraftSelecionado = null, inventarioCraftDisponivel = {};
 let itemAtualKey = null, itemAtualId = null, itemAtualDBData = null, itemAtualAction = 'equip';
 let activeCombatId = null, currentCombatData = null;
+var FALLBACK_IMG = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'><rect width='150' height='150' fill='#10141f'/><circle cx='75' cy='62' r='18' fill='#2a3555'/><path d='M32 118c10-20 24-30 43-30s33 10 43 30' fill='none' stroke='#2a3555' stroke-width='8' stroke-linecap='round'/><path d='M42 108l17-22 13 16 9-10 16 16' fill='none' stroke='#6b7599' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
 function renderStatusEInv() {
   let bonus = { for:0, res:0, vel:0, agi:0, per:0, resm:0, esp:0, alm:0 };
   let eqSlots = { arma1:null, arma2:null, cabeca:null, peitoral:null, pernas:null, acessorio:null };
@@ -1014,7 +1015,7 @@ function renderStatusEInv() {
       if (sk.buffs) Object.keys(bonus).forEach(k => bonus[k] += (sk.buffs[k] || 0));
       bSkills.innerHTML += `
         <div class="skill-card">
-          <img class="skill-img" src="${sk.imagem || ''}" onerror="this.src='https://via.placeholder.com/48'">
+          <img class="skill-img" src="${sk.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
           <div>
             <div class="skill-name">${sk.nome}</div>
             <div class="skill-desc">${sk.descricao || ''}</div>
@@ -1061,7 +1062,7 @@ function renderStatusEInv() {
   const renderEq = (sd, icon, lbl, type) => {
     if (sd) return `
       <div class="equip-slot filled slot-${type}" onclick="abrirItem('${sd.item.key}','${sd.item.item_id}',true,1)" style="position:relative;">
-        <img src="${sd.idb.imagem}" onerror="this.src='https://via.placeholder.com/65'">
+        <img src="${sd.idb.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
         <span class="equip-slot-lbl">${lbl}</span>
       </div>`;
     return `
@@ -1108,7 +1109,7 @@ function renderItemSlot(k, id, eq, count) {
   const eqC = eq ? ' equipped' : '';
   const bg = count > 1 ? `<div class="item-badge">x${count}</div>` : '';
   return `<div class="item-slot${eqC}" onclick="abrirItem('${k}','${id}',${eq},${count})">
-    ${bg}<img src="${idb.imagem}" onerror="this.src='https://via.placeholder.com/80'">
+    ${bg}<img src="${idb.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
   </div>`;
 }
 
@@ -1144,7 +1145,7 @@ function abrirEquipPicker(slotType) {
     if (match) {
       found = true;
       grid.innerHTML += `<div class="picker-item" onclick="finalizarEquip('${key}')">
-        <img src="${idb.imagem}" onerror="this.src='https://via.placeholder.com/70'">
+        <img src="${idb.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
         <span class="picker-item-name">${idb.nome}</span>
       </div>`;
     }
@@ -1267,7 +1268,7 @@ function renderReceitasProntas() {
         const ri = itemsDB[rid]; if (!ri) return;
         box.innerHTML += `
           <div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')">
-            <img src="${ri.imagem}" onerror="this.src='https://via.placeholder.com/44'">
+            <img src="${ri.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
             <div>
               <strong style="color:var(--gold2);font-size:0.9em;">${ri.nome}</strong>
               ${qtd > 1 ? `<span style="color:var(--muted);font-size:0.8em;"> x${qtd}</span>` : ''}
@@ -1308,7 +1309,7 @@ function renderUIForja() {
       barra.innerHTML += `
         <div class="inv-craft-item${sel}" onclick="selecionarItemCraft('${id}')">
           <span class="item-badge" style="z-index:10;">x${inventarioCraftDisponivel[id]}</span>
-          <img src="${itemsDB[id].imagem}" onerror="this.src='https://via.placeholder.com/50'">
+          <img src="${itemsDB[id].imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
         </div>`;
     }
   });
@@ -1324,7 +1325,7 @@ function renderUIForja() {
     let img = '';
     if (s && itemsDB[s.id]) {
       img = `<div class="item-badge" style="top:2px;bottom:auto;z-index:5;">x${s.qtd}</div>
-             <img src="${itemsDB[s.id].imagem}" onerror="this.src='https://via.placeholder.com/54'">`;
+             <img src="${itemsDB[s.id].imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">`;
     }
     mesa.innerHTML += `<div class="craft-slot" onclick="clicarSlotMesa(${i})">${img}</div>`;
   }
@@ -1396,7 +1397,7 @@ function verificarReceitaEmTempoReal() {
       const res = r.resultados ? r.resultados[0] : r.resultado;
       const rid = res.id || res; const rq = res.qtd || 1;
       if (itemsDB[rid]) {
-        rs.innerHTML = `<div class="item-badge" style="top:2px;bottom:auto;">x${rq}</div><img src="${itemsDB[rid].imagem}" onerror="this.src='https://via.placeholder.com/65'">`;
+        rs.innerHTML = `<div class="item-badge" style="top:2px;bottom:auto;">x${rq}</div><img src="${itemsDB[rid].imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">`;
         rs.style.borderColor = 'var(--green)';
       }
     }
@@ -1413,7 +1414,7 @@ function tentarForjar() {
     (r.resultados || []).forEach((res, i) => {
       const it = itemsDB[res.id || res]; if (!it) return;
       g.innerHTML += `<div class="picker-item" onclick="finalizarCraftMultiplo(${i})">
-        <img src="${it.imagem}" onerror="this.src='https://via.placeholder.com/70'">
+        <img src="${it.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
         <span class="picker-item-name">${it.nome}</span>
         <div class="item-badge" style="position:relative;margin:4px auto 0;display:inline-block;">x${res.qtd || 1}</div>
       </div>`;
@@ -1499,7 +1500,7 @@ function renderGrimorio() {
       if (ri) {
         c.innerHTML += `
           <div class="grimorio-recipe" onclick="verReceita('${r.rId}')">
-            <img src="${ri.imagem}" onerror="this.src='https://via.placeholder.com/44'">
+            <img src="${ri.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
             <div>
               <div style="font-family:'Cinzel',serif;font-size:0.85em;color:var(--gold2);">${ri.nome}</div>
               <div style="font-size:0.75em;color:var(--muted);">${cat}</div>
@@ -1528,7 +1529,7 @@ function verReceita(rId) {
     let img = '';
     if (s && typeof s === 'object' && itemsDB[s.id]) {
       img = `<div class="item-badge" style="top:2px;bottom:auto;">x${s.qtd || 1}</div>
-             <img src="${itemsDB[s.id].imagem}" onerror="this.src='https://via.placeholder.com/54'">`;
+             <img src="${itemsDB[s.id].imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">`;
     }
     g += `<div class="craft-slot">${img}</div>`;
   }
@@ -1617,8 +1618,8 @@ function renderCombatView() {
     return `
       <div class="combatant-token${isDefeated ? ' defeated' : ''}" onclick="verStatsCombate('${id}',${combat.public_inspection || false})">
         <div class="token-frame">
-          <img class="token-portrait" src="${char.imagem || 'https://via.placeholder.com/150'}"
-               onerror="this.src='https://via.placeholder.com/150'">
+             <img class="token-portrait" src="${char.imagem || FALLBACK_IMG}"
+               onerror="this.onerror=null;this.src=FALLBACK_IMG">
           <div class="token-shadow"></div>
           ${lootBtn}
         </div>
@@ -1632,8 +1633,8 @@ function renderCombatView() {
   const renderSummonToken = (s, side) => `
     <div class="combatant-token">
       <div class="token-frame">
-        <img class="token-portrait" src="${s.imagem || 'https://via.placeholder.com/150'}"
-             onerror="this.src='https://via.placeholder.com/150'">
+           <img class="token-portrait" src="${s.imagem || FALLBACK_IMG}"
+             onerror="this.onerror=null;this.src=FALLBACK_IMG">
         <div class="token-shadow"></div>
       </div>
       <div class="token-hp-stripe">
@@ -1647,7 +1648,7 @@ function renderCombatView() {
     const isDefeated = data.status === 'defeated';
     return `
       <div class="combatant-row${isDefeated ? ' defeated' : ''}" onclick="verStatsCombate('${id}',${combat.public_inspection || false})">
-        <img src="${char.imagem || ''}" onerror="this.src='https://via.placeholder.com/32'">
+        <img src="${char.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
         <span class="combatant-row-name">${char.nome || '?'}</span>
         <span class="combatant-row-hp">${hpMax > 0 ? `${char.hp || 0}/${hpMax}` : ''}</span>
       </div>`;
@@ -1693,7 +1694,7 @@ function renderCombatView() {
             ${allies.map(a => renderCombatantRow(a.id, a.data, a.char, false)).join('')}
             ${allySummons.map(s => `
               <div class="combatant-row">
-                <img src="${s.imagem || ''}" onerror="this.src='https://via.placeholder.com/32'">
+                <img src="${s.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
                 <span class="combatant-row-name" style="color:var(--purple2);">${s.nome || 'Pet'}</span>
                 <span class="combatant-row-hp" style="color:var(--purple2);">${s.hp_max > 0 ? `${s.hp}/${s.hp_max}` : ''}</span>
               </div>`).join('')}
@@ -1706,7 +1707,7 @@ function renderCombatView() {
             ${enemies.map(e => renderCombatantRow(e.id, e.data, e.char, true)).join('')}
             ${enemySummons.map(s => `
               <div class="combatant-row" style="flex-direction:row-reverse;">
-                <img src="${s.imagem || ''}" onerror="this.src='https://via.placeholder.com/32'">
+                <img src="${s.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
                 <span class="combatant-row-name" style="color:var(--purple2);">${s.nome || 'Pet'}</span>
               </div>`).join('')}
           </div>
@@ -1740,7 +1741,7 @@ function renderSummonBar() {
   }
   bar.innerHTML = summons.map(s => `
     <div class="summon-card">
-      <img src="${s.data.imagem}" onerror="this.src='https://via.placeholder.com/110'">
+      <img src="${s.data.imagem || FALLBACK_IMG}" onerror="this.onerror=null;this.src=FALLBACK_IMG">
       <div class="summon-card-body">
         <span class="summon-card-name">${s.data.nome}</span>
         <button class="btn-invoke" onclick="invocarCriatura('${s.key}','${s.id}')">⚡ Invocar</button>
@@ -1754,7 +1755,7 @@ function invocarCriatura(itemKey, itemId) {
   const myTeam = (currentCombatData.tokens || {})[session]?.team || 'A';
   const summon = {
     nome: item.nome || 'Pet',
-    imagem: item.imagem || 'https://via.placeholder.com/150',
+    imagem: item.imagem || FALLBACK_IMG,
     team: myTeam, owner: session, status: 'alive',
     hp:     (item.summon && item.summon.hp)     || 10,
     hp_max: (item.summon && item.summon.hp_max) || 10,
@@ -1772,7 +1773,7 @@ function verStatsCombate(charId, isPublic) {
   const c = charId === session ? pData : charsDB[charId];
   if (!c) return showToast('Personagem não encontrado.', 'error');
 
-  document.getElementById('cc-img').src = c.imagem || 'https://via.placeholder.com/150';
+  document.getElementById('cc-img').src = c.imagem || FALLBACK_IMG;
   document.getElementById('cc-nome').innerText = c.nome || '';
   document.getElementById('cc-classe').innerText = c.classe || '';
   document.getElementById('cc-desc').innerText = c.description || '';
