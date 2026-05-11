@@ -269,7 +269,6 @@ body {
 .skill-desc { font-size: 0.85em; color: var(--muted); margin-top: 2px; line-height: 1.3; }
 
 /* ── EQUIP SLOTS ─────────────────────────────── */
-.body-equip-wrap { position: relative; max-width: 340px; margin: 0 auto 30px; }
 .equip-body-grid {
   display: grid;
   grid-template-columns: 70px 1fr 70px;
@@ -302,10 +301,6 @@ body {
 .slot-arma2  { grid-column: 3; grid-row: 2; }
 .slot-pernas { grid-column: 2; grid-row: 3; }
 .slot-acessorio { grid-column: 1; grid-row: 3; }
-.equip-connector {
-  grid-column: 2; grid-row: 4;
-  width: 1px; height: 20px; background: var(--border);
-}
 
 /* ── INVENTORY ───────────────────────────────── */
 .inv-grid {
@@ -328,7 +323,6 @@ body {
 }
 
 /* ── FORJA ────────────────────────────────────── */
-.craft-section { }
 .craft-bench {
   display: flex; align-items: center; justify-content: center;
   gap: 20px; background: var(--panel); border: 1px solid var(--border);
@@ -405,7 +399,6 @@ body {
 /* ────────────────────────────────────────────────
    🎲 DICE SYSTEM
 ──────────────────────────────────────────────── */
-.dice-section { }
 .dice-history {
   background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
   padding: 16px; margin-bottom: 20px; max-height: 200px; overflow-y: auto;
@@ -431,7 +424,6 @@ body {
 .dice-log-val.miss { color: var(--red); }
 .dice-log-val.normal { color: var(--text); }
 
-/* Dice Arena */
 .dice-arena {
   display: flex; flex-direction: column; align-items: center;
   gap: 24px; padding: 30px 20px;
@@ -462,7 +454,6 @@ body {
   background: rgba(168,85,247,0.12); box-shadow: var(--glow-purple);
 }
 
-/* THE 3D DICE */
 .dice-container {
   perspective: 400px; width: 100px; height: 100px;
   cursor: pointer; position: relative;
@@ -500,19 +491,6 @@ body {
 .dice-face.left   { transform: rotateY(-90deg) translateZ(50px); }
 .dice-face.top    { transform: rotateX(90deg) translateZ(50px); }
 .dice-face.bottom { transform: rotateX(-90deg) translateZ(50px); }
-
-/* Non-cube dice visual */
-.dice-poly {
-  width: 100px; height: 100px;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-}
-.dice-poly svg { position: absolute; }
-.dice-poly-val {
-  position: relative; z-index: 2;
-  font-family: 'Cinzel', serif; font-size: 2em; font-weight: 900;
-  color: var(--purple2);
-}
 
 .dice-result-display {
   text-align: center; min-height: 60px; display: flex;
@@ -564,7 +542,7 @@ body {
 .dice-modifier-row {
   display: flex; align-items: center; gap: 12px; width: 100%;
 }
-.mod-label { font-family: Poppins;  font-size:0.75em; color: var(--muted); white-space: nowrap; }
+.mod-label { font-family: 'Cinzel', serif; font-size:0.75em; color: var(--muted); white-space: nowrap; }
 .mod-input {
   background: var(--panel2); border: 1px solid var(--border2); border-radius: 8px;
   color: var(--text); padding: 8px 12px; font-family: 'Cinzel', serif; font-size: 0.9em;
@@ -579,21 +557,18 @@ body {
 .dice-reason-input:focus { border-color: var(--purple); }
 .dice-reason-input::placeholder { color: var(--muted); }
 
-/* Particle burst */
 .particle { position: fixed; pointer-events: none; z-index: 999; border-radius: 50%; }
 
 /* ────────────────────────────────────────────────
-   ⚔️ COMBAT POV — COMPLETELY REVAMPED
+   ⚔️ COMBAT POV
 ──────────────────────────────────────────────── */
 .combat-tab { padding: 0 !important; }
 
-/* Atmosphere overlay */
 .combat-atmosphere {
   position: relative; overflow: hidden;
   background: #000;
 }
 
-/* Parallax scene */
 .scene-wrap {
   height: 380px; overflow: hidden; position: relative;
 }
@@ -612,7 +587,6 @@ body {
   background: linear-gradient(to top, var(--bg), transparent);
 }
 
-/* Combat title */
 .combat-title-bar {
   position: absolute; top: 0; left: 0; right: 0; z-index: 10;
   padding: 16px 20px;
@@ -625,10 +599,13 @@ body {
   text-shadow: 0 0 20px rgba(239,68,68,0.5);
   display: flex; align-items: center; gap: 8px;
 }
-.combat-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--red); box-shadow: 0 0 10px var(--red); animation: combatPulse 1.2s ease-in-out infinite; }
+.combat-pulse {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); box-shadow: 0 0 10px var(--red);
+  animation: combatPulse 1.2s ease-in-out infinite;
+}
 @keyframes combatPulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.5);opacity:0.6;} }
 
-/* Combatant cards on scene */
 .combatants-overlay {
   position: absolute; inset: 0; z-index: 8;
   display: flex; justify-content: space-between; align-items: flex-end;
@@ -693,14 +670,12 @@ body {
 .team-cluster.allies .token-name-tag { border-color: rgba(79,142,247,0.3); color: var(--blue2); }
 .team-cluster.enemies .token-name-tag { border-color: rgba(239,68,68,0.3); color: var(--red2); }
 
-/* defeated */
 .combatant-token.defeated .token-portrait {
   filter: grayscale(100%) brightness(0.4) drop-shadow(0 8px 24px rgba(0,0,0,0.9));
   transform: rotate(-15deg) translateY(20px);
 }
 .combatant-token.defeated { animation: none !important; opacity: 0.5; }
 
-/* VS badge */
 .vs-badge {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   z-index: 9;
@@ -712,7 +687,6 @@ body {
 }
 @keyframes vsPulse { 0%,100%{transform:translate(-50%,-50%) scale(1);} 50%{transform:translate(-50%,-50%) scale(1.1);} }
 
-/* Combat info panel below scene */
 .combat-info-panel {
   padding: 16px 20px;
   background: linear-gradient(to bottom, var(--bg), var(--deep));
@@ -720,7 +694,6 @@ body {
 .combat-teams-stats {
   display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; margin-bottom: 16px;
 }
-.team-stat-col { }
 .team-stat-col.enemies-col { text-align: right; }
 .team-stat-label {
   font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 1px;
@@ -758,7 +731,6 @@ body {
   opacity: 0.6;
 }
 
-/* Pet / Summon section */
 .summon-section { padding: 0 20px 16px; }
 .summon-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px;
@@ -785,7 +757,6 @@ body {
 }
 .btn-invoke:hover { background: var(--purple); color: white; }
 
-/* Loot button */
 .loot-collect-btn {
   position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
   background: linear-gradient(135deg, var(--amber), var(--gold));
@@ -794,6 +765,7 @@ body {
   cursor: pointer; white-space: nowrap; z-index: 20;
   box-shadow: 0 4px 12px rgba(240,180,41,0.5); letter-spacing: 0.5px;
   animation: lootBounce 1s ease-in-out infinite;
+  pointer-events: auto;
 }
 @keyframes lootBounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-4px);} }
 
@@ -813,6 +785,30 @@ body {
   cursor: pointer; width: 100%; transition: all 0.2s;
 }
 .btn-save-diary:hover { background: rgba(240,180,41,0.2); }
+
+/* ── COMBAT ENDED ─────────────────────────────── */
+.combat-ended-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 300px; gap: 20px; text-align: center;
+  background: radial-gradient(ellipse, rgba(240,180,41,0.06), var(--panel));
+  border: 1px solid var(--border); border-radius: 16px; padding: 30px;
+}
+.combat-ended-icon { font-size: 4em; color: var(--gold); animation: spinOnce 1s ease; }
+@keyframes spinOnce { from{transform:rotate(-180deg) scale(0);} to{transform:rotate(0) scale(1);} }
+.btn-reward {
+  background: linear-gradient(135deg, var(--amber), var(--gold));
+  color: #000; border: none; border-radius: 12px;
+  padding: 14px 32px; font-family: 'Cinzel', serif; font-size: 0.9em; font-weight: 800;
+  letter-spacing: 1px; cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(240,180,41,0.4);
+}
+.btn-reward:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(240,180,41,0.6); }
+.btn-exit-combat {
+  background: transparent; border: 1px solid var(--border2); border-radius: 12px;
+  padding: 12px 28px; color: var(--muted); font-family: 'Cinzel', serif; font-size: 0.8em;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-exit-combat:hover { border-color: var(--red2); color: var(--red2); }
 
 /* ── MODALS ──────────────────────────────────── */
 .modal {
@@ -861,7 +857,6 @@ body {
   cursor: pointer; transition: all 0.3s; color: white;
 }
 
-/* Picker modal */
 .picker-modal-card { max-width: 340px; }
 .picker-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px;
@@ -879,59 +874,14 @@ body {
 }
 .picker-item-name { font-size: 0.6em; color: var(--muted); }
 
-/* Char combat modal */
 .combat-char-modal-card { max-width: 400px; }
 .cc-vitals { padding: 0; margin: 12px 0; display: flex; flex-direction: column; gap: 6px; }
 .cc-attrs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 12px 0; }
 .cc-attr { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
-.cc-attr-name { font-family: Poppins;  font-size:0.6em; color:var(--muted); display: block; }
-.cc-attr-val { font-family: Poppins;  font-size:1.1em; font-weight:700; color:var(--text); }
+.cc-attr-name { font-family: 'Cinzel', serif; font-size:0.6em; color:var(--muted); display: block; }
+.cc-attr-val { font-family: 'Cinzel', serif; font-size:1.1em; font-weight:700; color:var(--text); }
 
-/* Recipe modal */
 .recipe-modal-bench { display: flex; align-items: center; gap: 20px; justify-content: center; padding: 10px 0; }
-
-/* ── TOAST ────────────────────────────────────── */
-#toast-wrap {
-  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-  z-index: 500; display: flex; flex-direction: column; align-items: center; gap: 8px;
-  pointer-events: none;
-}
-.toast {
-  background: var(--panel2); border: 1px solid var(--border2);
-  border-radius: 12px; padding: 10px 20px;
-  font-family: 'Cinzel', serif; font-size: 0.8em; font-weight: 600;
-  color: var(--text); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  animation: toastSlide 0.3s ease; pointer-events: none;
-  white-space: nowrap;
-}
-.toast.success { border-color: var(--green); color: var(--green); }
-.toast.error { border-color: var(--red); color: var(--red2); }
-.toast.gold { border-color: var(--gold); color: var(--gold); }
-@keyframes toastSlide { from{transform:translateY(10px);opacity:0;} to{transform:translateY(0);opacity:1;} }
-
-/* ── COMBAT ENDED ─────────────────────────────── */
-.combat-ended-screen {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 300px; gap: 20px; text-align: center;
-  background: radial-gradient(ellipse, rgba(240,180,41,0.06), var(--panel));
-  border: 1px solid var(--border); border-radius: 16px; padding: 30px;
-}
-.combat-ended-icon { font-size: 4em; color: var(--gold); animation: spinOnce 1s ease; }
-@keyframes spinOnce { from{transform:rotate(-180deg) scale(0);} to{transform:rotate(0) scale(1);} }
-.btn-reward {
-  background: linear-gradient(135deg, var(--amber), var(--gold));
-  color: #000; border: none; border-radius: 12px;
-  padding: 14px 32px; font-family: 'Cinzel', serif; font-size: 0.9em; font-weight: 800;
-  letter-spacing: 1px; cursor: pointer; transition: all 0.3s;
-  box-shadow: 0 4px 20px rgba(240,180,41,0.4);
-}
-.btn-reward:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(240,180,41,0.6); }
-.btn-exit-combat {
-  background: transparent; border: 1px solid var(--border2); border-radius: 12px;
-  padding: 12px 28px; color: var(--muted); font-family: 'Cinzel', serif; font-size: 0.8em;
-  cursor: pointer; transition: all 0.2s;
-}
-.btn-exit-combat:hover { border-color: var(--red2); color: var(--red2); }
 
 /* ── FLOATING COMBAT NAV ──────────────────────── */
 .combat-nav-pill {
@@ -994,6 +944,40 @@ body {
 .sheet-item i { width: 20px; text-align: center; color: var(--blue2); font-size: 1.1em; }
 .sheet-item-title { font-family: 'Cinzel', serif; font-size: 0.85em; font-weight: 600; }
 .sheet-item-sub { font-size: 0.75em; color: var(--muted); }
+
+/* ── TOAST ────────────────────────────────────── */
+#toast-wrap {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  z-index: 500; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--panel2); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 10px 20px;
+  font-family: 'Cinzel', serif; font-size: 0.8em; font-weight: 600;
+  color: var(--text); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: toastSlide 0.3s ease; pointer-events: none;
+  white-space: nowrap;
+}
+.toast.success { border-color: var(--green); color: var(--green); }
+.toast.error { border-color: var(--red); color: var(--red2); }
+.toast.gold { border-color: var(--gold); color: var(--gold); }
+@keyframes toastSlide { from{transform:translateY(10px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+
+/* ── EMPTY STATE ─────────────────────────────── */
+.empty-state {
+  text-align: center; padding: 40px 20px; color: var(--muted);
+  font-size: 0.85em; font-style: italic;
+}
+.empty-state i { font-size: 2.5em; margin-bottom: 12px; display: block; opacity: 0.3; }
+
+/* ── NO COMBAT PLACEHOLDER ───────────────────── */
+.no-combat-wrap {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 300px; gap: 16px; text-align: center; padding: 30px;
+}
+.no-combat-wrap i { font-size: 3.5em; color: var(--border2); }
+.no-combat-wrap p { color: var(--muted); font-size: 0.9em; max-width: 260px; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -1009,7 +993,7 @@ body {
 <div class="char-header">
   <div class="char-avatar-wrap">
     <div class="avatar-ring"></div>
-    <img id="p-img" class="char-avatar" src="https://via.placeholder.com/150">
+    <img id="p-img" class="char-avatar" src="https://via.placeholder.com/150" onerror="this.src='https://via.placeholder.com/150'">
   </div>
   <div class="char-texts">
     <div class="char-name" id="p-nome">Carregando...</div>
@@ -1060,8 +1044,8 @@ body {
 <!-- EQUIP TAB -->
 <div id="tab-equip" class="tab-content">
   <div class="sec-title"><i class="fas fa-vest"></i> Equipamentos Ativos</div>
-  <p style="text-align:center; font-size:0.8em; color:var(--muted); margin-bottom:24px;">Toque em um slot para equipar da bolsa.</p>
-  <div class="equip-body-grid" id="p-equipamentos" style="max-width:300px; margin:0 auto 30px; display:grid; grid-template-columns:70px 1fr 70px; gap:14px; align-items:center; justify-items:center;"></div>
+  <p style="text-align:center; font-size:0.8em; color:var(--muted); margin-bottom:30px;">Toque em um slot para equipar da bolsa.</p>
+  <div id="p-equipamentos" class="equip-body-grid" style="max-width:300px; margin:0 auto 50px;"></div>
 </div>
 
 <!-- BOLSA TAB -->
@@ -1091,12 +1075,11 @@ body {
   <div id="recipe-book-container"></div>
 </div>
 
-<!-- DADOS TAB ─────────────────────────────────── -->
+<!-- DADOS TAB -->
 <div id="tab-dados" class="tab-content dice-section">
   <div class="sec-title"><i class="fas fa-dice-d20"></i> Rolar Dado</div>
 
   <div class="dice-arena">
-    <!-- Dice type selector -->
     <div class="dice-select-row">
       <button class="dice-type-btn selected" data-sides="4" onclick="selectDice(4,this)">
         <span class="dice-icon">◆</span>D4
@@ -1121,7 +1104,6 @@ body {
       </button>
     </div>
 
-    <!-- 3D Dice visual -->
     <div class="dice-container" id="dice-container" onclick="rolarDado()">
       <div class="dice-3d" id="dice-3d">
         <div class="dice-face front">?</div>
@@ -1133,13 +1115,11 @@ body {
       </div>
     </div>
 
-    <!-- Result -->
     <div class="dice-result-display">
       <div id="dice-result-num" class="dice-result-number result-normal" style="color:var(--muted);">—</div>
       <div id="dice-result-label" class="dice-result-label"></div>
     </div>
 
-    <!-- Modifier + reason -->
     <div class="dice-modifier-row">
       <span class="mod-label">MOD</span>
       <input type="number" id="dice-modifier" class="mod-input" value="0">
@@ -1151,7 +1131,6 @@ body {
     </button>
   </div>
 
-  <!-- History -->
   <div class="dice-history">
     <h4><i class="fas fa-history"></i> HISTÓRICO DA SESSÃO</h4>
     <div id="dice-log-list">
@@ -1160,7 +1139,7 @@ body {
   </div>
 </div>
 
-<!-- COMBAT TAB ─────────────────────────────────── -->
+<!-- COMBAT TAB -->
 <div id="tab-combat" class="tab-content combat-tab" style="padding:0;">
   <div id="combat-view"></div>
 </div>
@@ -1173,7 +1152,7 @@ body {
 </div>
 
 <!-- Floating combat pill -->
-<div class="combat-nav-pill" id="combat-nav-pill" onclick="mudarAba('combat', document.querySelector('[data-tab=combat]'))">
+<div class="combat-nav-pill" id="combat-nav-pill" onclick="irParaCombate()">
   <span class="combat-pulse"></span>
   <span>Combate Ativo</span>
   <i class="fas fa-chevron-right" style="color:var(--red2); font-size:0.75em;"></i>
@@ -1213,8 +1192,8 @@ body {
 <div class="modal" id="item-modal">
   <div class="modal-card" style="text-align:center;">
     <i class="fas fa-times modal-close" onclick="fecharModal('item-modal')"></i>
-    <img id="mod-img" class="modal-img" src="">
-    <div class="mod-title modal-title" id="mod-nome"></div>
+    <img id="mod-img" class="modal-img" src="" onerror="this.src='https://via.placeholder.com/150'">
+    <div class="modal-title" id="mod-nome"></div>
     <div class="modal-cat" id="mod-cat"></div>
     <div class="modal-desc" id="mod-desc"></div>
     <div class="modal-tags" id="mod-stats-box"></div>
@@ -1235,7 +1214,7 @@ body {
 <div class="modal" id="combat-char-modal">
   <div class="modal-card combat-char-modal-card" style="text-align:center;">
     <i class="fas fa-times modal-close" onclick="fecharModal('combat-char-modal')"></i>
-    <img id="cc-img" class="modal-img" src="">
+    <img id="cc-img" class="modal-img" src="" onerror="this.src='https://via.placeholder.com/150'">
     <div class="modal-title" id="cc-nome"></div>
     <div class="modal-cat" id="cc-classe"></div>
     <p id="cc-desc" style="font-size:0.8em; color:var(--muted); margin-bottom:10px; font-style:italic;"></p>
@@ -1254,6 +1233,18 @@ body {
   </div>
 </div>
 
+<!-- Confirm modal (generic) -->
+<div class="modal" id="confirm-modal">
+  <div class="modal-card" style="text-align:center; max-width:320px;">
+    <i class="fas fa-times modal-close" onclick="fecharModal('confirm-modal')"></i>
+    <div id="confirm-text" style="font-family:'Cinzel',serif; font-size:0.95em; margin-bottom:20px; color:var(--text); line-height:1.5;"></div>
+    <div style="display:flex; gap:10px;">
+      <button id="confirm-yes" class="btn-item-action" style="background:var(--green);">Confirmar</button>
+      <button onclick="fecharModal('confirm-modal')" style="flex:1; padding:13px; border-radius:10px; border:1px solid var(--border2); background:transparent; color:var(--muted); font-family:'Cinzel',serif; font-size:0.85em; cursor:pointer;">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast-wrap"></div>
 
 <script>
@@ -1266,23 +1257,41 @@ if (!session || session === 'admin') window.location.href = 'index.html';
 
 /* ─── State ─────────────────────────────── */
 let pData = null, itemsDB = {}, recipesDB = {}, skillsDB = {}, charsDB = {};
-const attrNames = { for:'Força', res:'Resistência', vel:'Velocidade', agi:'Agilidade', per:'Percepção', resm:'Res. Mágica', esp:'Espírito', alm:'Alma' };
+const attrNames = {
+  for:'Força', res:'Resistência', vel:'Velocidade', agi:'Agilidade',
+  per:'Percepção', resm:'Res. Mágica', esp:'Espírito', alm:'Alma'
+};
 
 let craftMesa = Array(9).fill(null);
 let itemCraftSelecionado = null, inventarioCraftDisponivel = {};
 let itemAtualKey = null, itemAtualId = null, itemAtualDBData = null, itemAtualAction = 'equip';
 let activeCombatId = null, currentCombatData = null;
 let diaryDirty = false;
+let dbLoaded = { items: false, skills: false };
 
 /* ─── DB Listeners ──────────────────────── */
-db.ref('items').on('value', s => { itemsDB = s.val()||{}; checkRender(); });
-db.ref('skills').on('value', s => { skillsDB = s.val()||{}; checkRender(); });
-db.ref('recipes').on('value', s => { recipesDB = s.val()||{}; });
-db.ref('characters').on('value', s => { charsDB = s.val()||{}; });
-db.ref('characters/'+session).on('value', s => {
-  if (!s.exists()) return (window.location.href='index.html');
+db.ref('items').on('value', s => {
+  itemsDB = s.val() || {};
+  dbLoaded.items = true;
+  checkRender();
+});
+db.ref('skills').on('value', s => {
+  skillsDB = s.val() || {};
+  dbLoaded.skills = true;
+  checkRender();
+});
+db.ref('recipes').on('value', s => {
+  recipesDB = s.val() || {};
+  if (pData) { renderReceitasProntas(); renderGrimorio(); }
+});
+db.ref('characters').on('value', s => {
+  charsDB = s.val() || {};
+  if (activeCombatId) renderCombatView();
+});
+db.ref('characters/' + session).on('value', s => {
+  if (!s.exists()) return (window.location.href = 'index.html');
   pData = s.val();
-  document.getElementById('p-nome').innerText = pData.nome;
+  document.getElementById('p-nome').innerText = pData.nome || '';
   document.getElementById('p-classe').innerText = pData.classe || 'Aventureiro';
   document.getElementById('p-pontos').innerText = pData.pontos || 0;
   if (pData.imagem) document.getElementById('p-img').src = pData.imagem;
@@ -1293,294 +1302,616 @@ db.ref('characters/'+session).on('value', s => {
 
 /* ─── Combat listener ─────────────────── */
 db.ref('combat/sessions').on('value', snap => {
-  const sessions = snap.val()||{};
-  let myCombat=null, myCombatId=null;
-  Object.entries(sessions).forEach(([cId,c]) => {
-    if (c.tokens && c.tokens[session]) { myCombat=c; myCombatId=cId; }
+  const sessions = snap.val() || {};
+  let myCombat = null, myCombatId = null;
+  Object.entries(sessions).forEach(([cId, c]) => {
+    if (c.tokens && c.tokens[session]) { myCombat = c; myCombatId = cId; }
   });
+
   const pill = document.getElementById('combat-nav-pill');
   const sheetCombat = document.getElementById('sheet-combat-item');
 
-  if (myCombat && (myCombat.status==='active' || myCombat.status==='ended_pending_loot')) {
+  if (myCombat && (myCombat.status === 'active' || myCombat.status === 'ended_pending_loot')) {
     const justEntered = activeCombatId !== myCombatId;
-    activeCombatId = myCombatId; currentCombatData = myCombat;
+    activeCombatId = myCombatId;
+    currentCombatData = myCombat;
     if (pill) pill.classList.add('visible');
     if (sheetCombat) sheetCombat.style.display = 'flex';
-    renderCombatView();
-    if (justEntered && document.getElementById('tab-combat').classList.contains('active') === false) {
+    // Re-render if combat tab is active
+    if (document.getElementById('tab-combat').classList.contains('active')) {
+      renderCombatView();
+    }
+    if (justEntered && !document.getElementById('tab-combat').classList.contains('active')) {
       showToast('⚔️ Novo combate iniciado!', 'error');
     }
   } else {
-    activeCombatId = null; currentCombatData = null;
+    const wasInCombat = !!activeCombatId;
+    activeCombatId = null;
+    currentCombatData = null;
     if (pill) pill.classList.remove('visible');
     if (sheetCombat) sheetCombat.style.display = 'none';
+    // If combat tab was active, go back to status
+    if (document.getElementById('tab-combat').classList.contains('active')) {
+      mudarAba('status', document.querySelector('.nav-item[data-tab="status"]'));
+    }
     document.getElementById('combat-view').innerHTML = '';
-    if (document.getElementById('tab-combat').classList.contains('active')) mudarAba('status');
+    if (wasInCombat) showToast('Combate encerrado.', 'success');
   }
 });
 
 /* ─── Render ────────────────────────────── */
 function checkRender() {
-  if (!pData) return;
+  if (!pData || !dbLoaded.items || !dbLoaded.skills) return;
   renderStatusEInv();
   inicializarCrafting();
   renderGrimorio();
 }
 
 function renderStatusEInv() {
-  let bonus = {for:0,res:0,vel:0,agi:0,per:0,resm:0,esp:0,alm:0};
-  let eqSlots = {arma1:null,arma2:null,cabeca:null,peitoral:null,pernas:null,acessorio:null};
+  let bonus = { for:0, res:0, vel:0, agi:0, per:0, resm:0, esp:0, alm:0 };
+  let eqSlots = { arma1:null, arma2:null, cabeca:null, peitoral:null, pernas:null, acessorio:null };
   let equippedItems = [];
-  if (pData.inventario) Object.entries(pData.inventario).forEach(([key,iv]) => { if (iv.equipado) equippedItems.push({key,...iv}); });
+
+  if (pData.inventario) {
+    Object.entries(pData.inventario).forEach(([key, iv]) => {
+      if (iv.equipado) equippedItems.push({ key, ...iv });
+    });
+  }
+
   equippedItems.forEach(item => {
-    const idb = itemsDB[item.item_id]; if (!idb) return; let placed=false;
-    if (idb.categoria==='Arma') { if (!eqSlots.arma1){eqSlots.arma1={item,idb};placed=true;} else if (!eqSlots.arma2){eqSlots.arma2={item,idb};placed=true;} }
-    else if (idb.categoria==='Armadura') {
-      if (idb.slot_type==='Cabeça'&&!eqSlots.cabeca){eqSlots.cabeca={item,idb};placed=true;}
-      else if (idb.slot_type==='Peitoral'&&!eqSlots.peitoral){eqSlots.peitoral={item,idb};placed=true;}
-      else if (idb.slot_type==='Pernas'&&!eqSlots.pernas){eqSlots.pernas={item,idb};placed=true;}
-    } else if (idb.categoria==='Acessorio'&&!eqSlots.acessorio){eqSlots.acessorio={item,idb};placed=true;}
-    if (placed&&idb.mods) Object.keys(bonus).forEach(k=>bonus[k]+=(idb.mods[k]||0));
+    const idb = itemsDB[item.item_id]; if (!idb) return; let placed = false;
+    if (idb.categoria === 'Arma') {
+      if (!eqSlots.arma1) { eqSlots.arma1 = { item, idb }; placed = true; }
+      else if (!eqSlots.arma2) { eqSlots.arma2 = { item, idb }; placed = true; }
+    } else if (idb.categoria === 'Armadura') {
+      if (idb.slot_type === 'Cabeça' && !eqSlots.cabeca) { eqSlots.cabeca = { item, idb }; placed = true; }
+      else if (idb.slot_type === 'Peitoral' && !eqSlots.peitoral) { eqSlots.peitoral = { item, idb }; placed = true; }
+      else if (idb.slot_type === 'Pernas' && !eqSlots.pernas) { eqSlots.pernas = { item, idb }; placed = true; }
+    } else if (idb.categoria === 'Acessorio' && !eqSlots.acessorio) {
+      eqSlots.acessorio = { item, idb }; placed = true;
+    }
+    if (placed && idb.mods) Object.keys(bonus).forEach(k => bonus[k] += (idb.mods[k] || 0));
   });
 
-  // Skills
-  const bSkills = document.getElementById('p-skills'); bSkills.innerHTML='';
-  if (pData.skills) Object.keys(pData.skills).forEach(sId=>{
-    const sk=skillsDB[sId]; if(!sk)return;
-    if(sk.buffs) Object.keys(bonus).forEach(k=>bonus[k]+=(sk.buffs[k]||0));
-    bSkills.innerHTML += `<div class="skill-card"><img class="skill-img" src="${sk.imagem||''}"><div><div class="skill-name">${sk.nome}</div><div class="skill-desc">${sk.descricao||''}</div></div></div>`;
+  /* Skills */
+  const bSkills = document.getElementById('p-skills'); bSkills.innerHTML = '';
+  if (pData.skills) {
+    Object.keys(pData.skills).forEach(sId => {
+      const sk = skillsDB[sId]; if (!sk) return;
+      if (sk.buffs) Object.keys(bonus).forEach(k => bonus[k] += (sk.buffs[k] || 0));
+      bSkills.innerHTML += `
+        <div class="skill-card">
+          <img class="skill-img" src="${sk.imagem || ''}" onerror="this.src='https://via.placeholder.com/48'">
+          <div>
+            <div class="skill-name">${sk.nome}</div>
+            <div class="skill-desc">${sk.descricao || ''}</div>
+          </div>
+        </div>`;
+    });
+  }
+  if (!bSkills.innerHTML) {
+    bSkills.innerHTML = '<div class="empty-state"><i class="fas fa-fire"></i>Nenhuma habilidade aprendida.</div>';
+  }
+
+  /* Attrs */
+  const base = pData.atributos_base || {};
+  const bAttr = document.getElementById('p-atributos-base'); bAttr.innerHTML = '';
+  Object.keys(attrNames).forEach(k => {
+    const tot = (base[k] || 0) + bonus[k];
+    const bStr = bonus[k] > 0 ? `<span class="attr-bonus">+${bonus[k]}</span>` : '';
+    bAttr.innerHTML += `
+      <div class="attr-card">
+        <div>
+          <div class="attr-name">${attrNames[k]}</div>
+          <div class="attr-value">${tot}${bStr}</div>
+        </div>
+        <button class="btn-upar" onclick="upar('${k}')">+</button>
+      </div>`;
   });
 
-  // Attrs
-  const base = pData.atributos_base||{};
-  const bAttr = document.getElementById('p-atributos-base'); bAttr.innerHTML='';
-  Object.keys(attrNames).forEach(k=>{
-    const tot=(base[k]||0)+bonus[k]; const bStr=bonus[k]>0?`<span class="attr-bonus">+${bonus[k]}</span>`:'';
-    bAttr.innerHTML += `<div class="attr-card"><div><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${tot}${bStr}</div></div><button class="btn-upar" onclick="upar('${k}')">+</button></div>`;
+  /* Vitals */
+  ['hp', 'mp', 'sp'].forEach(t => {
+    const row = document.getElementById(`${t}-vital`);
+    const max = pData[`${t}_max`] || 0;
+    if (max > 0) {
+      row.classList.add('active');
+      const v = pData[t] || 0;
+      const pct = Math.max(0, Math.min(100, (v / max) * 100));
+      document.getElementById(`${t}-fill`).style.width = pct + '%';
+      document.getElementById(`${t}-val`).innerText = `${v}/${max}`;
+    } else {
+      row.classList.remove('active');
+    }
   });
 
-  // Vitals
-  ['hp','mp','sp'].forEach(t=>{
-    const r=document.getElementById(`${t}-vital`); const max=pData[`${t}_max`]||0;
-    if(max>0){ r.classList.add('active'); const v=pData[t]||0; const pct=Math.max(0,Math.min(100,(v/max)*100));
-      document.getElementById(`${t}-fill`).style.width=pct+'%';
-      document.getElementById(`${t}-val`).innerText=`${v}/${max}`;
-    } else { r.classList.remove('active'); }
-  });
-
-  // Equip grid
-  const renderEq=(sd,icon,lbl,type)=>{
-    if(sd) return `<div class="equip-slot filled slot-${type}" onclick="abrirItem('${sd.item.key}','${sd.item.item_id}',true,1)" style="position:relative;"><img src="${sd.idb.imagem}"><span class="equip-slot-lbl">${lbl}</span></div>`;
-    return `<div class="equip-slot slot-${type}" onclick="abrirEquipPicker('${type}')"><i class="fas ${icon} slot-icon"></i><span class="equip-slot-lbl">${lbl}</span></div>`;
+  /* Equipment grid */
+  const renderEq = (sd, icon, lbl, type) => {
+    if (sd) return `
+      <div class="equip-slot filled slot-${type}" onclick="abrirItem('${sd.item.key}','${sd.item.item_id}',true,1)" style="position:relative;">
+        <img src="${sd.idb.imagem}" onerror="this.src='https://via.placeholder.com/65'">
+        <span class="equip-slot-lbl">${lbl}</span>
+      </div>`;
+    return `
+      <div class="equip-slot slot-${type}" onclick="abrirEquipPicker('${type}')">
+        <i class="fas ${icon} slot-icon"></i>
+        <span class="equip-slot-lbl">${lbl}</span>
+      </div>`;
   };
   document.getElementById('p-equipamentos').innerHTML =
-    renderEq(eqSlots.cabeca,'fa-hard-hat','Cabeça','cabeca') +
-    renderEq(eqSlots.peitoral,'fa-tshirt','Peitoral','peitoral') +
-    renderEq(eqSlots.pernas,'fa-shoe-prints','Pernas','pernas') +
-    renderEq(eqSlots.arma1,'fa-hand-rock','Mão 1','arma1') +
-    renderEq(eqSlots.arma2,'fa-hand-rock','Mão 2','arma2') +
-    renderEq(eqSlots.acessorio,'fa-ring','Amuleto','acessorio');
+    renderEq(eqSlots.cabeca,   'fa-hard-hat',   'Cabeça',   'cabeca')   +
+    renderEq(eqSlots.peitoral, 'fa-tshirt',     'Peitoral', 'peitoral') +
+    renderEq(eqSlots.pernas,   'fa-shoe-prints','Pernas',   'pernas')   +
+    renderEq(eqSlots.arma1,    'fa-hand-rock',  'Mão 1',    'arma1')    +
+    renderEq(eqSlots.arma2,    'fa-hand-rock',  'Mão 2',    'arma2')    +
+    renderEq(eqSlots.acessorio,'fa-ring',       'Amuleto',  'acessorio');
 
-  // Inventory
-  const bInv=document.getElementById('p-inventario'); bInv.innerHTML='';
-  let qtdMap={};
+  /* Inventory */
+  const bInv = document.getElementById('p-inventario'); bInv.innerHTML = '';
+  let qtdMap = {};
   if (pData.inventario) {
-    Object.entries(pData.inventario).forEach(([key,iv])=>{
-      const idb=itemsDB[iv.item_id]; if(!idb)return;
-      if(['Material','Consumivel','Pet'].includes(idb.categoria)){
-        if(!qtdMap[iv.item_id]) qtdMap[iv.item_id]={count:0,sampleKey:key};
+    Object.entries(pData.inventario).forEach(([key, iv]) => {
+      const idb = itemsDB[iv.item_id]; if (!idb) return;
+      if (['Material', 'Consumivel', 'Pet'].includes(idb.categoria)) {
+        if (!qtdMap[iv.item_id]) qtdMap[iv.item_id] = { count: 0, sampleKey: key };
         qtdMap[iv.item_id].count++;
-      } else { bInv.innerHTML+=renderItemSlot(key,iv.item_id,iv.equipado,1); }
+      } else {
+        bInv.innerHTML += renderItemSlot(key, iv.item_id, iv.equipado, 1);
+      }
     });
-    Object.keys(qtdMap).forEach(id=>bInv.innerHTML+=renderItemSlot(qtdMap[id].sampleKey,id,false,qtdMap[id].count));
+    Object.keys(qtdMap).forEach(id =>
+      bInv.innerHTML += renderItemSlot(qtdMap[id].sampleKey, id, false, qtdMap[id].count)
+    );
   }
-  if(!bInv.innerHTML) bInv.innerHTML='<p style="grid-column:1/-1;color:var(--muted);text-align:center;padding:30px;font-size:0.85em;">Sua bolsa está vazia.</p>';
-  if(activeCombatId) renderSummonBar();
+  if (!bInv.innerHTML) {
+    bInv.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-shopping-bag"></i>Sua bolsa está vazia.</div>';
+  }
+
+  /* Summon bar (if combat active) */
+  if (activeCombatId) renderSummonBar();
 }
 
-function renderItemSlot(k,id,eq,count){
-  const idb=itemsDB[id]; if(!idb)return'';
-  const eqC=eq?' equipped':''; const bg=count>1?`<div class="item-badge">x${count}</div>`:'';
-  return `<div class="item-slot${eqC}" onclick="abrirItem('${k}','${id}',${eq},${count})">${bg}<img src="${idb.imagem}"></div>`;
+function renderItemSlot(k, id, eq, count) {
+  const idb = itemsDB[id]; if (!idb) return '';
+  const eqC = eq ? ' equipped' : '';
+  const bg = count > 1 ? `<div class="item-badge">x${count}</div>` : '';
+  return `<div class="item-slot${eqC}" onclick="abrirItem('${k}','${id}',${eq},${count})">
+    ${bg}<img src="${idb.imagem}" onerror="this.src='https://via.placeholder.com/80'">
+  </div>`;
+}
+
+/* ─── Confirm helper ─────────────────────── */
+function confirmar(texto, cb) {
+  document.getElementById('confirm-text').innerText = texto;
+  document.getElementById('confirm-yes').onclick = () => { fecharModal('confirm-modal'); cb(); };
+  document.getElementById('confirm-modal').classList.add('active');
 }
 
 /* ─── Equip ─────────────────────────────── */
-function upar(atr){
-  if((pData.pontos||0)<=0) return showToast('Sem pontos disponíveis.','error');
-  if(confirm(`Investir 1 ponto em ${attrNames[atr]}?`)){
-    const cur=(pData.atributos_base&&pData.atributos_base[atr])||0;
-    db.ref(`characters/${session}/pontos`).set(pData.pontos-1);
-    db.ref(`characters/${session}/atributos_base/${atr}`).set(cur+1);
-  }
-}
-function abrirEquipPicker(slotType){
-  const grid=document.getElementById('picker-grid'); grid.innerHTML=''; let found=false;
-  Object.entries(pData.inventario||{}).forEach(([key,iv])=>{
-    const idb=itemsDB[iv.item_id]; if(!idb||iv.equipado)return;
-    let match=false;
-    if((slotType==='arma1'||slotType==='arma2')&&idb.categoria==='Arma') match=true;
-    if(slotType==='acessorio'&&idb.categoria==='Acessorio') match=true;
-    if(idb.categoria==='Armadura'){
-      if(slotType==='cabeca'&&idb.slot_type==='Cabeça') match=true;
-      if(slotType==='peitoral'&&idb.slot_type==='Peitoral') match=true;
-      if(slotType==='pernas'&&idb.slot_type==='Pernas') match=true;
-    }
-    if(match){found=true; grid.innerHTML+=`<div class="picker-item" onclick="finalizarEquip('${key}')"><img src="${idb.imagem}"><span class="picker-item-name">${idb.nome}</span></div>`;}
+function upar(atr) {
+  if ((pData.pontos || 0) <= 0) return showToast('Sem pontos disponíveis.', 'error');
+  confirmar(`Investir 1 ponto em ${attrNames[atr]}?`, () => {
+    const cur = (pData.atributos_base && pData.atributos_base[atr]) || 0;
+    db.ref(`characters/${session}/pontos`).set((pData.pontos || 0) - 1);
+    db.ref(`characters/${session}/atributos_base/${atr}`).set(cur + 1);
   });
-  if(!found) grid.innerHTML=`<p style="color:var(--muted);font-size:0.85em;text-align:center;">Nenhum item compatível.</p>`;
-  document.getElementById('picker-title').innerText='Equipar'; document.getElementById('picker-modal').classList.add('active');
 }
-function finalizarEquip(k){ db.ref(`characters/${session}/inventario/${k}/equipado`).set(true); fecharModal('picker-modal'); }
+
+function abrirEquipPicker(slotType) {
+  const grid = document.getElementById('picker-grid'); grid.innerHTML = ''; let found = false;
+  Object.entries(pData.inventario || {}).forEach(([key, iv]) => {
+    const idb = itemsDB[iv.item_id]; if (!idb || iv.equipado) return;
+    let match = false;
+    if ((slotType === 'arma1' || slotType === 'arma2') && idb.categoria === 'Arma') match = true;
+    if (slotType === 'acessorio' && idb.categoria === 'Acessorio') match = true;
+    if (idb.categoria === 'Armadura') {
+      if (slotType === 'cabeca'   && idb.slot_type === 'Cabeça')   match = true;
+      if (slotType === 'peitoral' && idb.slot_type === 'Peitoral') match = true;
+      if (slotType === 'pernas'   && idb.slot_type === 'Pernas')   match = true;
+    }
+    if (match) {
+      found = true;
+      grid.innerHTML += `<div class="picker-item" onclick="finalizarEquip('${key}')">
+        <img src="${idb.imagem}" onerror="this.src='https://via.placeholder.com/70'">
+        <span class="picker-item-name">${idb.nome}</span>
+      </div>`;
+    }
+  });
+  if (!found) grid.innerHTML = `<p style="color:var(--muted);font-size:0.85em;text-align:center;padding:20px;grid-column:1/-1;">Nenhum item compatível na bolsa.</p>`;
+  document.getElementById('picker-title').innerText = 'Escolher Equipamento';
+  document.getElementById('picker-modal').classList.add('active');
+}
+
+function finalizarEquip(k) {
+  db.ref(`characters/${session}/inventario/${k}/equipado`).set(true);
+  fecharModal('picker-modal');
+  showToast('Item equipado!', 'success');
+}
 
 /* ─── Item Modal ────────────────────────── */
-function abrirItem(k,id,eq,count){
-  itemAtualKey=k; itemAtualId=id; itemAtualDBData=itemsDB[id]; if(!itemAtualDBData)return;
-  document.getElementById('mod-img').src=itemAtualDBData.imagem;
-  document.getElementById('mod-nome').innerText=itemAtualDBData.nome;
-  document.getElementById('mod-cat').innerText=itemAtualDBData.categoria+(count>1?` (x${count})`:'');
-  document.getElementById('mod-desc').innerText=itemAtualDBData.descricao||'';
-  const sb=document.getElementById('mod-stats-box'); sb.innerHTML='';
-  if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k=>{ if(itemAtualDBData.mods[k]>0) sb.innerHTML+=`<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`; });
-  if(itemAtualDBData.effects) Object.entries(itemAtualDBData.effects).forEach(([k,v])=>{ if(v>0) sb.innerHTML+=`<span class="mod-tag mod-tag-cyan">Recupera ${k.toUpperCase()} +${v}</span>`; });
-  const btn=document.getElementById('mod-btn'); btn.disabled=false;
-  if(itemAtualDBData.categoria==='Consumivel'){btn.style.background='var(--cyan)';btn.innerText='Usar';itemAtualAction='usar';}
-  else if(itemAtualDBData.categoria==='Pet'){
-    btn.style.background='var(--purple)';
-    btn.innerText=activeCombatId?'Invocar':'Sem combate ativo';
-    btn.disabled=!activeCombatId; itemAtualAction='invocar';
-  } else if(['Arma','Armadura','Acessorio'].includes(itemAtualDBData.categoria)){
-    if(eq){btn.style.background='var(--red)';btn.innerText='Desequipar';}
-    else{btn.style.background='var(--green)';btn.innerText='Equipar';}
-    itemAtualAction='equip';
-  } else { btn.style.display='none'; }
+function abrirItem(k, id, eq, count) {
+  itemAtualKey = k; itemAtualId = id; itemAtualDBData = itemsDB[id];
+  if (!itemAtualDBData) return;
+  document.getElementById('mod-img').src = itemAtualDBData.imagem || '';
+  document.getElementById('mod-nome').innerText = itemAtualDBData.nome;
+  document.getElementById('mod-cat').innerText = itemAtualDBData.categoria + (count > 1 ? ` (x${count})` : '');
+  document.getElementById('mod-desc').innerText = itemAtualDBData.descricao || '';
+
+  const sb = document.getElementById('mod-stats-box'); sb.innerHTML = '';
+  if (itemAtualDBData.mods) {
+    Object.keys(attrNames).forEach(k => {
+      if ((itemAtualDBData.mods[k] || 0) > 0)
+        sb.innerHTML += `<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`;
+    });
+  }
+  if (itemAtualDBData.effects) {
+    Object.entries(itemAtualDBData.effects).forEach(([k, v]) => {
+      if (v > 0) sb.innerHTML += `<span class="mod-tag mod-tag-cyan">Recupera ${k.toUpperCase()} +${v}</span>`;
+    });
+  }
+
+  const btn = document.getElementById('mod-btn');
+  btn.style.display = 'block'; btn.disabled = false;
+
+  if (itemAtualDBData.categoria === 'Consumivel') {
+    btn.style.background = 'var(--cyan)'; btn.innerText = 'Usar'; itemAtualAction = 'usar';
+  } else if (itemAtualDBData.categoria === 'Pet') {
+    btn.style.background = 'var(--purple)';
+    btn.innerText = activeCombatId ? 'Invocar no Combate' : 'Sem combate ativo';
+    btn.disabled = !activeCombatId; itemAtualAction = 'invocar';
+  } else if (['Arma', 'Armadura', 'Acessorio'].includes(itemAtualDBData.categoria)) {
+    if (eq) { btn.style.background = 'var(--red)'; btn.innerText = 'Desequipar'; }
+    else     { btn.style.background = 'var(--green)'; btn.innerText = 'Equipar'; }
+    itemAtualAction = 'equip';
+  } else if (itemAtualDBData.categoria === 'Material') {
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = 'none';
+  }
   document.getElementById('item-modal').classList.add('active');
 }
-function handleItemAction(){
-  if(itemAtualAction==='equip') db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado);
-  else if(itemAtualAction==='usar'){
-    const eff=itemAtualDBData.effects; if(!eff)return;
-    let u={};
-    if(eff.hp>0&&pData.hp_max>0) u.hp=Math.min(pData.hp_max,(pData.hp||0)+eff.hp);
-    if(eff.mp>0&&pData.mp_max>0) u.mp=Math.min(pData.mp_max,(pData.mp||0)+eff.mp);
-    if(eff.sp>0&&pData.sp_max>0) u.sp=Math.min(pData.sp_max,(pData.sp||0)+eff.sp);
+
+function handleItemAction() {
+  if (!itemAtualDBData || !itemAtualKey) return;
+  if (itemAtualAction === 'equip') {
+    const isEq = pData.inventario[itemAtualKey]?.equipado || false;
+    db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!isEq);
+    showToast(!isEq ? 'Item equipado!' : 'Item desequipado!', 'success');
+  } else if (itemAtualAction === 'usar') {
+    const eff = itemAtualDBData.effects; if (!eff) return;
+    let u = {};
+    if ((eff.hp || 0) > 0 && (pData.hp_max || 0) > 0) u.hp = Math.min(pData.hp_max, (pData.hp || 0) + eff.hp);
+    if ((eff.mp || 0) > 0 && (pData.mp_max || 0) > 0) u.mp = Math.min(pData.mp_max, (pData.mp || 0) + eff.mp);
+    if ((eff.sp || 0) > 0 && (pData.sp_max || 0) > 0) u.sp = Math.min(pData.sp_max, (pData.sp || 0) + eff.sp);
     db.ref(`characters/${session}`).update(u);
     db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove();
-    showToast('Item usado!','success');
-  } else if(itemAtualAction==='invocar') invocarCriatura(itemAtualKey,itemAtualId);
+    showToast('Item usado!', 'success');
+  } else if (itemAtualAction === 'invocar') {
+    invocarCriatura(itemAtualKey, itemAtualId);
+  }
   fecharModal('item-modal');
 }
 
 /* ─── Crafting ──────────────────────────── */
-function inicializarCrafting(){
-  inventarioCraftDisponivel={};
-  if(pData.inventario) Object.values(pData.inventario).forEach(iv=>{
-    const idb=itemsDB[iv.item_id];
-    if(idb&&idb.categoria==='Material'&&!iv.equipado) inventarioCraftDisponivel[iv.item_id]=(inventarioCraftDisponivel[iv.item_id]||0)+1;
-  });
-  craftMesa.forEach(s=>{ if(s&&inventarioCraftDisponivel[s.id]) inventarioCraftDisponivel[s.id]-=s.qtd; });
-  renderUIForja(); renderReceitasProntas();
-}
-function renderReceitasProntas(){
-  const box=document.getElementById('receitas-prontas'); box.innerHTML=''; let count=0;
-  Object.keys(recipesDB).forEach(rId=>{
-    const r=recipesDB[rId]; if(!r.grid)return;
-    let ok=true; let inv={...inventarioCraftDisponivel};
-    for(let i=0;i<9;i++){
-      let s=r.grid[i]; if(typeof s==='string'&&s!=="") s={id:s,qtd:1};
-      if(s&&typeof s==='object'){ if((inv[s.id]||0)<s.qtd)ok=false; else inv[s.id]-=s.qtd; }
+function inicializarCrafting() {
+  inventarioCraftDisponivel = {};
+  if (pData.inventario) {
+    Object.values(pData.inventario).forEach(iv => {
+      const idb = itemsDB[iv.item_id];
+      if (idb && idb.categoria === 'Material' && !iv.equipado)
+        inventarioCraftDisponivel[iv.item_id] = (inventarioCraftDisponivel[iv.item_id] || 0) + 1;
+    });
+  }
+  // Subtract items already in the craft table
+  craftMesa.forEach(s => {
+    if (s && inventarioCraftDisponivel[s.id] !== undefined) {
+      inventarioCraftDisponivel[s.id] = Math.max(0, (inventarioCraftDisponivel[s.id] || 0) - s.qtd);
     }
-    if(ok){
+  });
+  renderUIForja();
+  renderReceitasProntas();
+}
+
+function renderReceitasProntas() {
+  const box = document.getElementById('receitas-prontas');
+  if (!box) return;
+  box.innerHTML = ''; let count = 0;
+  Object.keys(recipesDB).forEach(rId => {
+    const r = recipesDB[rId]; if (!r.grid) return;
+    let ok = true;
+    let inv = { ...inventarioCraftDisponivel };
+    for (let i = 0; i < 9; i++) {
+      let s = r.grid[i];
+      if (typeof s === 'string' && s !== '') s = { id: s, qtd: 1 };
+      if (s && typeof s === 'object') {
+        if ((inv[s.id] || 0) < (s.qtd || 1)) ok = false;
+        else inv[s.id] = (inv[s.id] || 0) - (s.qtd || 1);
+      }
+    }
+    if (ok) {
       count++;
-      const add=res=>{ let rid=res.id||res; const ri=itemsDB[rid]; if(ri) box.innerHTML+=`<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${ri.imagem}"><div><strong style="color:var(--gold2);font-size:0.9em;">${ri.nome}</strong><br><small style="color:var(--muted);">Clique para preparar</small></div></div>`; };
-      if(r.resultados) r.resultados.forEach(add); else if(r.resultado) add(r.resultado);
+      const addResult = res => {
+        let rid = res.id || res; const qtd = res.qtd || 1;
+        const ri = itemsDB[rid]; if (!ri) return;
+        box.innerHTML += `
+          <div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')">
+            <img src="${ri.imagem}" onerror="this.src='https://via.placeholder.com/44'">
+            <div>
+              <strong style="color:var(--gold2);font-size:0.9em;">${ri.nome}</strong>
+              ${qtd > 1 ? `<span style="color:var(--muted);font-size:0.8em;"> x${qtd}</span>` : ''}
+              <br><small style="color:var(--muted);">Clique para preparar</small>
+            </div>
+          </div>`;
+      };
+      if (r.resultados) r.resultados.forEach(addResult);
+      else if (r.resultado) addResult(r.resultado);
     }
   });
-  if(!count) box.innerHTML=`<p style="color:var(--muted);font-size:0.85em;text-align:center;padding:10px 0;">Nenhuma receita disponível no momento.</p>`;
+  if (!count) {
+    box.innerHTML = `<p style="color:var(--muted);font-size:0.85em;text-align:center;padding:10px 0 4px;">Nenhuma receita disponível com os materiais atuais.</p>`;
+  }
 }
-function autoPreencherCraft(rId){ const r=recipesDB[rId]; limparMesa(); for(let i=0;i<9;i++){ let s=r.grid[i]; if(typeof s==='string'&&s!=="") s={id:s,qtd:1}; if(s&&typeof s==='object') craftMesa[i]={...s}; } inicializarCrafting(); }
-function renderUIForja(){
-  const barra=document.getElementById('craft-inventory'); barra.innerHTML='';
-  Object.keys(inventarioCraftDisponivel).forEach(id=>{ if(inventarioCraftDisponivel[id]>0&&itemsDB[id]){ const sel=itemCraftSelecionado===id?' selected':''; barra.innerHTML+=`<div class="inv-craft-item${sel}" onclick="selecionarItemCraft('${id}')"><span class="item-badge">x${inventarioCraftDisponivel[id]}</span><img src="${itemsDB[id].imagem}"></div>`; } });
-  if(!barra.innerHTML) barra.innerHTML='<div style="color:var(--muted);font-size:0.8em;text-align:center;margin-top:14px;">Nenhum material.</div>';
-  const mesa=document.getElementById('craft-table'); mesa.innerHTML='';
-  for(let i=0;i<9;i++){ const s=craftMesa[i]; let img=s&&itemsDB[s.id]?`<div class="item-badge" style="top:2px;bottom:auto;">x${s.qtd}</div><img src="${itemsDB[s.id].imagem}">`:''; mesa.innerHTML+=`<div class="craft-slot" onclick="clicarSlotMesa(${i})">${img}</div>`; }
+
+function autoPreencherCraft(rId) {
+  const r = recipesDB[rId]; if (!r) return;
+  limparMesa();
+  for (let i = 0; i < 9; i++) {
+    let s = r.grid[i];
+    if (typeof s === 'string' && s !== '') s = { id: s, qtd: 1 };
+    if (s && typeof s === 'object') craftMesa[i] = { ...s };
+  }
+  inicializarCrafting();
+  showToast('Mesa preenchida!', 'success');
+}
+
+function renderUIForja() {
+  const barra = document.getElementById('craft-inventory');
+  if (!barra) return;
+  barra.innerHTML = '';
+  let hasItems = false;
+  Object.keys(inventarioCraftDisponivel).forEach(id => {
+    if ((inventarioCraftDisponivel[id] || 0) > 0 && itemsDB[id]) {
+      hasItems = true;
+      const sel = itemCraftSelecionado === id ? ' selected' : '';
+      barra.innerHTML += `
+        <div class="inv-craft-item${sel}" onclick="selecionarItemCraft('${id}')">
+          <span class="item-badge" style="z-index:10;">x${inventarioCraftDisponivel[id]}</span>
+          <img src="${itemsDB[id].imagem}" onerror="this.src='https://via.placeholder.com/50'">
+        </div>`;
+    }
+  });
+  if (!hasItems) {
+    barra.innerHTML = '<div style="color:var(--muted);font-size:0.8em;text-align:center;padding:14px;">Nenhum material disponível.</div>';
+  }
+
+  const mesa = document.getElementById('craft-table');
+  if (!mesa) return;
+  mesa.innerHTML = '';
+  for (let i = 0; i < 9; i++) {
+    const s = craftMesa[i];
+    let img = '';
+    if (s && itemsDB[s.id]) {
+      img = `<div class="item-badge" style="top:2px;bottom:auto;z-index:5;">x${s.qtd}</div>
+             <img src="${itemsDB[s.id].imagem}" onerror="this.src='https://via.placeholder.com/54'">`;
+    }
+    mesa.innerHTML += `<div class="craft-slot" onclick="clicarSlotMesa(${i})">${img}</div>`;
+  }
   verificarReceitaEmTempoReal();
 }
-function selecionarItemCraft(id){ itemCraftSelecionado=itemCraftSelecionado===id?null:id; renderUIForja(); }
-function clicarSlotMesa(i){
-  if(itemCraftSelecionado&&inventarioCraftDisponivel[itemCraftSelecionado]>0){
-    if(!craftMesa[i]) craftMesa[i]={id:itemCraftSelecionado,qtd:1};
-    else if(craftMesa[i].id===itemCraftSelecionado) craftMesa[i].qtd++;
-    else { inventarioCraftDisponivel[craftMesa[i].id]+=craftMesa[i].qtd; craftMesa[i]={id:itemCraftSelecionado,qtd:1}; }
+
+function selecionarItemCraft(id) {
+  itemCraftSelecionado = (itemCraftSelecionado === id) ? null : id;
+  renderUIForja();
+}
+
+function clicarSlotMesa(i) {
+  if (itemCraftSelecionado && (inventarioCraftDisponivel[itemCraftSelecionado] || 0) > 0) {
+    if (!craftMesa[i]) {
+      craftMesa[i] = { id: itemCraftSelecionado, qtd: 1 };
+    } else if (craftMesa[i].id === itemCraftSelecionado) {
+      craftMesa[i].qtd++;
+    } else {
+      // Swap: return current slot item to pool
+      inventarioCraftDisponivel[craftMesa[i].id] = (inventarioCraftDisponivel[craftMesa[i].id] || 0) + craftMesa[i].qtd;
+      craftMesa[i] = { id: itemCraftSelecionado, qtd: 1 };
+    }
     inventarioCraftDisponivel[itemCraftSelecionado]--;
-    if(inventarioCraftDisponivel[itemCraftSelecionado]===0) itemCraftSelecionado=null;
-  } else if(!itemCraftSelecionado&&craftMesa[i]){
-    craftMesa[i].qtd--; inventarioCraftDisponivel[craftMesa[i].id]=(inventarioCraftDisponivel[craftMesa[i].id]||0)+1;
-    if(craftMesa[i].qtd<=0) craftMesa[i]=null;
+    if (inventarioCraftDisponivel[itemCraftSelecionado] <= 0) itemCraftSelecionado = null;
+  } else if (!itemCraftSelecionado && craftMesa[i]) {
+    // Remove from slot, return to pool
+    inventarioCraftDisponivel[craftMesa[i].id] = (inventarioCraftDisponivel[craftMesa[i].id] || 0) + 1;
+    craftMesa[i].qtd--;
+    if (craftMesa[i].qtd <= 0) craftMesa[i] = null;
   }
   renderUIForja();
 }
-function limparMesa(){ craftMesa=Array(9).fill(null); itemCraftSelecionado=null; inicializarCrafting(); }
-let receitaValidaId=null,receitaMultipla=false;
-function verificarReceitaEmTempoReal(){
-  receitaValidaId=null; receitaMultipla=false;
-  const rs=document.getElementById('craft-result');
-  Object.keys(recipesDB).forEach(rId=>{
-    const r=recipesDB[rId]; if(!r.grid)return; let ok=true;
-    for(let i=0;i<9;i++){
-      let rs2=r.grid[i]; if(typeof rs2==='string'&&rs2!=="") rs2={id:rs2,qtd:1};
-      const cs=craftMesa[i]; const rT=rs2&&typeof rs2==='object'; const cT=cs&&cs!==null;
-      if((rT&&!cT)||(!rT&&cT)||(rT&&cT&&(rs2.id!==cs.id||cs.qtd<rs2.qtd))) ok=false;
+
+function limparMesa() {
+  craftMesa = Array(9).fill(null);
+  itemCraftSelecionado = null;
+  inicializarCrafting();
+}
+
+let receitaValidaId = null, receitaMultipla = false;
+function verificarReceitaEmTempoReal() {
+  receitaValidaId = null; receitaMultipla = false;
+  const rs = document.getElementById('craft-result');
+  if (!rs) return;
+
+  Object.keys(recipesDB).forEach(rId => {
+    const r = recipesDB[rId]; if (!r.grid) return;
+    let ok = true;
+    for (let i = 0; i < 9; i++) {
+      let rs2 = r.grid[i];
+      if (typeof rs2 === 'string' && rs2 !== '') rs2 = { id: rs2, qtd: 1 };
+      else if (typeof rs2 === 'string') rs2 = null;
+      const cs = craftMesa[i];
+      const rT = rs2 && typeof rs2 === 'object';
+      const cT = cs && cs !== null;
+      if ((rT && !cT) || (!rT && cT)) { ok = false; return; }
+      if (rT && cT && (rs2.id !== cs.id || cs.qtd < (rs2.qtd || 1))) { ok = false; return; }
     }
-    if(ok) receitaValidaId=rId;
+    if (ok) receitaValidaId = rId;
   });
-  if(receitaValidaId&&(recipesDB[receitaValidaId].resultado||recipesDB[receitaValidaId].resultados)){
-    const r=recipesDB[receitaValidaId];
-    if(r.resultados){ receitaMultipla=true; rs.innerHTML=`<i class="fas fa-question" style="font-size:2em;color:var(--gold);"></i>`; rs.style.borderColor='var(--gold)'; }
-    else { let rid=r.resultado.id||r.resultado; let rq=r.resultado.qtd||1; if(itemsDB[rid]){ rs.innerHTML=`<div class="item-badge" style="top:2px;bottom:auto;">x${rq}</div><img src="${itemsDB[rid].imagem}">`; rs.style.borderColor='var(--green)'; } }
-  } else { rs.innerHTML=''; rs.style.borderColor='var(--gold)'; }
+
+  if (receitaValidaId) {
+    const r = recipesDB[receitaValidaId];
+    if (r.resultados && r.resultados.length > 1) {
+      receitaMultipla = true;
+      rs.innerHTML = `<i class="fas fa-question" style="font-size:2em;color:var(--gold);"></i>`;
+      rs.style.borderColor = 'var(--gold)';
+    } else {
+      const res = r.resultados ? r.resultados[0] : r.resultado;
+      const rid = res.id || res; const rq = res.qtd || 1;
+      if (itemsDB[rid]) {
+        rs.innerHTML = `<div class="item-badge" style="top:2px;bottom:auto;">x${rq}</div><img src="${itemsDB[rid].imagem}" onerror="this.src='https://via.placeholder.com/65'">`;
+        rs.style.borderColor = 'var(--green)';
+      }
+    }
+  } else {
+    rs.innerHTML = ''; rs.style.borderColor = 'var(--gold)';
+  }
 }
-function tentarForjar(){
-  if(!receitaValidaId) return showToast('Receita inválida!','error');
-  const r=recipesDB[receitaValidaId];
-  if(receitaMultipla){
-    const g=document.getElementById('picker-grid'); g.innerHTML='';
-    r.resultados.forEach((res,i)=>{ const it=itemsDB[res.id]; if(it) g.innerHTML+=`<div class="picker-item" onclick="finalizarCraftMultiplo(${i})"><img src="${it.imagem}"><span class="picker-item-name">${it.nome}</span><div class="item-badge">x${res.qtd}</div></div>`; });
-    document.getElementById('picker-title').innerText='Escolha o resultado:'; document.getElementById('picker-modal').classList.add('active');
-  } else finalizarCraftUnico();
+
+function tentarForjar() {
+  if (!receitaValidaId) return showToast('Receita inválida!', 'error');
+  const r = recipesDB[receitaValidaId];
+  if (receitaMultipla) {
+    const g = document.getElementById('picker-grid'); g.innerHTML = '';
+    (r.resultados || []).forEach((res, i) => {
+      const it = itemsDB[res.id || res]; if (!it) return;
+      g.innerHTML += `<div class="picker-item" onclick="finalizarCraftMultiplo(${i})">
+        <img src="${it.imagem}" onerror="this.src='https://via.placeholder.com/70'">
+        <span class="picker-item-name">${it.nome}</span>
+        <div class="item-badge" style="position:relative;margin:4px auto 0;display:inline-block;">x${res.qtd || 1}</div>
+      </div>`;
+    });
+    document.getElementById('picker-title').innerText = 'Escolha o resultado:';
+    document.getElementById('picker-modal').classList.add('active');
+  } else {
+    finalizarCraftUnico();
+  }
 }
-function finalizarCraftMultiplo(i){ finalizarCraftUnico(i); fecharModal('picker-modal'); }
-function finalizarCraftUnico(idx=null){
-  const r=recipesDB[receitaValidaId]; let u={}; let tmp=JSON.parse(JSON.stringify(pData.inventario||{}));
-  for(let i=0;i<9;i++){
-    let s=r.grid[i]; if(typeof s==='string'&&s!=="") s={id:s,qtd:1};
-    if(s&&typeof s==='object'){ let id=s.id; let am=s.qtd||1; let ks=Object.keys(tmp);
-      for(let ki=0;ki<ks.length&&am>0;ki++){ const k=ks[ki]; if(tmp[k].item_id===id&&!tmp[k].equipado){ u[k]=null; delete tmp[k]; am--; } }
+
+function finalizarCraftMultiplo(i) {
+  finalizarCraftUnico(i);
+  fecharModal('picker-modal');
+}
+
+function finalizarCraftUnico(idx = null) {
+  const r = recipesDB[receitaValidaId];
+  let u = {};
+  let tmp = JSON.parse(JSON.stringify(pData.inventario || {}));
+
+  // Remove consumed ingredients
+  for (let i = 0; i < 9; i++) {
+    let s = r.grid[i];
+    if (typeof s === 'string' && s !== '') s = { id: s, qtd: 1 };
+    if (s && typeof s === 'object') {
+      let id = s.id; let am = s.qtd || 1;
+      let ks = Object.keys(tmp);
+      for (let ki = 0; ki < ks.length && am > 0; ki++) {
+        const k = ks[ki];
+        if (tmp[k].item_id === id && !tmp[k].equipado) { u[k] = null; delete tmp[k]; am--; }
+      }
     }
   }
-  let fr=idx!==null?r.resultados[idx]:(r.resultado.id?r.resultado:{id:r.resultado,qtd:1});
-  for(let j=0;j<fr.qtd;j++){ const nk=db.ref(`characters/${session}/inventario`).push().key; u[nk]={item_id:fr.id,equipado:false}; }
-  db.ref(`characters/${session}/inventario`).update(u).then(()=>{ showToast('Forjado com sucesso!','gold'); limparMesa(); });
+
+  // Determine result
+  let fr;
+  if (idx !== null && r.resultados) {
+    fr = r.resultados[idx];
+  } else if (r.resultados) {
+    fr = r.resultados[0];
+  } else if (r.resultado && r.resultado.id) {
+    fr = r.resultado;
+  } else {
+    fr = { id: r.resultado, qtd: 1 };
+  }
+
+  const qty = fr.qtd || 1;
+  for (let j = 0; j < qty; j++) {
+    const nk = db.ref(`characters/${session}/inventario`).push().key;
+    u[nk] = { item_id: fr.id, equipado: false };
+  }
+
+  db.ref(`characters/${session}/inventario`).update(u).then(() => {
+    showToast('⚒️ Forjado com sucesso!', 'gold');
+    limparMesa();
+  }).catch(() => showToast('Erro ao forjar.', 'error'));
 }
-function renderGrimorio(){
-  const c=document.getElementById('recipe-book-container'); c.innerHTML='';
-  let bycat={}; Object.entries(recipesDB).forEach(([rId,r])=>{
-    let rid=(r.resultado||(r.resultados||[])[0]||{}).id||r.resultado;
-    const ri=itemsDB[rid]; if(ri){ if(!bycat[ri.categoria]) bycat[ri.categoria]=[]; bycat[ri.categoria].push({rId,...r}); }
+
+function renderGrimorio() {
+  const c = document.getElementById('recipe-book-container');
+  if (!c) return;
+  c.innerHTML = '';
+  let bycat = {};
+  Object.entries(recipesDB).forEach(([rId, r]) => {
+    const firstRes = r.resultado || (r.resultados && r.resultados[0]);
+    const rid = firstRes ? (firstRes.id || firstRes) : null;
+    const ri = rid ? itemsDB[rid] : null;
+    if (ri) {
+      if (!bycat[ri.categoria]) bycat[ri.categoria] = [];
+      bycat[ri.categoria].push({ rId, ...r });
+    }
   });
-  Object.entries(bycat).forEach(([cat,recs])=>{
-    c.innerHTML+=`<div class="sec-title">${cat}</div>`;
-    recs.forEach(r=>{ let rid=(r.resultado||(r.resultados||[])[0]||{}).id||r.resultado; const ri=itemsDB[rid]; if(ri) c.innerHTML+=`<div class="grimorio-recipe" onclick="verReceita('${r.rId}')"><img src="${ri.imagem}"><div><div style="font-family: Poppins; font-size:0.85em;color:var(--gold2);">${ri.nome}</div><div style="font-size:0.75em;color:var(--muted);">${cat}</div></div></div>`; });
+
+  const catOrder = ['Arma', 'Armadura', 'Acessorio', 'Consumivel', 'Material'];
+  const cats = [...catOrder.filter(c => bycat[c]), ...Object.keys(bycat).filter(c => !catOrder.includes(c))];
+  cats.forEach(cat => {
+    c.innerHTML += `<div class="sec-title" style="margin-top:14px;">${cat}</div>`;
+    bycat[cat].forEach(r => {
+      const firstRes = r.resultado || (r.resultados && r.resultados[0]);
+      const rid = firstRes ? (firstRes.id || firstRes) : null;
+      const ri = rid ? itemsDB[rid] : null;
+      if (ri) {
+        c.innerHTML += `
+          <div class="grimorio-recipe" onclick="verReceita('${r.rId}')">
+            <img src="${ri.imagem}" onerror="this.src='https://via.placeholder.com/44'">
+            <div>
+              <div style="font-family:'Cinzel',serif;font-size:0.85em;color:var(--gold2);">${ri.nome}</div>
+              <div style="font-size:0.75em;color:var(--muted);">${cat}</div>
+            </div>
+            <i class="fas fa-chevron-right" style="color:var(--border2);margin-left:auto;font-size:0.7em;"></i>
+          </div>`;
+      }
+    });
   });
-  if(!c.innerHTML) c.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px;">Grimório vazio.</p>';
+  if (!c.innerHTML) c.innerHTML = '<div class="empty-state"><i class="fas fa-book-open"></i>Grimório vazio. Descubra receitas explorando o mundo.</div>';
 }
-function verReceita(rId){
-  const r=recipesDB[rId]; let rid=(r.resultado||(r.resultados||[])[0]||{}).id||r.resultado;
-  document.getElementById('recipe-modal-title').innerText=`Receita: ${itemsDB[rid].nome}`;
-  const bench=document.getElementById('recipe-modal-bench');
-  let g='<div class="craft-grid">';
-  for(let i=0;i<9;i++){ let s=r.grid[i]; let img=''; if(s&&typeof s==='object'&&itemsDB[s.id]) img=`<div class="item-badge" style="top:2px;bottom:auto;">x${s.qtd}</div><img src="${itemsDB[s.id].imagem}">`; g+=`<div class="craft-slot">${img}</div>`; }
-  g+='</div>'; bench.innerHTML=g;
+
+function verReceita(rId) {
+  const r = recipesDB[rId];
+  const firstRes = r.resultado || (r.resultados && r.resultados[0]);
+  const rid = firstRes ? (firstRes.id || firstRes) : null;
+  const ri = rid ? itemsDB[rid] : null;
+  if (!ri) return;
+  document.getElementById('recipe-modal-title').innerText = `Receita: ${ri.nome}`;
+  const bench = document.getElementById('recipe-modal-bench');
+  let g = '<div class="craft-grid">';
+  for (let i = 0; i < 9; i++) {
+    let s = r.grid[i];
+    if (typeof s === 'string' && s !== '') s = { id: s, qtd: 1 };
+    else if (typeof s === 'string') s = null;
+    let img = '';
+    if (s && typeof s === 'object' && itemsDB[s.id]) {
+      img = `<div class="item-badge" style="top:2px;bottom:auto;">x${s.qtd || 1}</div>
+             <img src="${itemsDB[s.id].imagem}" onerror="this.src='https://via.placeholder.com/54'">`;
+    }
+    g += `<div class="craft-slot">${img}</div>`;
+  }
+  g += '</div>';
+  // Result display
+  const resultados = r.resultados || [r.resultado];
+  let rHtml = '';
+  resultados.forEach(res => {
+    const ri2 = itemsDB[res.id || res];
+    if (ri2) rHtml += `<div style="text-align:center;">
+      <div style="font-size:0.6em;color:var(--muted);margin-bottom:4px;">${res.qtd > 1 ? 'x' + res.qtd : ''}</div>
+      <div class="craft-result-slot" style="margin:0 auto;"><img src="${ri2.imagem}"></div>
+      <div style="font-size:0.65em;color:var(--gold2);margin-top:6px;">${ri2.nome}</div>
+    </div>`;
+  });
+  bench.innerHTML = g + `<i class="fas fa-arrow-right" style="color:var(--border2);font-size:1.5em;"></i>` + rHtml;
   document.getElementById('recipe-modal').classList.add('active');
 }
 
@@ -1595,7 +1926,6 @@ function selectDice(sides, btn) {
   selectedSides = sides;
   document.querySelectorAll('.dice-type-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
-  // Reset display
   document.getElementById('dice-result-num').textContent = '—';
   document.getElementById('dice-result-num').className = 'dice-result-number result-normal';
   document.getElementById('dice-result-num').style.color = 'var(--muted)';
@@ -1612,17 +1942,14 @@ function rolarDado() {
   const modifier = parseInt(document.getElementById('dice-modifier').value) || 0;
   const reason = document.getElementById('dice-reason').value.trim() || `D${sides}`;
 
-  // Animate
   const container = document.getElementById('dice-container');
   container.classList.add('dice-rolling');
 
-  // Random faces during roll
   const faces = document.querySelectorAll('.dice-face');
   const faceInterval = setInterval(() => {
     faces.forEach(f => f.textContent = Math.floor(Math.random() * sides) + 1);
   }, 100);
 
-  const rollDuration = 1500;
   setTimeout(() => {
     clearInterval(faceInterval);
     container.classList.remove('dice-rolling');
@@ -1630,36 +1957,30 @@ function rolarDado() {
     const raw = Math.floor(Math.random() * sides) + 1;
     const total = raw + modifier;
 
-    // Set faces
     faces.forEach((f, i) => {
       f.textContent = Math.min(sides, Math.max(1, raw + i - 2));
     });
     faces[0].textContent = raw;
 
-    // Determine result type
     let resType = 'normal', lbl = '';
-    if (raw === sides) { resType = 'critical'; lbl = '✨ CRÍTICO!'; }
-    else if (raw === 1) { resType = 'miss'; lbl = '💀 FALHA CRÍTICA'; }
+    if (raw === sides)  { resType = 'critical'; lbl = '✨ CRÍTICO!'; }
+    else if (raw === 1) { resType = 'miss';     lbl = '💀 FALHA CRÍTICA'; }
 
-    // Display
     const numEl = document.getElementById('dice-result-num');
     numEl.textContent = modifier !== 0 ? `${total}` : `${raw}`;
     numEl.className = `dice-result-number result-${resType}`;
     numEl.style.color = '';
+
     const lblEl = document.getElementById('dice-result-label');
-    lblEl.textContent = modifier !== 0 ? `${raw} + (${modifier >= 0 ? '+' : ''}${modifier}) ${lbl}` : lbl;
+    lblEl.textContent = modifier !== 0
+      ? `${raw} ${modifier >= 0 ? '+' : ''}${modifier}${lbl ? ' — ' + lbl : ''}`
+      : lbl;
     lblEl.className = `dice-result-label ${lbl ? 'lbl-' + resType : ''}`;
 
-    // Particles on critical
     if (resType === 'critical') spawnParticles();
 
-    // Save to DB and local log
     const timestamp = Date.now();
-    const entry = {
-      sides, raw, modifier, total, reason, resType,
-      player: pData.nome || session,
-      at: timestamp
-    };
+    const entry = { sides, raw, modifier, total, reason, resType, player: pData ? pData.nome : session, at: timestamp };
     db.ref(`dice_logs/${session}`).push(entry);
     diceHistory.unshift(entry);
     if (diceHistory.length > 20) diceHistory.pop();
@@ -1667,7 +1988,7 @@ function rolarDado() {
 
     isRolling = false;
     btn.disabled = false;
-  }, rollDuration);
+  }, 1500);
 }
 
 function renderDiceLog() {
@@ -1678,7 +1999,7 @@ function renderDiceLog() {
   }
   list.innerHTML = diceHistory.map(e => {
     const icon = e.resType === 'critical' ? '✨' : e.resType === 'miss' ? '💀' : '🎲';
-    const cls = e.resType === 'critical' ? 'critical' : e.resType === 'miss' ? 'miss' : 'normal';
+    const cls  = e.resType === 'critical' ? 'critical' : e.resType === 'miss' ? 'miss' : 'normal';
     const modStr = e.modifier !== 0 ? ` ${e.modifier >= 0 ? '+' : ''}${e.modifier}` : '';
     return `<div class="dice-log-entry">
       <span class="dice-log-icon">${icon}</span>
@@ -1696,45 +2017,60 @@ function spawnParticles() {
   const roll = document.getElementById('dice-container').getBoundingClientRect();
   const cx = roll.left + roll.width / 2;
   const cy = roll.top + roll.height / 2;
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 20; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     const size = Math.random() * 8 + 4;
     p.style.cssText = `width:${size}px;height:${size}px;left:${cx}px;top:${cy}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
+      background:${colors[Math.floor(Math.random() * colors.length)]};
       box-shadow:0 0 6px currentColor;`;
     document.body.appendChild(p);
-    const angle = (Math.random() * Math.PI * 2);
-    const dist = Math.random() * 120 + 60;
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = Math.random() * 140 + 60;
     const tx = Math.cos(angle) * dist;
     const ty = Math.sin(angle) * dist;
     p.animate([
-      {transform:'translate(-50%,-50%) scale(1)',opacity:1},
-      {transform:`translate(calc(-50% + ${tx}px),calc(-50% + ${ty}px)) scale(0)`,opacity:0}
-    ], {duration:800+Math.random()*400, easing:'cubic-bezier(0,0,0.2,1)', fill:'forwards'});
-    setTimeout(()=>p.remove(), 1200);
+      { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+      { transform: `translate(calc(-50% + ${tx}px),calc(-50% + ${ty}px)) scale(0)`, opacity: 0 }
+    ], { duration: 800 + Math.random() * 400, easing: 'cubic-bezier(0,0,0.2,1)', fill: 'forwards' });
+    setTimeout(() => p.remove(), 1300);
   }
 }
 
 /* ─────────────────────────────────────────────
-   ⚔️ COMBAT VIEW (REVAMPED)
+   ⚔️ COMBAT VIEW
 ───────────────────────────────────────────── */
+function irParaCombate() {
+  mudarAba('combat', null);
+  renderCombatView();
+  closeSheet();
+}
+
 function renderCombatView() {
-  if (!currentCombatData || !activeCombatId) return;
   const view = document.getElementById('combat-view');
+  if (!activeCombatId || !currentCombatData) {
+    view.innerHTML = `
+      <div class="no-combat-wrap">
+        <i class="fas fa-khanda"></i>
+        <p>Nenhum combate ativo no momento. Aguarde o Mestre iniciar uma batalha.</p>
+      </div>`;
+    return;
+  }
+
   const combat = currentCombatData;
 
+  /* Combat ended state */
   if (combat.status === 'ended_pending_loot') {
     const hasUncollected = combat.loots && Object.values(combat.loots).some(l => !l.collected_by);
     view.innerHTML = `
       <div style="padding:20px;">
         <div class="combat-ended-screen">
           <div class="combat-ended-icon"><i class="fas fa-trophy"></i></div>
-          <div style="font-family: Poppins; font-size:1.3em;color:var(--gold);">Batalha Encerrada</div>
+          <div style="font-family:'Cinzel',serif;font-size:1.3em;color:var(--gold);">Batalha Encerrada!</div>
           <p style="color:var(--muted);font-size:0.9em;">${hasUncollected ? 'Os espólios aguardam os vitoriosos.' : 'Todos os itens já foram coletados.'}</p>
           ${hasUncollected
             ? `<button class="btn-reward" onclick="pegarRecompensas()"><i class="fas fa-gem"></i> Pegar Recompensas</button>`
-            : `<button class="btn-exit-combat" onclick="sairDoCombate()">Sair da Cena</button>`
+            : `<button class="btn-exit-combat" onclick="sairDoCombate()"><i class="fas fa-door-open"></i> Sair da Cena</button>`
           }
         </div>
       </div>`;
@@ -1744,78 +2080,94 @@ function renderCombatView() {
   const myTeam = (combat.tokens[session] || {}).team || 'A';
   const bg = combat.background || 'https://i.imgur.com/sdF3R2d.jpeg';
 
-  // Separate teams
+  /* Separate into allies / enemies */
   const allies = [], enemies = [];
   Object.entries(combat.tokens || {}).forEach(([id, data]) => {
-    const char = charsDB[id]; if (!char) return;
-    if (id === session) return; // player sees themselves implied
-    if (data.team === myTeam) allies.push({id, data, char});
-    else enemies.push({id, data, char});
+    const char = id === session ? pData : charsDB[id];
+    if (!char) return;
+    if (data.team === myTeam) allies.push({ id, data, char });
+    else enemies.push({ id, data, char });
   });
 
-  // Include self in allies
-  if (pData) allies.unshift({id: session, data: combat.tokens[session], char: pData});
+  /* Summons */
+  const summons = Object.values(combat.summons || {}).filter(Boolean);
+  const allySummons   = summons.filter(s => s.team === myTeam);
+  const enemySummons  = summons.filter(s => s.team && s.team !== myTeam);
 
-  const renderToken = (id, data, char) => {
+  const renderToken = (id, data, char, side) => {
     const hpMax = char.hp_max || 0;
-    const hpPct = hpMax > 0 ? Math.max(0, Math.min(100, ((char.hp||0)/hpMax)*100)) : 100;
+    const hpPct = hpMax > 0 ? Math.max(0, Math.min(100, ((char.hp || 0) / hpMax) * 100)) : 100;
     const isDefeated = data.status === 'defeated';
-    const loot = (combat.loots||{})[id];
+    const loot = (combat.loots || {})[id];
     const hasLoot = loot && !loot.collected_by;
-    const lootBtn = hasLoot && !isDefeated ? '' : (hasLoot ? `<button class="loot-collect-btn" onclick="coletarLoot('${id}')">💰 Loot</button>` : '');
-    return `<div class="combatant-token${isDefeated?' defeated':''}" onclick="verStatsCombate('${id}',${combat.public_inspection||false})">
-      <div class="token-frame">
-        <img class="token-portrait" src="${char.imagem||'https://via.placeholder.com/150'}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'">
-        <div class="token-shadow"></div>
-        ${lootBtn}
-      </div>
-      <div class="token-hp-stripe"><div class="token-hp-fill" style="width:${hpPct}%"></div></div>
-      <div class="token-name-tag">${(char.nome||'?').split(' ')[0]}</div>
-    </div>`;
+    const lootBtn = (hasLoot && isDefeated)
+      ? `<button class="loot-collect-btn" onclick="coletarLoot('${id}')">💰 Loot</button>` : '';
+    return `
+      <div class="combatant-token${isDefeated ? ' defeated' : ''}" onclick="verStatsCombate('${id}',${combat.public_inspection || false})">
+        <div class="token-frame">
+          <img class="token-portrait" src="${char.imagem || 'https://via.placeholder.com/150'}"
+               onerror="this.src='https://via.placeholder.com/150'">
+          <div class="token-shadow"></div>
+          ${lootBtn}
+        </div>
+        <div class="token-hp-stripe">
+          <div class="token-hp-fill" style="width:${hpPct}%"></div>
+        </div>
+        <div class="token-name-tag">${(char.nome || '?').split(' ')[0]}</div>
+      </div>`;
   };
 
-  const renderRow = (list, team) => list.map(({id,data,char})=>{
-    const hpMax=char.hp_max||0; const hpPct=hpMax>0?Math.max(0,Math.min(100,((char.hp||0)/hpMax)*100)):100;
-    const isDefeated=data.status==='defeated';
-    return `<div class="combatant-row${isDefeated?' defeated':''}" onclick="verStatsCombate('${id}',${combat.public_inspection||false})">
-      <img src="${char.imagem||''}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'">
-      <span class="combatant-row-name">${char.nome||'?'}</span>
-      <span class="combatant-row-hp">${hpMax>0?`${char.hp||0}/${hpMax}`:''}</span>
+  const renderSummonToken = (s, side) => `
+    <div class="combatant-token">
+      <div class="token-frame">
+        <img class="token-portrait" src="${s.imagem || 'https://via.placeholder.com/150'}"
+             onerror="this.src='https://via.placeholder.com/150'">
+        <div class="token-shadow"></div>
+      </div>
+      <div class="token-hp-stripe">
+        <div class="token-hp-fill" style="width:${s.hp_max > 0 ? Math.max(0, Math.min(100, (s.hp / s.hp_max) * 100)) : 100}%"></div>
+      </div>
+      <div class="token-name-tag" style="color:var(--purple2);">${(s.nome || 'Pet').split(' ')[0]}</div>
     </div>`;
-  }).join('');
 
-  // Summons
-  const summons = Object.values(combat.summons||{});
-  const allySummons = summons.filter(s=>s&&s.team===myTeam);
-  const enemySummons = summons.filter(s=>s&&s.team&&s.team!==myTeam);
-  const renderSummonToken = s => s ? `<div class="combatant-token">
-    <div class="token-frame"><img class="token-portrait" src="${s.imagem||''}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'"></div>
-    <div class="token-hp-stripe"><div class="token-hp-fill" style="width:${s.hp_max>0?Math.max(0,Math.min(100,(s.hp/s.hp_max)*100)):100}%"></div></div>
-    <div class="token-name-tag">${(s.nome||'Pet').split(' ')[0]}</div>
-  </div>` : '';
+  const renderCombatantRow = (id, data, char, isEnemy) => {
+    const hpMax = char.hp_max || 0;
+    const isDefeated = data.status === 'defeated';
+    return `
+      <div class="combatant-row${isDefeated ? ' defeated' : ''}" onclick="verStatsCombate('${id}',${combat.public_inspection || false})">
+        <img src="${char.imagem || ''}" onerror="this.src='https://via.placeholder.com/32'">
+        <span class="combatant-row-name">${char.nome || '?'}</span>
+        <span class="combatant-row-hp">${hpMax > 0 ? `${char.hp || 0}/${hpMax}` : ''}</span>
+      </div>`;
+  };
 
   view.innerHTML = `
     <div class="combat-atmosphere">
       <div class="scene-wrap">
-        <div class="scene-layer scene-layer-far" style="background-image:url('${bg}'); filter:blur(2px) brightness(0.6); transform:scale(1.1);"></div>
-        <div class="scene-layer scene-layer-mid" style="background-image:url('${bg}'); opacity:0.7;"></div>
+        <div class="scene-layer scene-layer-far"
+             style="background-image:url('${bg}'); filter:blur(2px) brightness(0.55); transform:scale(1.08);"></div>
+        <div class="scene-layer scene-layer-mid"
+             style="background-image:url('${bg}'); opacity:0.6; mix-blend-mode:lighten;"></div>
         <div class="scene-layer scene-layer-vignette"></div>
         <div class="scene-layer scene-layer-bottom"></div>
 
         <div class="combat-title-bar">
-          <div class="combat-title"><span class="combat-pulse"></span> ${combat.name||'Batalha'}</div>
-          <div style="font-family: Poppins; font-size:0.65em;color:var(--muted);">Toque para inspecionar</div>
+          <div class="combat-title">
+            <span class="combat-pulse"></span>
+            ${combat.name || 'Batalha'}
+          </div>
+          <div style="font-family:'Cinzel',serif;font-size:0.6em;color:var(--muted);">Toque para inspecionar</div>
         </div>
 
         <div class="combatants-overlay">
           <div class="team-cluster allies">
-            ${allies.map(a=>renderToken(a.id,a.data,a.char)).join('')}
-            ${allySummons.map(renderSummonToken).join('')}
+            ${allies.map(a => renderToken(a.id, a.data, a.char, 'ally')).join('')}
+            ${allySummons.map(s => renderSummonToken(s, 'ally')).join('')}
           </div>
           <div class="vs-badge">VS</div>
           <div class="team-cluster enemies">
-            ${enemies.map(e=>renderToken(e.id,e.data,e.char)).join('')}
-            ${enemySummons.map(renderSummonToken).join('')}
+            ${enemies.map(e => renderToken(e.id, e.data, e.char, 'enemy')).join('')}
+            ${enemySummons.map(s => renderSummonToken(s, 'enemy')).join('')}
           </div>
         </div>
       </div>
@@ -1823,129 +2175,225 @@ function renderCombatView() {
       <div class="combat-info-panel">
         <div class="combat-teams-stats">
           <div class="team-stat-col">
-            <div class="team-stat-label" style="color:var(--blue2);"><i class="fas fa-shield-alt"></i> ALIADOS</div>
-            ${renderRow(allies,'allies')}
-            ${allySummons.map(s=>`<div class="combatant-row"><img src="${s.imagem||''}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'"><span class="combatant-row-name" style="color:var(--purple2);">${s.nome||'Pet'}</span></div>`).join('')}
+            <div class="team-stat-label" style="color:var(--blue2);">
+              <i class="fas fa-shield-alt"></i> ALIADOS
+            </div>
+            ${allies.map(a => renderCombatantRow(a.id, a.data, a.char, false)).join('')}
+            ${allySummons.map(s => `
+              <div class="combatant-row">
+                <img src="${s.imagem || ''}" onerror="this.src='https://via.placeholder.com/32'">
+                <span class="combatant-row-name" style="color:var(--purple2);">${s.nome || 'Pet'}</span>
+                <span class="combatant-row-hp" style="color:var(--purple2);">${s.hp_max > 0 ? `${s.hp}/${s.hp_max}` : ''}</span>
+              </div>`).join('')}
           </div>
           <div class="vs-divider">|</div>
           <div class="team-stat-col enemies-col">
-            <div class="team-stat-label" style="color:var(--red2);">OPONENTES <i class="fas fa-skull"></i></div>
-            ${renderRow(enemies,'enemies')}
-            ${enemySummons.map(s=>`<div class="combatant-row" style="flex-direction:row-reverse;"><img src="${s.imagem||''}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'"><span class="combatant-row-name" style="color:var(--purple2);">${s.nome||'Pet'}</span></div>`).join('')}
+            <div class="team-stat-label" style="color:var(--red2);">
+              INIMIGOS <i class="fas fa-skull"></i>
+            </div>
+            ${enemies.map(e => renderCombatantRow(e.id, e.data, e.char, true)).join('')}
+            ${enemySummons.map(s => `
+              <div class="combatant-row" style="flex-direction:row-reverse;">
+                <img src="${s.imagem || ''}" onerror="this.src='https://via.placeholder.com/32'">
+                <span class="combatant-row-name" style="color:var(--purple2);">${s.nome || 'Pet'}</span>
+              </div>`).join('')}
           </div>
         </div>
       </div>
     </div>
 
-    <div class="summon-section">
+    <div class="summon-section" style="margin-top:16px;">
       <div class="sec-title" style="padding:0 0 8px;"><i class="fas fa-paw"></i> Pets & Invocações</div>
       <div id="summon-bar" class="summon-grid"></div>
-    </div>
-  `;
+    </div>`;
+
   renderSummonBar();
 }
 
 function renderSummonBar() {
-  const bar = document.getElementById('summon-bar'); if (!bar) return;
-  if (!activeCombatId || !currentCombatData) { bar.innerHTML = '<p style="color:var(--muted);font-size:0.8em;grid-column:1/-1;text-align:center;">Sem combate ativo.</p>'; return; }
+  const bar = document.getElementById('summon-bar');
+  if (!bar) return;
+  if (!activeCombatId) {
+    bar.innerHTML = '<p style="color:var(--muted);font-size:0.8em;grid-column:1/-1;text-align:center;">Sem combate ativo.</p>';
+    return;
+  }
   const summons = [];
-  Object.entries(pData.inventario||{}).forEach(([key,iv])=>{
-    const idb=itemsDB[iv.item_id]; if(idb&&idb.categoria==='Pet') summons.push({key,id:iv.item_id,data:idb});
+  Object.entries(pData.inventario || {}).forEach(([key, iv]) => {
+    const idb = itemsDB[iv.item_id];
+    if (idb && idb.categoria === 'Pet') summons.push({ key, id: iv.item_id, data: idb });
   });
-  if (!summons.length) { bar.innerHTML='<p style="color:var(--muted);font-size:0.8em;grid-column:1/-1;text-align:center;">Nenhuma pet na bolsa.</p>'; return; }
-  bar.innerHTML = summons.map(s=>`
+  if (!summons.length) {
+    bar.innerHTML = '<p style="color:var(--muted);font-size:0.8em;grid-column:1/-1;text-align:center;">Nenhum pet na bolsa.</p>';
+    return;
+  }
+  bar.innerHTML = summons.map(s => `
     <div class="summon-card">
-      <img src="${s.data.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'">
+      <img src="${s.data.imagem}" onerror="this.src='https://via.placeholder.com/110'">
       <div class="summon-card-body">
         <span class="summon-card-name">${s.data.nome}</span>
-        <button class="btn-invoke" onclick="invocarCriatura('${s.key}','${s.id}')">Invocar</button>
+        <button class="btn-invoke" onclick="invocarCriatura('${s.key}','${s.id}')">⚡ Invocar</button>
       </div>
     </div>`).join('');
 }
 
 function invocarCriatura(itemKey, itemId) {
-  if (!activeCombatId||!currentCombatData) return showToast('Sem combate ativo.','error');
-  const item=itemsDB[itemId]; if(!item)return;
-  const myTeam=(currentCombatData.tokens||{})[session]?.team||'A';
-  const summon={
-    nome:item.nome||'Pet', imagem:item.imagem||'https://via.placeholder.com/150',
-    team:myTeam, owner:session, status:'alive',
-    hp:(item.summon&&item.summon.hp)||10, hp_max:(item.summon&&item.summon.hp_max)||10,
-    atributos_base:(item.summon&&item.summon.atributos_base)||{for:0,res:0,agi:0}
+  if (!activeCombatId || !currentCombatData) return showToast('Sem combate ativo.', 'error');
+  const item = itemsDB[itemId]; if (!item) return;
+  const myTeam = (currentCombatData.tokens || {})[session]?.team || 'A';
+  const summon = {
+    nome: item.nome || 'Pet',
+    imagem: item.imagem || 'https://via.placeholder.com/150',
+    team: myTeam, owner: session, status: 'alive',
+    hp:     (item.summon && item.summon.hp)     || 10,
+    hp_max: (item.summon && item.summon.hp_max) || 10,
+    atributos_base: (item.summon && item.summon.atributos_base) || { for: 0, res: 0, agi: 0 }
   };
-  const sk=db.ref(`combat/sessions/${activeCombatId}/summons`).push().key;
-  db.ref(`combat/sessions/${activeCombatId}/summons/${sk}`).set(summon);
-  db.ref(`characters/${session}/inventario/${itemKey}`).remove();
-  showToast(`${item.nome} invocada!`,'success');
+  const sk = db.ref(`combat/sessions/${activeCombatId}/summons`).push().key;
+  db.ref(`combat/sessions/${activeCombatId}/summons/${sk}`).set(summon).then(() => {
+    db.ref(`characters/${session}/inventario/${itemKey}`).remove();
+    showToast(`${item.nome} invocada!`, 'success');
+  }).catch(() => showToast('Erro ao invocar.', 'error'));
 }
 
 function verStatsCombate(charId, isPublic) {
-  if (!isPublic && charId !== session) return showToast('Mestre ocultou os atributos.','error');
-  const c = charsDB[charId]; if (!c) return;
-  document.getElementById('cc-img').src = c.imagem||'';
-  document.getElementById('cc-nome').innerText = c.nome||'';
-  document.getElementById('cc-classe').innerText = c.classe||'';
-  document.getElementById('cc-desc').innerText = c.description||'';
+  if (!isPublic && charId !== session) return showToast('O Mestre ocultou os atributos.', 'error');
+  const c = charId === session ? pData : charsDB[charId];
+  if (!c) return showToast('Personagem não encontrado.', 'error');
 
-  let vitalsHtml='';
-  if(c.hp_max>0) vitalsHtml+=`<div class="vital-row active"><span class="vital-label" style="color:var(--red)">HP</span><div class="vital-bar"><div class="vital-fill hp-fill" style="width:${(c.hp/c.hp_max)*100}%"></div></div><span class="vital-val" style="color:var(--red2)">${c.hp}/${c.hp_max}</span></div>`;
-  if(c.mp_max>0) vitalsHtml+=`<div class="vital-row active"><span class="vital-label" style="color:var(--blue2)">MP</span><div class="vital-bar"><div class="vital-fill mp-fill" style="width:${(c.mp/c.mp_max)*100}%"></div></div><span class="vital-val" style="color:var(--blue2)">${c.mp}/${c.mp_max}</span></div>`;
-  if(c.sp_max>0) vitalsHtml+=`<div class="vital-row active"><span class="vital-label" style="color:var(--gold)">SP</span><div class="vital-bar"><div class="vital-fill sp-fill" style="width:${(c.sp/c.sp_max)*100}%"></div></div><span class="vital-val" style="color:var(--gold)">${c.sp}/${c.sp_max}</span></div>`;
-  document.getElementById('cc-vitals').innerHTML=vitalsHtml;
+  document.getElementById('cc-img').src = c.imagem || 'https://via.placeholder.com/150';
+  document.getElementById('cc-nome').innerText = c.nome || '';
+  document.getElementById('cc-classe').innerText = c.classe || '';
+  document.getElementById('cc-desc').innerText = c.description || '';
 
-  let bonus={for:0,res:0,vel:0,agi:0,per:0,resm:0,esp:0,alm:0};
-  if(c.inventario) Object.values(c.inventario).forEach(iv=>{ if(iv.equipado&&itemsDB[iv.item_id]?.mods) Object.keys(bonus).forEach(k=>bonus[k]+=(itemsDB[iv.item_id].mods[k]||0)); });
-  if(c.skills) Object.keys(c.skills).forEach(sId=>{ if(skillsDB[sId]?.buffs) Object.keys(bonus).forEach(k=>bonus[k]+=(skillsDB[sId].buffs[k]||0)); });
-  const base=c.atributos_base||{};
-  document.getElementById('cc-stats').innerHTML=Object.keys(attrNames).map(k=>{
-    const tot=(base[k]||0)+bonus[k]; const bStr=bonus[k]>0?`<span style="color:var(--green);font-size:0.65em;">+${bonus[k]}</span>`:'';
-    return `<div class="cc-attr"><span class="cc-attr-name">${attrNames[k]}</span><span class="cc-attr-val">${tot} ${bStr}</span></div>`;
+  let vitalsHtml = '';
+  const vitDefs = [
+    { key: 'hp', label: 'HP', color: 'var(--red)',  color2: 'var(--red2)',  cls: 'hp-fill' },
+    { key: 'mp', label: 'MP', color: 'var(--blue2)', color2: 'var(--blue2)', cls: 'mp-fill' },
+    { key: 'sp', label: 'SP', color: 'var(--gold)', color2: 'var(--gold)',  cls: 'sp-fill' },
+  ];
+  vitDefs.forEach(({ key, label, color, color2, cls }) => {
+    const max = c[`${key}_max`] || 0;
+    if (max > 0) {
+      const pct = Math.max(0, Math.min(100, ((c[key] || 0) / max) * 100));
+      vitalsHtml += `
+        <div class="vital-row active">
+          <span class="vital-label" style="color:${color}">${label}</span>
+          <div class="vital-bar"><div class="vital-fill ${cls}" style="width:${pct}%"></div></div>
+          <span class="vital-val" style="color:${color2}">${c[key] || 0}/${max}</span>
+        </div>`;
+    }
+  });
+  document.getElementById('cc-vitals').innerHTML = vitalsHtml;
+
+  let bonus = { for:0, res:0, vel:0, agi:0, per:0, resm:0, esp:0, alm:0 };
+  if (c.inventario) {
+    Object.values(c.inventario).forEach(iv => {
+      if (iv.equipado && itemsDB[iv.item_id]?.mods)
+        Object.keys(bonus).forEach(k => bonus[k] += (itemsDB[iv.item_id].mods[k] || 0));
+    });
+  }
+  if (c.skills) {
+    Object.keys(c.skills).forEach(sId => {
+      if (skillsDB[sId]?.buffs)
+        Object.keys(bonus).forEach(k => bonus[k] += (skillsDB[sId].buffs[k] || 0));
+    });
+  }
+  const base = c.atributos_base || {};
+  document.getElementById('cc-stats').innerHTML = Object.keys(attrNames).map(k => {
+    const tot = (base[k] || 0) + bonus[k];
+    const bStr = bonus[k] > 0 ? `<span style="color:var(--green);font-size:0.65em;"> +${bonus[k]}</span>` : '';
+    return `<div class="cc-attr">
+      <span class="cc-attr-name">${attrNames[k]}</span>
+      <span class="cc-attr-val">${tot}${bStr}</span>
+    </div>`;
   }).join('');
   document.getElementById('combat-char-modal').classList.add('active');
 }
 
 function coletarLoot(tId) {
   if (!activeCombatId) return;
-  db.ref(`combat/sessions/${activeCombatId}/loots/${tId}`).transaction(loot=>{
-    if (loot&&!loot.collected_by){ loot.collected_by=session; return loot; } return undefined;
-  }, (err,committed,snap)=>{
-    if (committed&&snap.val()?.collected_by===session) {
-      const ld=snap.val(); let u={};
-      Object.entries(ld.items).forEach(([id,qtd])=>{ for(let i=0;i<qtd;i++) u[db.ref().push().key]={item_id:id,equipado:false}; });
-      db.ref(`characters/${session}/inventario`).update(u); showToast('Loot coletado!','gold');
-    } else showToast('Alguém foi mais rápido!','error');
+  db.ref(`combat/sessions/${activeCombatId}/loots/${tId}`).transaction(loot => {
+    if (loot && !loot.collected_by) { loot.collected_by = session; return loot; }
+    return undefined; // Abort if already collected
+  }, (err, committed, snap) => {
+    if (committed && snap.val()?.collected_by === session) {
+      const ld = snap.val();
+      let u = {};
+      Object.entries(ld.items || {}).forEach(([id, qtd]) => {
+        for (let i = 0; i < qtd; i++) {
+          u[db.ref().push().key] = { item_id: id, equipado: false };
+        }
+      });
+      db.ref(`characters/${session}/inventario`).update(u);
+      showToast('💰 Loot coletado!', 'gold');
+    } else if (!err) {
+      showToast('Alguém foi mais rápido!', 'error');
+    }
   });
 }
 
 function pegarRecompensas() {
-  if (!activeCombatId||!currentCombatData) return;
-  let u={};
-  Object.values(currentCombatData.loots||{}).forEach(loot=>{
-    if (!loot.collected_by) Object.entries(loot.items).forEach(([id,qtd])=>{ for(let i=0;i<qtd;i++) u[db.ref().push().key]={item_id:id,equipado:false}; });
+  if (!activeCombatId || !currentCombatData) return;
+  let u = {};
+  Object.values(currentCombatData.loots || {}).forEach(loot => {
+    if (!loot.collected_by) {
+      Object.entries(loot.items || {}).forEach(([id, qtd]) => {
+        for (let i = 0; i < qtd; i++) u[db.ref().push().key] = { item_id: id, equipado: false };
+      });
+    }
   });
-  db.ref(`characters/${session}/inventario`).update(u);
+  if (Object.keys(u).length > 0) {
+    db.ref(`characters/${session}/inventario`).update(u);
+    showToast('🏆 Recompensas coletadas!', 'gold');
+  }
   db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove();
-  showToast('Recompensas coletadas!','gold');
 }
-function sairDoCombate() { db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove(); }
+
+function sairDoCombate() {
+  if (!activeCombatId) return;
+  db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove();
+  showToast('Você saiu da cena.', 'success');
+}
 
 /* ─── Diary ──────────────────────────────── */
-document.getElementById('diario').addEventListener('input', ()=>{ diaryDirty=true; });
-function salvarDiario() { db.ref(`characters/${session}/anotacoes`).set(document.getElementById('diario').value); diaryDirty=false; showToast('Diário salvo.','success'); }
+document.getElementById('diario').addEventListener('input', () => { diaryDirty = true; });
+function salvarDiario() {
+  db.ref(`characters/${session}/anotacoes`).set(document.getElementById('diario').value).then(() => {
+    diaryDirty = false;
+    showToast('Diário salvo.', 'success');
+  });
+}
 
 /* ─── UI Helpers ─────────────────────────── */
 function mudarAba(id, el) {
-  document.querySelectorAll('.tab-btn, .nav-item[data-tab]').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  if (el && el.classList) el.classList.add('active');
-  else {
+  document.querySelectorAll('.tab-btn, .nav-item[data-tab]').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+  if (el && el.classList) {
+    el.classList.add('active');
+  } else {
     document.querySelector(`.nav-item[data-tab="${id}"]`)?.classList.add('active');
     document.querySelector(`.tab-btn[onclick*="'${id}'"]`)?.classList.add('active');
   }
-  document.getElementById('tab-'+id)?.classList.add('active');
+  const tabEl = document.getElementById('tab-' + id);
+  if (tabEl) tabEl.classList.add('active');
+
+  // Render combat when switching to that tab
+  if (id === 'combat') renderCombatView();
+  // Re-init crafting when switching to forja (inventory may have changed)
+  if (id === 'forja' && pData) inicializarCrafting();
 }
 
-function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
+function fecharModal(id) {
+  document.getElementById(id)?.classList.remove('active');
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => {
+    if (e.target === m) m.classList.remove('active');
+  });
+});
 
 let sheetOpen = false;
 function openSheet() {
@@ -1962,17 +2410,32 @@ function openSheetTab(id) {
   closeSheet();
   const navItem = document.querySelector(`.nav-item[data-tab="${id}"]`);
   mudarAba(id, navItem);
-  if (id === 'combat' && activeCombatId) renderCombatView();
 }
 
-function showToast(msg, type='success') {
+function showToast(msg, type = 'success') {
   const wrap = document.getElementById('toast-wrap');
   const t = document.createElement('div');
   t.className = `toast ${type}`;
   t.textContent = msg;
   wrap.appendChild(t);
-  setTimeout(()=>t.remove(), 2400);
+  setTimeout(() => {
+    t.style.animation = 'none';
+    t.style.opacity = '0';
+    t.style.transition = 'opacity 0.3s';
+    setTimeout(() => t.remove(), 300);
+  }, 2100);
 }
+
+/* ─── Keyboard shortcuts ─────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    closeSheet();
+  }
+  if (e.key === ' ' && document.getElementById('tab-dados').classList.contains('active')) {
+    e.preventDefault(); rolarDado();
+  }
+});
 </script>
 </body>
 </html>
