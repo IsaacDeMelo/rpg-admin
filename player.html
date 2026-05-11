@@ -34,7 +34,6 @@
         
         .total-stats-details { margin-top: 15px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px;}
         .total-stats-details summary { font-family: 'Cinzel', serif; color: var(--blue); cursor: pointer; text-align: center; font-weight:bold; }
-        
         .attr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;}
         .attr-card { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 10px; border-left: 3px solid var(--blue); position: relative;}
         .attr-name { font-size: 0.75em; color: #94a3b8; font-weight: 600; text-transform: uppercase;}
@@ -92,15 +91,13 @@
         /* POV COMBAT MAP */
         .pov-viewport { width: calc(100% + 40px); margin-left: -20px; height: 420px; overflow-x: auto; overflow-y: hidden; position: relative; scroll-behavior: smooth; background:#000;}
         .pov-bg { position: sticky; left: 0; top: 0; width: 100%; height: 100%; background-size: cover; background-position: center bottom; z-index: 1;}
-        .pov-scene { position: absolute; top: 0; left: 0; width: 200%; height: 100%; z-index: 2; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 40px; gap: 80px; pointer-events: none;}
+        .pov-scene { position: absolute; top: 0; left: 0; width: 150%; height: 100%; z-index: 2; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 40px; gap: 80px; pointer-events: none;}
         .pov-team { display: flex; gap: 20px; align-items: flex-end; pointer-events: auto; }
         .pov-team.allies { flex-direction: row-reverse; } .pov-team.enemies { flex-direction: row; }
-        
         .pov-char-card { text-align: center; position: relative; animation: float 3s ease-in-out infinite; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; width: 110px;}
         .pov-char-card:hover { transform: scale(1.05); }
         .pov-char-card img { width: 90px; height: 120px; object-fit: cover; border-radius: 8px; border: 3px solid; background: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.8);}
         .pov-team.allies img { border-color: var(--blue); } .pov-team.enemies img { border-color: var(--red); }
-        
         .pov-char-details { background: rgba(0,0,0,0.85); padding: 8px; border-radius: 8px; width: 110px; margin-top: -15px; z-index: 5; position: relative; border: 1px solid var(--border);}
         .pov-char-name { color: white; font-size: 0.7em; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;}
         .pov-char-hp-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
@@ -108,9 +105,8 @@
         .card-stats { display: flex; justify-content: space-around; font-size: 0.6em; background: rgba(0,0,0,0.5); padding: 4px; border-top: 1px solid #333; border-radius: 4px; color: #cbd5e1;}
         .card-stats span { display: flex; align-items: center; gap: 2px;}
 
-        /* ESTADOS DO MAPA: DERROTADO E LOOT */
         .pov-char-card.defeated { animation: none; z-index: 1;}
-        .pov-char-card.defeated img { filter: grayscale(100%); transform: rotate(90deg) scale(0.7); border-color: #555 !important; margin-bottom: 20px;}
+        .pov-char-card.defeated img { filter: grayscale(100%) brightness(0.6); transform: translateY(40px) rotate(90deg) scale(0.8); border-color: #555 !important; }
         .pov-char-card.defeated .pov-char-details { display: none; }
         .loot-btn { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); background: var(--gold); color: black; font-weight: bold; padding: 8px 12px; border-radius: 8px; z-index: 20; border: 2px solid white; cursor: pointer; animation: pulse 1s infinite; white-space: nowrap; font-size: 0.8em; box-shadow: 0 0 15px var(--gold);}
         @keyframes pulse { 0% {transform: translate(-50%, -50%) scale(1);} 50% {transform: translate(-50%, -50%) scale(1.1);} 100% {transform: translate(-50%, -50%) scale(1);} }
@@ -127,12 +123,10 @@
         .mod-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 15px; }
         .mod-tag { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--green); color: var(--green); padding: 3px 8px; border-radius: 10px; font-size: 0.7em; font-weight: bold; }
         .btn-equip { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; background: var(--green); color: white;}
-
         .picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 10px; max-height: 50vh; overflow-y: auto; padding-right:10px;}
         .picker-item { text-align: center; cursor: pointer; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 5px; position:relative;}
         .picker-item img { width: 100%; aspect-ratio:1; object-fit: cover; border: 2px solid transparent; border-radius: 8px;}
         .picker-item:hover img { border-color: var(--blue); }
-
         #export-card-container { position: fixed; left: -9999px; top: -9999px; width:350px; background: var(--panel); border: 2px solid var(--gold); border-radius: 10px; padding:15px; color:white; }
     </style>
 </head>
@@ -178,14 +172,13 @@
     <div class="modal" id="picker-modal"> <div class="modal-card" style="max-width:320px;"> <i class="fas fa-times close-btn" onclick="fecharModal('picker-modal')"></i> <h3 id="picker-title" class="section-title" style="justify-content:center;"></h3> <div id="picker-grid" class="picker-grid"></div> </div> </div>
     <div class="modal" id="recipe-modal"><div class="modal-card"><i class="fas fa-times close-btn" onclick="fecharModal('recipe-modal')"></i> <h3 id="recipe-modal-title" class="section-title" style="justify-content:center;"></h3> <div class="crafting-bench" id="recipe-modal-bench" style="background:transparent; border:none; padding:0;"></div></div></div>
     
-    <!-- CONTAINER EXPORTAÇÃO -->
+    <!-- CONTAINER EXPORTAÇÃO OCULTO -->
     <div id="export-card-container"></div>
     
     <script>
         const firebaseConfig = { databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
         const session = localStorage.getItem('rpg_session');
         if(!session || session === 'admin') window.location.href = 'login.html';
 
@@ -250,11 +243,10 @@
                     const statsBar = `<div class="card-stats"><span>❤️${char.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
 
                     if(data.status === 'defeated') {
-                        cardClass += " defeated"; hpDisplay = `<div class="pov-char-name" style="color:var(--red);">MORTO</div>`;
+                        cardClass += " defeated"; hpDisplay = `<div class="pov-char-name" style="color:var(--red);">DERROTADO</div>`;
                         const loot = (myCombat.loots || {})[id];
-                        if(loot && !loot.collected) { lootHtml = `<button class="loot-btn" onclick="coletarLoot('${id}')"><i class="fas fa-gem"></i> Coletar Loot</button>`; }
+                        if(loot && !loot.collected_by) { lootHtml = `<button class="loot-btn" onclick="coletarLoot('${id}')"><i class="fas fa-gem"></i> Coletar</button>`; }
                     }
-
                     return `<div class="${cardClass}">${lootHtml}<img src="${char.imagem}" onclick="verStatsCombate('${id}', ${myCombat.public_inspection})"><div class="pov-char-details"><div class="pov-char-name">${char.nome.split(' ')[0]}</div>${hpDisplay}${data.status!=='defeated'?statsBar:''}</div></div>`;
                 };
 
@@ -264,13 +256,21 @@
                 });
 
                 if(justEntered) setTimeout(() => { const v = document.getElementById('combat-viewport'); if(v) v.scrollLeft = (v.scrollWidth - v.clientWidth) / 2; }, 200);
+
             } else if(myCombat && myCombat.status === 'ended_pending_loot') {
                 activeCombatId = myCombatId; currentCombatData = myCombat;
                 navCombat.classList.remove('hidden');
-                combatView.innerHTML = `<h3 class="section-title" style="color:var(--gold);">Batalha Encerrada</h3><p style="color:#94a3b8; text-align:center;">Os espólios aguardam os vitoriosos.</p><button class="btn-action" style="background:var(--gold); color:black; margin-top:20px;" onclick="pegarRecompensas()">Pegar Recompensas</button>`;
-            } else {
+                let lootsAvailable = false;
+                if(myCombat.loots) Object.values(myCombat.loots).forEach(l => {if(!l.collected_by) lootsAvailable = true});
+                
+                if (lootsAvailable) {
+                    combatView.innerHTML = `<h3 class="section-title" style="color:var(--gold);">Batalha Encerrada</h3><p style="color:#94a3b8; text-align:center;">Os espólios aguardam os vitoriosos.</p><button class="btn-action" style="background:var(--gold); color:black; margin-top:20px;" onclick="pegarRecompensas()">Pegar Recompensas</button>`;
+                } else {
+                    combatView.innerHTML = `<h3 class="section-title" style="color:var(--gold);">Batalha Encerrada</h3><p style="color:#94a3b8; text-align:center;">Não há mais recompensas para coletar.</p><button class="btn-action" style="background:var(--border);" onclick="sairDoCombate()">Sair da Cena</button>`;
+                }
+            } else { 
                 activeCombatId = null; currentCombatData = null;
-                navCombat.classList.add('hidden');
+                navCombat.classList.add('hidden'); 
                 if(document.getElementById('tab-combat').classList.contains('active')) mudarAba('tab-status', document.querySelector('.nav-item')); 
             }
         });
@@ -281,9 +281,9 @@
             if(!activeCombatId) return;
             const lootRef = db.ref(`combat/sessions/${activeCombatId}/loots/${tId}`);
             lootRef.transaction(loot => {
-                if (loot && loot.collected === false) { loot.collected = session; return loot; } return undefined;
+                if (loot && !loot.collected_by) { loot.collected_by = session; return loot; } return undefined;
             }, (error, committed, snapshot) => {
-                if (committed && snapshot.val() && snapshot.val().collected === session) {
+                if (committed && snapshot.val() && snapshot.val().collected_by === session) {
                     const lData = snapshot.val(); let updates = {};
                     Object.entries(lData.items).forEach(([itemId, qtd]) => {
                         for(let i=0; i<qtd; i++){ updates[db.ref().push().key] = { item_id: itemId, equipado: false }; }
@@ -298,16 +298,18 @@
             const loots = currentCombatData.loots || {};
             let updates = {};
             Object.values(loots).forEach(loot => {
-                if(!loot.collected) {
+                if(!loot.collected_by) {
                     Object.entries(loot.items).forEach(([itemId, qtd]) => {
                         for(let i=0; i<qtd; i++){ updates[db.ref().push().key] = { item_id: itemId, equipado: false }; }
                     });
                 }
             });
             db.ref(`characters/${session}/inventario`).update(updates);
-            db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove(); // Me remove do combate
+            db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove();
             alert("Recompensas coletadas!");
         }
+
+        function sairDoCombate() { db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove(); }
 
         function verStatsCombate(charId, isPublic) {
             if(!isPublic && charId !== session) return alert("O mestre ocultou os atributos nesta batalha.");
@@ -322,24 +324,31 @@
             if(c.mp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--blue), #1d4ed8); width:${(c.mp/c.mp_max)*100}%"></div><div class="status-bar-text">MP ${c.mp}/${c.mp_max}</div></div>`;
             if(c.sp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--gold), #b45309); width:${(c.sp/c.sp_max)*100}%"></div><div class="status-bar-text">SP ${c.sp}/${c.sp_max}</div></div>`;
             document.getElementById('cc-vitals').innerHTML = vitalsHtml;
+            
+            let eqSlots = { arma1: null, arma2: null, cabeca: null, peitoral: null, pernas: null, acessorio: null };
+            let bonus = { for:0, res:0, vel:0, agi:0, per:0, resm:0, esp:0, alm:0 };
+            if(c.inventario) Object.values(c.inventario).forEach(item => {
+                if(item.equipado) {
+                    const idb = itemsDB[item.item_id]; if(!idb) return;
+                    if(idb.categoria === 'Arma') { if(!eqSlots.arma1) eqSlots.arma1 = idb; else if(!eqSlots.arma2) eqSlots.arma2 = idb; }
+                    else if(idb.categoria === 'Armadura') { if(idb.slot_type === 'Cabeça' && !eqSlots.cabeca) eqSlots.cabeca = idb; else if(idb.slot_type === 'Peitoral' && !eqSlots.peitoral) eqSlots.peitoral = idb; else if(idb.slot_type === 'Pernas' && !eqSlots.pernas) eqSlots.pernas = idb; }
+                    else if(idb.categoria === 'Acessorio' && !eqSlots.acessorio) eqSlots.acessorio = idb;
+                    if(idb.mods) Object.keys(bonus).forEach(k => bonus[k] += (idb.mods[k] || 0));
+                }
+            });
+            if(c.skills) Object.keys(c.skills).forEach(sId => { const skill = skillsDB[sId]; if(skill && skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0)); });
 
             const equipsGrid = document.getElementById('cc-equips');
             if (c.tipo === 'Criatura') {
                 equipsGrid.innerHTML = `<p style="color:#64748b; font-size:0.8em; grid-column: 1/-1;">Criaturas não usam equipamentos.</p>`;
             } else {
-                let eqSlots = { arma1: null, arma2: null, cabeca: null, peitoral: null, pernas: null, acessorio: null };
-                if(c.inventario) Object.values(c.inventario).forEach(item => {
-                    if(item.equipado) {
-                        const idb = itemsDB[item.item_id]; if(!idb) return;
-                        if(idb.categoria === 'Arma') { if(!eqSlots.arma1) eqSlots.arma1 = idb; else if(!eqSlots.arma2) eqSlots.arma2 = idb; }
-                        else if(idb.categoria === 'Armadura') { if(idb.slot_type === 'Cabeça' && !eqSlots.cabeca) eqSlots.cabeca = idb; else if(idb.slot_type === 'Peitoral' && !eqSlots.peitoral) eqSlots.peitoral = idb; else if(idb.slot_type === 'Pernas' && !eqSlots.pernas) eqSlots.pernas = idb; }
-                        else if(idb.categoria === 'Acessorio' && !eqSlots.acessorio) eqSlots.acessorio = idb;
-                    }
-                });
                 const renderEq = (idb, icon, type) => idb ? `<div class="equip-slot filled slot-${type}" title="${idb.nome}"><img src="${idb.imagem}"></div>` : `<div class="equip-slot slot-${type}"><i class="fas ${icon}" style="color:var(--border);"></i></div>`;
                 equipsGrid.innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'acessorio');
             }
             
+            let statsHtml = ''; const base = c.atributos_base || {};
+            Object.keys(attrNames).forEach(k => { const total = (base[k] || 0) + bonus[k]; let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : ''; statsHtml += `<div class="attr-card" style="padding:8px;"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`; });
+            document.getElementById('cc-stats').innerHTML = statsHtml;
             document.getElementById('combat-char-modal').classList.add('active');
         }
 
@@ -369,11 +378,7 @@
                 boxAtrBase.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${atributosBase[k] || 0}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;
                 boxAtrTotal.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`;
             });
-            ['hp', 'mp', 'sp'].forEach(type => {
-                const bar = document.getElementById(`${type}-bar`); const max = pData[`${type}_max`] || 0;
-                if(max > 0) { bar.classList.add('active'); const val = pData[type] || 0; bar.querySelector('.status-bar-inner').style.width = `${(val/max)*100}%`; bar.querySelector('.status-bar-text').innerText = `${type.toUpperCase()} ${val}/${max}`; } 
-                else { bar.classList.remove('active'); }
-            });
+            ['hp', 'mp', 'sp'].forEach(type => { const bar = document.getElementById(`${type}-bar`); const max = pData[`${type}_max`] || 0; if(max > 0) { bar.classList.add('active'); const val = pData[type] || 0; bar.querySelector('.status-bar-inner').style.width = `${(val/max)*100}%`; bar.querySelector('.status-bar-text').innerText = `${type.toUpperCase()} ${val}/${max}`; } else { bar.classList.remove('active'); } });
             const boxInv = document.getElementById('p-inventario'); boxInv.innerHTML = ''; let qtdMap = {};
             if (pData.inventario) {
                 Object.entries(pData.inventario).forEach(([key, invItem]) => {
@@ -411,13 +416,15 @@
         function renderReceitasProntas() {
             const box = document.getElementById('receitas-prontas'); box.innerHTML = ''; let count = 0;
             Object.keys(recipesDB).forEach(rId => {
-                const r = recipesDB[rId]; if (!r.grid) return; let podeCriar = true; let invTemp = {...inventarioCraftDisponivel};
+                const r = recipesDB[rId]; if (!r.grid) return;
+                let podeCriar = true; let invTemp = {...inventarioCraftDisponivel};
                 for(let i=0; i<9; i++) {
                     let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = {id: rSlot, qtd: 1};
                     if (rSlot && typeof rSlot === 'object') { if ((invTemp[rSlot.id] || 0) < rSlot.qtd) podeCriar = false; else invTemp[rSlot.id] -= rSlot.qtd; }
                 }
                 if(podeCriar) {
-                    count++; const addResult = (res) => { let resId = res.id || res; const resItem = itemsDB[resId]; if(resItem) box.innerHTML += `<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${resItem.imagem}"> <div><strong style="color:var(--gold); font-size:0.9em;">${resItem.nome}</strong><br><small style="color:#94a3b8">Clique para preparar</small></div></div>`; };
+                    count++;
+                    const addResult = (res) => { let resId = res.id || res; const resItem = itemsDB[resId]; if(resItem) box.innerHTML += `<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${resItem.imagem}"> <div><strong style="color:var(--gold); font-size:0.9em;">${resItem.nome}</strong><br><small style="color:#94a3b8">Clique para preparar</small></div></div>`; };
                     if(r.resultados) r.resultados.forEach(addResult); else if(r.resultado) addResult(r.resultado);
                 }
             });
