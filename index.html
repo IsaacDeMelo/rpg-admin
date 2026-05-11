@@ -25,10 +25,10 @@
     <div class="login-glass">
         <h1>Crônicas do Reino</h1>
         <p>Entre usando as credenciais</p>
-        <input type="text" id="user" placeholder="Usuário" autocomplete="off">
-        <input type="password" id="pass" placeholder="Senha">
-        <button onclick="entrar()">Adentrar</button>
-        <div id="msg"></div>
+        <input type="text" id="user" placeholder="Usuário" autocomplete="username">
+        <input type="password" id="pass" placeholder="Senha" autocomplete="current-password">
+        <button id="login-btn" onclick="entrar()">Adentrar</button>
+        <div id="msg" aria-live="polite"></div>
     </div>
     <script>
         const firebaseConfig = { databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/" };
@@ -41,15 +41,24 @@
             else if(session) window.location.href = 'player.html';
         };
 
+        function setLoading(isLoading) {
+            const btn = document.getElementById('login-btn');
+            btn.disabled = isLoading;
+            btn.innerText = isLoading ? 'Verificando...' : 'Adentrar';
+        }
         function entrar() {
             const u = document.getElementById('user').value.trim();
             const p = document.getElementById('pass').value.trim();
+            const msg = document.getElementById('msg');
+            msg.innerText = '';
+            if(!u || !p) { msg.innerText = 'Preencha usuário e senha.'; return; }
+            setLoading(true);
             if(u === 'admin' && p === 'admin') { localStorage.setItem('rpg_session', 'admin'); return window.location.href = 'admin.html'; }
             db.ref('characters/' + u).once('value').then(snap => {
                 if(snap.exists() && snap.val().senha === p && snap.val().tipo === 'Jogador') {
                     localStorage.setItem('rpg_session', u); window.location.href = 'player.html';
-                } else { document.getElementById('msg').innerText = "Credenciais inválidas ou você é um NPC."; }
-            });
+                } else { msg.innerText = "Credenciais inválidas ou você é um NPC."; }
+            }).finally(() => setLoading(false));
         }
     </script>
 </body>

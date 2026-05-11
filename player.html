@@ -12,11 +12,12 @@
     <style>
         :root { --bg: #0f172a; --panel: #1e293b; --border: #334155; --text: #f8fafc; --gold: #f59e0b; --blue: #3b82f6; --green: #10b981; --red: #ef4444; --purple: #a855f7; --cyan: #0891b2;}
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
-        body { background: var(--bg); color: var(--text); padding-bottom: 90px; overflow-x: hidden;}
+        body { background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.15), transparent 60%), radial-gradient(900px 500px at 90% 0%, rgba(16,185,129,0.12), transparent 60%), var(--bg); color: var(--text); padding-bottom: 90px; overflow-x: hidden; opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s ease; }
+        body.app-ready { opacity: 1; transform: none; min-height: 100vh }
         
-        .header-bg { height: 160px; background: url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=1920') center/cover; position: relative; }
+        .header-bg { height: 140px; background: url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=1920') center/cover; position: relative; }
         .header-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 5%, transparent); }
-        .char-info { position: relative; margin-top: -50px; padding: 0 20px; display: flex; align-items: flex-end; gap: 15px; }
+        .char-info { position: relative; margin-top: -70px; padding: 0 20px; display: flex; align-items: flex-end; gap: 15px; }
         .char-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(245,158,11,0.3); z-index: 2; background: #000;}
         .char-texts { z-index: 2; margin-bottom: 5px; flex: 1;}
         .char-name { font-family: 'Cinzel', serif; font-size: 1.5em; color: var(--gold); text-shadow: 2px 2px 4px #000;}
@@ -47,8 +48,19 @@
         .nav-item i { font-size: 1.6em; }
         .nav-item.active { color: var(--gold); transform: translateY(-3px);}
         .nav-item.hidden { display: none !important; }
+        .hidden { display: none !important; }
 
-        .tab-content { display: none; padding: 20px; } .tab-content.active { display: block; animation: fade 0.3s; }
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; z-index: 60; }
+        .menu-overlay.active { display: flex; }
+        .menu-sheet { width: 100%; max-width: 540px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); border-radius: 16px 16px 0 0; padding: 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.35); }
+        .menu-header { display:flex; align-items:center; justify-content: space-between; margin-bottom: 10px; }
+        .menu-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.1em; }
+        .menu-item { display:flex; align-items:center; gap:12px; padding: 12px; border-radius: 10px; background: rgba(0,0,0,0.25); border: 1px solid transparent; cursor: pointer; margin-bottom: 8px; }
+        .menu-item:hover { border-color: var(--blue); }
+        .menu-item i { width: 24px; text-align:center; color: var(--blue); }
+        .menu-item .hint { color: #94a3b8; font-size: 0.75em; }
+
+        .tab-content { display: none; padding: 20px; max-width: 980px; margin: 0 auto; } .tab-content.active { display: block; animation: fade 0.3s; }
         @keyframes fade { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
         .section-title { font-family: 'Cinzel', serif; color: var(--blue); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 1.1em; display:flex; align-items:center; gap:8px;}
         
@@ -88,10 +100,17 @@
         .recipe-ready-card img { width:40px; height:40px; border-radius:6px; background:#000;}
         textarea#diario { width: 100%; height: 350px; background: var(--panel); border: 1px solid var(--border); color: #cbd5e1; padding: 15px; border-radius: 12px; resize: none; font-size: 0.9em; outline:none;}
 
+        .summon-bar { margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .summon-card { background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 10px; padding: 8px; text-align: center; }
+        .summon-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 6px; background: #000; }
+        .summon-card h4 { font-size: 0.8em; color: var(--gold); margin-bottom: 6px; }
+        .summon-card button { width: 100%; border: none; border-radius: 8px; padding: 8px; background: var(--purple); color: #fff; font-weight: bold; cursor: pointer; }
+
         /* POV COMBAT MAP */
         .pov-viewport { width: calc(100% + 40px); margin-left: -20px; height: 420px; overflow-x: auto; overflow-y: hidden; position: relative; scroll-behavior: smooth; background:#000; perspective: 1000px;}
-        .pov-bg-far { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background-size: cover; background-position: center bottom; z-index: 1; image-rendering: pixelated;}
-        .pov-bg-near { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background-size: cover; background-position: center bottom; z-index: 2; image-rendering: pixelated;}
+        .pov-bg-far { position: absolute; left: 0; top: 0; width: 150%; height: 100%; background-size: cover; background-position: center bottom; background-repeat: no-repeat; z-index: 1; image-rendering: pixelated;}
+        .pov-bg { position: absolute; left: 0; top: 0; width: 150%; height: 100%; background-size: cover; background-position: center bottom; background-repeat: no-repeat; z-index: 1; image-rendering: pixelated;}
+        .pov-bg-near { position: absolute; left: 0; top: 0; width: 150%; height: 100%; background-size: cover; background-position: center bottom; background-repeat: no-repeat; z-index: 2; image-rendering: pixelated;}
         .pov-scene { position: absolute; top: 0; left: 0; width: 150%; height: 100%; z-index: 3; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 40px; gap: 80px; pointer-events: none;}
         .pov-team { display: flex; gap: 20px; align-items: flex-end; pointer-events: auto; }
         .pov-team.allies { flex-direction: row-reverse; } .pov-team.enemies { flex-direction: row; }
@@ -142,11 +161,11 @@
         <div id="hp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">HP</div></div>
         <div id="mp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">MP</div></div>
         <div id="sp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">SP</div></div>
-        <details class="total-stats-details"><summary>Ver Atributos Totais</summary><div id="p-atributos-total" class="attr-grid"></div></details>
+        
     </div>
 
     <!-- TABS -->
-    <div id="tab-status" class="tab-content active"><div class="pts-pill" style="margin-bottom:20px; text-align:center; display:block;"><i class="fas fa-star"></i> <span id="p-pontos">0</span> Pts de Atributo</div><h3 class="section-title"><i class="fas fa-heartbeat"></i> Atributos Base</h3><div id="p-atributos-base" class="attr-grid"></div><h3 class="section-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3><div id="p-skills" class="skills-grid"></div><button class="btn-action" style="background:var(--cyan); margin-top:20px;" onclick="exportarFicha()"><i class="fas fa-camera"></i> Exportar Card</button></div>
+    <div id="tab-status" class="tab-content active"><div class="pts-pill" style="margin-bottom:20px; text-align:center; display:block;"><i class="fas fa-star"></i> <span id="p-pontos">0</span> Pts de Atributo</div><h3 class="section-title"><i class="fas fa-heartbeat"></i> Atributos Base</h3><div id="p-atributos-base" class="attr-grid"></div><h3 class="section-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3><div id="p-skills" class="skills-grid"></div></div>
     <div id="tab-equip" class="tab-content"><h3 class="section-title"><i class="fas fa-tshirt"></i> Equipamentos Ativos</h3><p style="font-size:0.8em; text-align:center; color:#94a3b8; margin-bottom:20px;">Clique em um espaço vazio para equipar um item da bolsa.</p><div class="equip-grid" id="p-equipamentos"></div></div>
     <div id="tab-bolsa" class="tab-content"><div class="inv-grid" id="p-inventario"></div></div>
     <div id="tab-forja" class="tab-content"><h3 class="section-title"><i class="fas fa-lightbulb"></i> Receitas Prontas</h3><div id="receitas-prontas"></div><h3 class="section-title" style="margin-top:20px;"><i class="fas fa-hammer"></i> Mesa de Trabalho</h3><div class="inv-craft-selector" id="craft-inventory"></div><div class="crafting-bench"><div class="craft-grid" id="craft-table"></div><i class="fas fa-arrow-right"></i><div class="craft-result-slot" id="craft-result"></div></div><button class="btn-action btn-forge" onclick="tentarForjar()">Forjar</button><button class="btn-action" style="background:var(--border);" onclick="limparMesa()">Limpar Mesa</button></div>
@@ -156,12 +175,23 @@
     
     <!-- BOTTOM NAV -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="mudarAba('tab-status', this)"><i class="fas fa-user-shield"></i>Status</div>
-        <div class="nav-item" onclick="mudarAba('tab-equip', this)"><i class="fas fa-tshirt"></i>Equip</div>
-        <div class="nav-item" onclick="mudarAba('tab-bolsa', this)"><i class="fas fa-shopping-bag"></i>Bolsa</div>
-        <div class="nav-item" onclick="mudarAba('tab-forja', this)"><i class="fas fa-hammer"></i>Forja</div>
-        <div class="nav-item" onclick="mudarAba('tab-grimorio', this)"><i class="fas fa-book-open"></i>Grimório</div>
-        <div class="nav-item hidden" id="nav-combat" onclick="mudarAba('tab-combat', this)"><i class="fas fa-fire" style="color:var(--red);"></i>Combate</div>
+        <div class="nav-item active" data-tab="tab-status" onclick="mudarAba('tab-status', this)"><i class="fas fa-user-shield"></i>Status</div>
+        <div class="nav-item" data-tab="tab-equip" onclick="mudarAba('tab-equip', this)"><i class="fas fa-tshirt"></i>Equip</div>
+        <div class="nav-item" data-tab="tab-bolsa" onclick="mudarAba('tab-bolsa', this)"><i class="fas fa-shopping-bag"></i>Bolsa</div>
+        <div class="nav-item" data-tab="tab-forja" onclick="mudarAba('tab-forja', this)"><i class="fas fa-hammer"></i>Forja</div>
+        <div class="nav-item" onclick="openMenu()"><i class="fas fa-ellipsis-h"></i>Mais</div>
+    </div>
+
+    <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()">
+        <div class="menu-sheet" onclick="event.stopPropagation()">
+            <div class="menu-header">
+                <div class="menu-title">Menu</div>
+                <i class="fas fa-times" style="cursor:pointer; color:#94a3b8;" onclick="closeMenu()"></i>
+            </div>
+            <div class="menu-item" onclick="openMenuTab('tab-grimorio')"><i class="fas fa-book-open"></i><div><div>Grimorio</div><div class="hint">Receitas e registros</div></div></div>
+            <div class="menu-item hidden" id="menu-combat" onclick="openMenuTab('tab-combat')"><i class="fas fa-fire" style="color:var(--red);"></i><div><div>Combate</div><div class="hint">Cena e taticas</div></div></div>
+            <div class="menu-item" onclick="openMenuTab('tab-diario')"><i class="fas fa-feather"></i><div><div>Diario</div><div class="hint">Notas pessoais</div></div></div>
+        </div>
     </div>
 
     <!-- MODAIS -->
@@ -178,15 +208,16 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const session = localStorage.getItem('rpg_session');
-        if(!session || session === 'admin') window.location.href = 'login.html';
+        if(!session || session === 'admin') window.location.href = 'index.html';
 
         let pData = null; let itemsDB = {}; let recipesDB = {}; let skillsDB = {}; let charsDB = {};
         const attrNames = { for: 'Força', res: 'Resistência', vel: 'Velocidade', agi: 'Agilidade', per: 'Percepção', resm: 'Res. Mágica', esp: 'Espírito', alm: 'Alma' };
 
         let craftMesa =[null, null, null, null, null, null, null, null, null]; 
         let itemCraftSelecionado = null; let inventarioCraftDisponivel = {};
-        let itemAtualKey = null; let itemAtualDBData = null; let itemAtualAction = 'equip';
+        let itemAtualKey = null; let itemAtualId = null; let itemAtualDBData = null; let itemAtualAction = 'equip';
         let activeCombatId = null;
+        let diaryDirty = false;
 
         db.ref('items').on('value', snap => { itemsDB = snap.val() || {}; checkRender(); });
         db.ref('skills').on('value', snap => { skillsDB = snap.val() || {}; checkRender(); });
@@ -194,12 +225,14 @@
         db.ref('characters').on('value', snap => { charsDB = snap.val() || {}; });
 
         db.ref('characters/' + session).on('value', snap => {
-            if(!snap.exists()) return (window.location.href = 'login.html');
+            if(!snap.exists()) return (window.location.href = 'index.html');
             pData = snap.val();
             document.getElementById('p-nome').innerText = pData.nome;
             document.getElementById('p-classe').innerText = pData.classe || "Aventureiro";
             document.getElementById('p-pontos').innerText = pData.pontos || 0;
             if(pData.imagem) document.getElementById('p-img').src = pData.imagem;
+            const diaryEl = document.getElementById('diario');
+            if (diaryEl && !diaryDirty) diaryEl.value = pData.anotacoes || '';
             checkRender();
         });
 
@@ -209,13 +242,13 @@
             const sessions = snap.val() || {}; let myCombat = null; let myCombatId = null;
             Object.entries(sessions).forEach(([cId, combat]) => { if(combat.tokens && combat.tokens[session]) { myCombat = combat; myCombatId = cId; } });
 
-            const navCombat = document.getElementById('nav-combat');
+            const menuCombat = document.getElementById('menu-combat');
             const combatView = document.getElementById('combat-view');
 
             if(myCombat && myCombat.status === 'active') {
                 const justEntered = activeCombatId !== myCombatId;
                 activeCombatId = myCombatId; currentCombatData = myCombat;
-                navCombat.classList.remove('hidden');
+                if (menuCombat) menuCombat.classList.remove('hidden');
                 
                 combatView.innerHTML = `
                     <h3 class="section-title" id="combat-scene-name"><i class="fas fa-khanda"></i> ${myCombat.name}</h3>
@@ -227,6 +260,8 @@
                             <div class="pov-team enemies" id="combat-enemies"></div>
                         </div>
                     </div>
+                    <h4 class="section-title" style="margin-top:15px;"><i class="fas fa-magic"></i> Pets</h4>
+                    <div class="summon-bar" id="summon-bar"></div>
                 `;
                 const alliesBox = document.getElementById('combat-allies');
                 const enemiesBox = document.getElementById('combat-enemies');
@@ -248,16 +283,34 @@
                     return `<div class="${cardClass}">${lootHtml}<img src="${char.imagem}" onclick="verStatsCombate('${id}', ${myCombat.public_inspection})"><div class="pov-char-details"><div class="pov-char-name">${char.nome.split(' ')[0]}</div>${hpDisplay}${data.status!=='defeated'?statsBar:''}</div></div>`;
                 };
 
+                const renderSummon = (summon) => {
+                    if(!summon) return '';
+                    let cardClass = "pov-char-card";
+                    let hpPercent = summon.hp_max > 0 ? Math.max(0, Math.min(100, ((summon.hp || 0) / summon.hp_max) * 100)) : 100;
+                    let hpDisplay = summon.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
+                    const b = summon.atributos_base || {};
+                    const statsBar = `<div class="card-stats"><span>❤️${summon.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
+                    return `<div class="${cardClass}"><img src="${summon.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'" alt="${summon.nome || 'Pet'}"><div class="pov-char-details"><div class="pov-char-name">${(summon.nome || 'Pet').split(' ')[0]}</div>${hpDisplay}${statsBar}</div></div>`;
+                };
+
                 Object.entries(myCombat.tokens).forEach(([id, data]) => {
                     if(data.team === myTeam) { if(id !== session) alliesBox.innerHTML += renderChar(id, data); } 
                     else { enemiesBox.innerHTML += renderChar(id, data); }
                 });
 
+                Object.values(myCombat.summons || {}).forEach(summon => {
+                    if(!summon || !summon.team) return;
+                    if(summon.team === myTeam) alliesBox.innerHTML += renderSummon(summon);
+                    else enemiesBox.innerHTML += renderSummon(summon);
+                });
+
+                renderSummonBar();
+
                 if(justEntered) setTimeout(() => { const v = document.getElementById('combat-viewport'); if(v) v.scrollLeft = (v.scrollWidth - v.clientWidth) / 2; }, 200);
 
             } else if(myCombat && myCombat.status === 'ended_pending_loot') {
                 activeCombatId = myCombatId; currentCombatData = myCombat;
-                navCombat.classList.remove('hidden');
+                if (menuCombat) menuCombat.classList.remove('hidden');
                 let lootsAvailable = false;
                 if(myCombat.loots) Object.values(myCombat.loots).forEach(l => {if(!l.collected_by) lootsAvailable = true});
                 
@@ -268,12 +321,51 @@
                 }
             } else { 
                 activeCombatId = null; currentCombatData = null;
-                navCombat.classList.add('hidden'); 
-                if(document.getElementById('tab-combat').classList.contains('active')) mudarAba('tab-status', document.querySelector('.nav-item')); 
+                if (menuCombat) menuCombat.classList.add('hidden');
+                if(document.getElementById('tab-combat').classList.contains('active')) mudarAba('tab-status'); 
             }
         });
         
         function updateParallax(el) { const max = el.scrollWidth - el.clientWidth; if(max <= 0) return; document.getElementById('combat-bg').style.backgroundPosition = `${(el.scrollLeft / max) * 100}% center`; }
+
+        function renderSummonBar() {
+            const bar = document.getElementById('summon-bar');
+            if (!bar) return;
+            if (!pData) { bar.innerHTML = ''; return; }
+            if (!activeCombatId || !currentCombatData) { bar.innerHTML = '<p style="color:#64748b; font-size:0.8em; text-align:center; grid-column:1/-1;">Sem combate ativo.</p>'; return; }
+            const summons = [];
+            Object.entries(pData.inventario || {}).forEach(([key, invItem]) => {
+                const idb = itemsDB[invItem.item_id];
+                if(idb && idb.categoria === 'Pet') summons.push({ key, id: invItem.item_id, data: idb });
+            });
+            if (summons.length === 0) {
+                bar.innerHTML = '<p style="color:#64748b; font-size:0.8em; text-align:center; grid-column:1/-1;">Nenhuma Pet na bolsa.</p>';
+                return;
+            }
+            bar.innerHTML = '';
+            summons.forEach(s => {
+            bar.innerHTML += `<div class="summon-card"><img src="${s.data.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'" alt="${s.data.nome}"><h4>${s.data.nome}</h4><button onclick="invocarCriatura('${s.key}', '${s.id}')">Invocar</button></div>`;
+            });
+        }
+
+        function invocarCriatura(itemKey, itemId) {
+            if(!activeCombatId || !currentCombatData) return alert('Sem combate ativo.');
+            const item = itemsDB[itemId]; if(!item) return;
+            const myTeam = (currentCombatData.tokens || {})[session]?.team || 'A';
+            const summon = {
+                nome: item.nome || 'Pet',
+                imagem: item.imagem || 'https://via.placeholder.com/150',
+                team: myTeam,
+                owner: session,
+                status: 'alive',
+                hp: (item.summon && item.summon.hp) ? item.summon.hp : 10,
+                hp_max: (item.summon && item.summon.hp_max) ? item.summon.hp_max : 10,
+                atributos_base: (item.summon && item.summon.atributos_base) ? item.summon.atributos_base : { for: 0, res: 0, agi: 0 }
+            };
+            const summonKey = db.ref(`combat/sessions/${activeCombatId}/summons`).push().key;
+            db.ref(`combat/sessions/${activeCombatId}/summons/${summonKey}`).set(summon);
+            db.ref(`characters/${session}/inventario/${itemKey}`).remove();
+        }
 
         function coletarLoot(tId) {
             if(!activeCombatId) return;
@@ -370,22 +462,22 @@
             const boxSkills = document.getElementById('p-skills'); boxSkills.innerHTML = '';
             if(pData.skills) Object.keys(pData.skills).forEach(sId => { const skill = skillsDB[sId]; if(skill) { if(skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0)); boxSkills.innerHTML += `<div class="skill-card"><img class="skill-img" src="${skill.imagem}"><div class="skill-info"><h4>${skill.nome}</h4><p>${skill.descricao}</p></div></div>`;}});
             const atributosBase = pData.atributos_base || {};
-            const boxAtrBase = document.getElementById('p-atributos-base'); boxAtrBase.innerHTML = ''; const boxAtrTotal = document.getElementById('p-atributos-total'); boxAtrTotal.innerHTML = '';
+            const boxAtrBase = document.getElementById('p-atributos-base'); boxAtrBase.innerHTML = '';
             Object.keys(attrNames).forEach(k => {
                 const total = (atributosBase[k] || 0) + bonus[k]; let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : '';
-                boxAtrBase.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${atributosBase[k] || 0}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;
-                boxAtrTotal.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`;
+                boxAtrBase.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;
             });
             ['hp', 'mp', 'sp'].forEach(type => { const bar = document.getElementById(`${type}-bar`); const max = pData[`${type}_max`] || 0; if(max > 0) { bar.classList.add('active'); const val = pData[type] || 0; bar.querySelector('.status-bar-inner').style.width = `${(val/max)*100}%`; bar.querySelector('.status-bar-text').innerText = `${type.toUpperCase()} ${val}/${max}`; } else { bar.classList.remove('active'); } });
             const boxInv = document.getElementById('p-inventario'); boxInv.innerHTML = ''; let qtdMap = {};
             if (pData.inventario) {
                 Object.entries(pData.inventario).forEach(([key, invItem]) => {
                     const idb = itemsDB[invItem.item_id];
-                    if (idb) { if (idb.categoria === 'Material' || idb.categoria === 'Consumivel') { if (!qtdMap[invItem.item_id]) qtdMap[invItem.item_id] = { count: 0, sampleKey: key }; qtdMap[invItem.item_id].count++; } else { boxInv.innerHTML += renderItemSlot(key, invItem.item_id, invItem.equipado, 1); } }
+                    if (idb) { if (idb.categoria === 'Material' || idb.categoria === 'Consumivel' || idb.categoria === 'Pet') { if (!qtdMap[invItem.item_id]) qtdMap[invItem.item_id] = { count: 0, sampleKey: key }; qtdMap[invItem.item_id].count++; } else { boxInv.innerHTML += renderItemSlot(key, invItem.item_id, invItem.equipado, 1); } }
                 });
                 Object.keys(qtdMap).forEach(itemId => boxInv.innerHTML += renderItemSlot(qtdMap[itemId].sampleKey, itemId, false, qtdMap[itemId].count));
             }
             if(boxInv.innerHTML === '') boxInv.innerHTML = '<p style="grid-column:1/-1; color:#64748b; font-size:0.8em; text-align:center; padding: 20px;">Sua bolsa está vazia.</p>';
+            if (activeCombatId) renderSummonBar();
         }
         function renderItemSlot(uniqKey, itemId, equipado, count) { const idb = itemsDB[itemId]; const eqClass = equipado ? ' equipped' : ''; const badge = count > 1 ? `<div class="item-badge">x${count}</div>` : ''; return `<div class="item-slot${eqClass}" onclick="abrirItem('${uniqKey}', '${itemId}', ${equipado}, ${count})">${badge}<img class="item-img" src="${idb.imagem}"></div>`; }
         function upar(atr) { if((pData.pontos || 0) <= 0) return alert("Sem pontos de atributo."); if(confirm(`Investir 1 ponto em ${attrNames[atr]}?`)) { const baseAtual = pData.atributos_base ? (pData.atributos_base[atr] || 0) : 0; db.ref(`characters/${session}/pontos`).set(pData.pontos - 1); db.ref(`characters/${session}/atributos_base/${atr}`).set(baseAtual + 1); } }
@@ -447,24 +539,38 @@
         function finalizarCraftUnico(resultadoIndex = null) { const r = recipesDB[receitaValidaId]; let updates = {}; let tempInv = JSON.parse(JSON.stringify(pData.inventario || {})); for(let i=0; i<9; i++) { let rSlot = r.grid[i]; if(typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 }; if(rSlot && typeof rSlot === 'object') { const idNeeded = rSlot.id; let amountNeeded = rSlot.qtd || 1; let keys = Object.keys(tempInv); for(let k=0; k<keys.length && amountNeeded > 0; k++) { const key = keys[k]; if(tempInv[key].item_id === idNeeded && !tempInv[key].equipado) { updates[`${key}`] = null; delete tempInv[key]; amountNeeded--; } } } } let finalResult = resultadoIndex !== null ? r.resultados[resultadoIndex] : (r.resultado.id ? r.resultado : {id: r.resultado, qtd: 1}); for(let j=0; j<finalResult.qtd; j++) { const newKey = db.ref(`characters/${session}/inventario`).push().key; updates[`${newKey}`] = { item_id: finalResult.id, equipado: false }; } db.ref(`characters/${session}/inventario`).update(updates).then(() => { alert("Forjado com sucesso!"); limparMesa(); }); }
         function renderGrimorio() { const container = document.getElementById('recipe-book-container'); container.innerHTML = ''; let recipesByCategory = {}; Object.entries(recipesDB).forEach(([rId, r]) => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; if(resItem) { if(!recipesByCategory[resItem.categoria]) recipesByCategory[resItem.categoria] = []; recipesByCategory[resItem.categoria].push({rId, ...r}); } }); Object.entries(recipesByCategory).forEach(([category, recipes]) => { container.innerHTML += `<h3 class="section-title">${category}</h3>`; let grid = document.createElement('div'); grid.className = 'recipe-book-grid'; recipes.forEach(r => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; grid.innerHTML += `<div class="skill-card" onclick="verReceita('${r.rId}')"><img class="skill-img" src="${resItem.imagem}"><h4>${resItem.nome}</h4></div>`; }); container.appendChild(grid); }); if(container.innerHTML === '') container.innerHTML = '<p style="color:#64748b; text-align:center;">O grimório está vazio.</p>'; }
         function verReceita(rId) { const r = recipesDB[rId]; let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; document.getElementById('recipe-modal-title').innerText = `Receita de ${itemsDB[resId].nome}`; const bench = document.getElementById('recipe-modal-bench'); let gridHtml = '<div class="craft-grid">'; for(let i=0; i<9; i++) { let slot = r.grid[i]; let imgHtml = ''; if(slot && typeof slot === 'object' && itemsDB[slot.id]) { imgHtml = `<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`; } gridHtml += `<div class="craft-slot">${imgHtml}</div>`; } gridHtml += '</div>'; bench.innerHTML = gridHtml; document.getElementById('recipe-modal').classList.add('active'); }
-        function abrirItem(uniqKey, itemId, equipado, count) { itemAtualKey = uniqKey; itemAtualDBData = itemsDB[itemId]; if(!itemAtualDBData) return; document.getElementById('mod-img').src = itemAtualDBData.imagem; document.getElementById('mod-nome').innerText = itemAtualDBData.nome; document.getElementById('mod-cat').innerText = itemAtualDBData.categoria + (count > 1 ? ` (Possui ${count})` : ''); document.getElementById('mod-desc').innerText = itemAtualDBData.descricao; const sBox = document.getElementById('mod-stats-box'); sBox.innerHTML = ''; if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k => { if(itemAtualDBData.mods[k] > 0) sBox.innerHTML += `<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`; }); if(itemAtualDBData.effects) Object.entries(itemAtualDBData.effects).forEach(([key,val]) => { if(val > 0) sBox.innerHTML += `<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>`}); const btn = document.getElementById('mod-btn'); if(itemAtualDBData.categoria === 'Consumivel') { btn.style.display = 'block'; btn.style.background = 'var(--cyan)'; btn.innerText = 'Usar'; itemAtualAction = 'usar'; } else if(['Arma','Armadura','Acessorio'].includes(itemAtualDBData.categoria)) { btn.style.display = 'block'; if(equipado) { btn.style.background = '#ef4444'; btn.innerText = 'Desequipar'; } else { btn.style.background = '#10b981'; btn.innerText = 'Equipar'; } itemAtualAction = 'equip'; } else { btn.style.display = 'none'; } document.getElementById('item-modal').classList.add('active'); }
-        function handleItemAction() { if(itemAtualAction === 'equip') db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado); else if(itemAtualAction === 'usar') { const effects = itemAtualDBData.effects; if(!effects) return; let updates = {}; if(effects.hp > 0 && pData.hp_max > 0) updates.hp = Math.min(pData.hp_max, (pData.hp || 0) + effects.hp); if(effects.mp > 0 && pData.mp_max > 0) updates.mp = Math.min(pData.mp_max, (pData.mp || 0) + effects.mp); if(effects.sp > 0 && pData.sp_max > 0) updates.sp = Math.min(pData.sp_max, (pData.sp || 0) + effects.sp); db.ref(`characters/${session}`).update(updates); db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove(); } fecharModal('item-modal'); }
+        function abrirItem(uniqKey, itemId, equipado, count) { itemAtualKey = uniqKey; itemAtualId = itemId; itemAtualDBData = itemsDB[itemId]; if(!itemAtualDBData) return; document.getElementById('mod-img').src = itemAtualDBData.imagem; document.getElementById('mod-nome').innerText = itemAtualDBData.nome; document.getElementById('mod-cat').innerText = itemAtualDBData.categoria + (count > 1 ? ` (Possui ${count})` : ''); document.getElementById('mod-desc').innerText = itemAtualDBData.descricao; const sBox = document.getElementById('mod-stats-box'); sBox.innerHTML = ''; if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k => { if(itemAtualDBData.mods[k] > 0) sBox.innerHTML += `<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`; }); if(itemAtualDBData.effects) Object.entries(itemAtualDBData.effects).forEach(([key,val]) => { if(val > 0) sBox.innerHTML += `<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>`}); const btn = document.getElementById('mod-btn'); btn.disabled = false; if(itemAtualDBData.categoria === 'Consumivel') { btn.style.display = 'block'; btn.style.background = 'var(--cyan)'; btn.innerText = 'Usar'; itemAtualAction = 'usar'; } else if(itemAtualDBData.categoria === 'Pet') { btn.style.display = 'block'; btn.style.background = 'var(--purple)'; btn.innerText = activeCombatId ? 'Invocar' : 'Sem combate'; itemAtualAction = 'invocar'; if(!activeCombatId) btn.disabled = true; else btn.disabled = false; } else if(['Arma','Armadura','Acessorio'].includes(itemAtualDBData.categoria)) { btn.style.display = 'block'; if(equipado) { btn.style.background = '#ef4444'; btn.innerText = 'Desequipar'; } else { btn.style.background = '#10b981'; btn.innerText = 'Equipar'; } itemAtualAction = 'equip'; } else { btn.style.display = 'none'; } document.getElementById('item-modal').classList.add('active'); }
+        function handleItemAction() { if(itemAtualAction === 'equip') db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado); else if(itemAtualAction === 'usar') { const effects = itemAtualDBData.effects; if(!effects) return; let updates = {}; if(effects.hp > 0 && pData.hp_max > 0) updates.hp = Math.min(pData.hp_max, (pData.hp || 0) + effects.hp); if(effects.mp > 0 && pData.mp_max > 0) updates.mp = Math.min(pData.mp_max, (pData.mp || 0) + effects.mp); if(effects.sp > 0 && pData.sp_max > 0) updates.sp = Math.min(pData.sp_max, (pData.sp || 0) + effects.sp); db.ref(`characters/${session}`).update(updates); db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove(); } else if(itemAtualAction === 'invocar') { invocarCriatura(itemAtualKey, itemAtualId); } fecharModal('item-modal'); }
         async function exportarFicha() {
             const card = document.getElementById('export-card-container'); const data = { nome: pData.nome, classe: pData.classe, imagem: pData.imagem, atributos: {}, equipamentos: [], habilidades:[] };
-            document.querySelectorAll('#p-atributos-total .attr-card').forEach(el => { data.atributos[el.querySelector('.attr-name').innerText] = el.querySelector('.attr-value').innerText; });
+            document.querySelectorAll('#p-atributos-base .attr-card').forEach(el => { data.atributos[el.querySelector('.attr-name').innerText] = el.querySelector('.attr-value').innerText; });
             document.querySelectorAll('#p-equipamentos .equip-slot.filled').forEach(el => data.equipamentos.push(el.querySelector('img').src));
             document.querySelectorAll('#p-skills .skill-card').forEach(el => data.habilidades.push({img: el.querySelector('img').src, nome: el.querySelector('h4').innerText}));
             const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold'); const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--blue');
             let atrHtml = Object.entries(data.atributos).map(([k,v]) => `<div style="flex:1; min-width:80px; text-align:center; background:rgba(0,0,0,0.3); padding:5px; border-radius:5px;"><strong style="color:${goldColor}; display:block;">${k}</strong> ${v}</div>`).join('');
             let eqHtml = data.equipamentos.map(src => `<img src="${src}" style="width:50px; height:50px; border-radius:5px; border:1px solid #334155; object-fit:cover;">`).join('');
             let skHtml = data.habilidades.map(s => `<div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;"><img src="${s.img}" style="width:30px; height:30px; border-radius:5px;"><span>${s.nome}</span></div>`).join('');
-            card.innerHTML = `<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos Totais</h4><div style="display:flex; gap:8px; font-size:0.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Equipamentos</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml || 'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:0.8em;">${skHtml || 'Nenhuma.'}</div>`;
+            card.innerHTML = `<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos</h4><div style="display:flex; gap:8px; font-size:0.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Equipamentos</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml || 'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:0.8em;">${skHtml || 'Nenhuma.'}</div>`;
             const canvas = await html2canvas(card, {backgroundColor: '#1e293b', useCORS: true});
             const link = document.createElement('a'); link.download = `ficha_${session}.png`; link.href = canvas.toDataURL("image/png"); link.click();
         }
-        function salvarDiario() { db.ref(`characters/${session}/anotacoes`).set(document.getElementById('diario').value); }
+        document.getElementById('diario').addEventListener('input', () => { diaryDirty = true; });
+        function salvarDiario() { db.ref(`characters/${session}/anotacoes`).set(document.getElementById('diario').value); diaryDirty = false; }
         function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
-        function mudarAba(id, el) { document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); el.classList.add('active'); document.getElementById(id).classList.add('active'); }
+        function openMenu() { document.getElementById('menu-overlay').classList.add('active'); }
+        function closeMenu() { document.getElementById('menu-overlay').classList.remove('active'); }
+        function openMenuTab(id) { closeMenu(); mudarAba(id); }
+        function mudarAba(id, el) {
+            document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            if (el) { el.classList.add('active'); }
+            else {
+                const target = document.querySelector(`.nav-item[data-tab="${id}"]`);
+                if (target) target.classList.add('active');
+            }
+            document.getElementById(id).classList.add('active');
+        }
+        requestAnimationFrame(() => document.body.classList.add('app-ready'));
     </script>
 </body>
 </html>
