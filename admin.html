@@ -41,7 +41,6 @@
         .card h4 { color: #fff; margin-bottom: 5px; font-family: 'Cinzel', serif;}
         .badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 4px 10px; border-radius: 8px; font-size: 0.7em; font-weight: bold; }
         
-        /* NOVO STATS CARD */
         .card-stats { display: flex; justify-content: space-around; font-size: 0.75em; background: rgba(0,0,0,0.5); padding: 8px; border-top: 1px solid #333; color: #cbd5e1;}
         .card-stats span { display: flex; align-items: center; gap: 4px;}
 
@@ -54,6 +53,7 @@
         .admin-craft-grid { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 5px;}
         .admin-craft-slot { border: 2px dashed #475569; background: rgba(0,0,0,0.3); border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 0.8em; color: #64748b; text-align: center; position: relative;}
         .admin-craft-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 4px;}
+        .admin-craft-slot:hover { border-color: var(--gold); }
         .admin-res-slot { width: 90px; height: 90px; border: 2px solid var(--gold); border-radius: 12px; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; position: relative;}
         .admin-res-slot img { width: 90%; height: 90%; object-fit: cover;}
         .item-badge-admin { position: absolute; top: 2px; right: 2px; background: var(--red); color: white; font-size: 0.6em; font-weight: bold; padding: 2px 5px; border-radius: 4px; z-index: 5;}
@@ -100,6 +100,7 @@
         .cp-inv-item img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; }
         .cp-inv-item:hover { border-color: var(--cyan); }
         .item-badge-cp { position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.8); color: white; font-size: 0.65em; font-weight: bold; padding: 1px 5px; border-radius: 6px; z-index: 5;}
+        
         .cp-skill-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;}
         .cp-skill-item { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid var(--border);}
         .cp-skill-item img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover;}
@@ -132,30 +133,22 @@
 
     <div class="main-content">
         
+        <!-- HABITANTES -->
         <div id="sec-lib-chars" class="section active">
             <h2>Habitantes do Mundo</h2>
             <p style="color:#94a3b8; margin-bottom: 20px;">Clique em um personagem para gerenciar ficha e itens.</p>
             <div class="visual-grid" id="grid-chars"></div>
         </div>
-        
+
+        <!-- CRIAR PERSONAGEM -->
         <div id="sec-create-char" class="section">
             <h2>Criar Personagem ou Criatura</h2>
             <div class="glass-panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
                 <div>
                     <label>Categoria</label>
-                    <select id="c-tipo" onchange="toggleLootDiv()">
+                    <select id="c-tipo">
                         <option value="Jogador">Jogador</option><option value="NPC">NPC</option><option value="Criatura">Criatura</option>
                     </select>
-                    
-                    <!-- LOOT SETUP (SÓ PARA CRIATURA) -->
-                    <div id="c-loot-div" style="display:none; margin:15px 0; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; border:1px solid var(--border);">
-                        <h4 style="color:var(--gold); margin-bottom:5px;">Item de Drop (Loot)</h4>
-                        <input type="hidden" id="c-loot-id">
-                        <button class="btn" style="background:var(--panel); border:1px solid var(--blue); font-size:0.8em; padding:8px;" onclick="abrirPicker('set_loot')">Selecionar Item de Drop</button>
-                        <p id="c-loot-display" style="font-size:0.8em; color:#94a3b8; margin:8px 0; font-weight:bold;">Nenhum item selecionado</p>
-                        <input type="number" id="c-loot-qtd" placeholder="Quantidade Dropada" value="1">
-                    </div>
-
                     <input type="text" id="c-user" placeholder="Login / ID Único">
                     <input type="text" id="c-pass" placeholder="Senha (Para Jogadores)">
                     <input type="text" id="c-nome" placeholder="Nome Verdadeiro">
@@ -184,11 +177,12 @@
                         <div class="attr-box"><label>Espír</label><input type="number" id="c-esp" value="0"></div>
                         <div class="attr-box"><label>Alma</label><input type="number" id="c-alm" value="0"></div>
                     </div>
-                    <button class="btn btn-green" onclick="criarEntidade()">Salvar Entidade</button>
+                    <button class="btn btn-green" onclick="criarEntidade()">Salvar Personagem</button>
                 </div>
             </div>
         </div>
-        
+
+        <!-- CRIAR ITEM -->
         <div id="sec-create-item" class="section">
             <h2 style="color:var(--gold);"><i class="fas fa-hammer"></i> Forja de Itens</h2>
             <div class="glass-panel" style="border-color:var(--gold);">
@@ -291,8 +285,6 @@
         <i class="fas fa-times close-btn" onclick="closeModal('token-menu-modal')"></i>
         <h2 id="token-menu-name" style="border:none; padding:0; margin-bottom:15px; font-family:'Cinzel',serif; color:var(--gold);"></h2>
         <div id="token-status-controls" style="margin-bottom:20px;"></div>
-        <input type="text" id="token-speech-input" placeholder="Falar ou Agir (*ação*)" style="margin-bottom:10px;">
-        <button class="btn" style="background:var(--cyan); margin-bottom:15px;" onclick="setTokenSpeech()"><i class="fas fa-paper-plane"></i> Enviar Fala no Mapa</button>
         <button class="btn btn-red" id="token-remove-btn"><i class="fas fa-trash"></i> Remover do Mapa</button>
     </div></div>
 
@@ -313,33 +305,23 @@
         db.ref('recipes').on('value', snap => { DB_RECIPES = snap.val() || {}; renderReceitasGrid(); });
         db.ref('combat/sessions').on('value', snap => { DB_COMBATS = snap.val() || {}; renderCombatList(); if(activeCombatId && DB_COMBATS[activeCombatId]) updateActiveCombatView(); else hideCombatEditor(); });
 
-        // ======================= PERSONAGENS E CARDS =======================
-        function toggleLootDiv() {
-            const tipo = document.getElementById('c-tipo').value;
-            document.getElementById('c-loot-div').style.display = tipo === 'Criatura' ? 'block' : 'none';
-        }
-
         function criarEntidade() {
-            const id = document.getElementById('c-user').value; if(!id) return alert("Precisa definir um Login / ID!");
+            const id = document.getElementById('c-user').value; if(!id) return alert("Defina um ID!");
+            const tipo = document.getElementById('c-tipo').value;
             let charData = {
-                tipo: document.getElementById('c-tipo').value, senha: document.getElementById('c-pass').value, nome: document.getElementById('c-nome').value, classe: document.getElementById('c-classe').value, imagem: document.getElementById('c-img').value || 'https://via.placeholder.com/150', pontos: Number(document.getElementById('c-pts').value) || 0,
+                tipo: tipo, senha: document.getElementById('c-pass').value, nome: document.getElementById('c-nome').value, classe: document.getElementById('c-classe').value, imagem: document.getElementById('c-img').value || 'https://via.placeholder.com/150', pontos: Number(document.getElementById('c-pts').value) || 0,
                 hp: Number(document.getElementById('c-hp').value), hp_max: Number(document.getElementById('c-hp_max').value), mp: Number(document.getElementById('c-mp').value), mp_max: Number(document.getElementById('c-mp_max').value), sp: Number(document.getElementById('c-sp').value), sp_max: Number(document.getElementById('c-sp_max').value),
                 atributos_base: { for: Number(document.getElementById('c-for').value), res: Number(document.getElementById('c-res').value), vel: Number(document.getElementById('c-vel').value), agi: Number(document.getElementById('c-agi').value), per: Number(document.getElementById('c-per').value), resm: Number(document.getElementById('c-resm').value), esp: Number(document.getElementById('c-esp').value), alm: Number(document.getElementById('c-alm').value) }
             };
-            if(charData.tipo === 'Criatura') {
-                const lId = document.getElementById('c-loot-id').value; const lQtd = Number(document.getElementById('c-loot-qtd').value) || 1;
-                if(lId) charData.loot = { item_id: lId, qtd: lQtd };
-            }
-            db.ref('characters/' + id).set(charData).then(() => { alert("Criado com sucesso!"); nav('sec-lib-chars'); });
+            db.ref('characters/' + id).set(charData).then(() => { alert("Criado com sucesso! Se for criatura, abra a ficha dela para adicionar os Loots/Drops."); nav('sec-lib-chars'); });
         }
         
         function renderChars() {
             const grid = document.getElementById('grid-chars'); grid.innerHTML = '';
             Object.keys(DB_CHARS).forEach(id => {
-                const c = DB_CHARS[id];
-                let color = '#3b82f6'; if(c.tipo === 'NPC') color = '#ef4444'; if(c.tipo === 'Criatura') color = '#a855f7';
+                const c = DB_CHARS[id]; let color = '#3b82f6'; if(c.tipo === 'NPC') color = '#ef4444'; if(c.tipo === 'Criatura') color = '#a855f7';
                 const b = c.atributos_base || {};
-                const statsHtml = `<div class="card-stats"><span>❤️${c.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
+                const statsHtml = `<div class="card-stats"><span>❤${c.hp||0}</span><span>⚔${b.for||0}</span><span>🛡${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
                 grid.innerHTML += `<div class="card" onclick="abrirPerfilChar('${id}')"><div class="badge" style="background:${color}; color:#fff;">${c.tipo}</div><img src="${c.imagem}"><div class="info"><h4>${c.nome}</h4><p style="font-size:0.8em; color:#94a3b8; margin-bottom:8px;">${c.classe}</p></div>${statsHtml}</div>`;
             });
         }
@@ -348,32 +330,29 @@
         function abrirPerfilChar(charId) {
             activeCharId = charId; const c = DB_CHARS[charId]; if(!c) return closeModal('char-modal');
             let statsHtml = ''; Object.keys(attrNames).forEach(k => { statsHtml += `<div class="cp-stat">${attrNames[k]}<span>${(c.atributos_base || {})[k] || 0}</span></div>`; });
-            
-            let lootHtml = '';
-            if(c.tipo === 'Criatura' && c.loot) {
-                const itemLoot = DB_ITEMS[c.loot.item_id];
-                if(itemLoot) lootHtml = `<p style="color:var(--gold); font-size:0.8em; margin-top:-10px; margin-bottom:10px;"><b>Loot/Drop:</b> ${itemLoot.nome} x${c.loot.qtd}</p>`;
-            }
-
-            let invMap = {}; let equipableInv = {};
-            if(c.inventario) Object.entries(c.inventario).forEach(([key,item]) => { 
-                const idb = DB_ITEMS[item.item_id];
-                if(idb && (idb.categoria === 'Material' || idb.categoria === 'Consumivel')) invMap[item.item_id] = (invMap[item.item_id] || 0) + 1; 
-                else equipableInv[key] = item;
-            });
-            let invHtml = ''; 
-            Object.entries(invMap).forEach(([itemId, qtd]) => { const itemDB = DB_ITEMS[itemId]; if(itemDB) invHtml += `<div class="cp-inv-item" onclick="abrirGerenciadorItem('${charId}', '${itemId}', ${qtd})"><img src="${itemDB.imagem}" title="${itemDB.nome}"><div class="item-badge-cp">x${qtd}</div></div>`; });
-            Object.entries(equipableInv).forEach(([key, item]) => { const itemDB = DB_ITEMS[item.item_id]; if(itemDB) invHtml += `<div class="cp-inv-item ${item.equipado ? 'equipped' : ''}" onclick="adminEquipItem('${key}')" style="${item.equipado ? 'border-color:var(--green)' : ''}"><img src="${itemDB.imagem}" title="${itemDB.nome}"></div>`; });
-
-            let skillsHtml = ''; if(c.skills) Object.keys(c.skills).forEach(sId => { const skill = DB_SKILLS[sId]; if(skill) skillsHtml += `<div class="cp-skill-item"><img src="${skill.imagem}"><div><strong style="color:var(--gold); font-size:0.8em;">${skill.nome}</strong><br><span style="font-size:0.7em; cursor:pointer; color:var(--red);" onclick="removerSkill('${charId}','${sId}')">Remover</span></div></div>`; });
             const vitalsHtml = `<input type="text" value="${c.hp || 0}/${c.hp_max || 0}" onchange="updateVitals('${charId}', 'hp', this.value)">` + (c.mp_max>0?`<input type="text" value="${c.mp || 0}/${c.mp_max || 0}" onchange="updateVitals('${charId}', 'mp', this.value)">`:'') + (c.sp_max>0?`<input type="text" value="${c.sp || 0}/${c.sp_max || 0}" onchange="updateVitals('${charId}', 'sp', this.value)">`:'');
             
-            const html = `<div class="char-profile-grid"><div class="cp-left"><img class="cp-avatar" src="${c.imagem}"><div class="cp-name">${c.nome}</div><div class="cp-class">${c.classe} | Pontos: ${c.pontos || 0}</div>${lootHtml}<div class="cp-vitals">${vitalsHtml}</div><div class="cp-stats-grid">${statsHtml}</div><button class="btn btn-red" style="margin-top:20px;" onclick="deletarChar('${charId}')">Excluir</button></div><div class="cp-right"><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Equipamentos</h3></div><div id="cp-equip-grid" class="cp-equip-grid"></div><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Habilidades</h3><button class="btn" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_skill', '${charId}')">+ Ensinar</button></div><div class="cp-skill-list">${skillsHtml || '<p style="color:#64748b; font-size:0.8em;">Nenhuma.</p>'}</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;"><h3>Bolsa</h3><button class="btn btn-green" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_item', '${charId}')">+ Dar Item</button></div><div class="cp-inv-grid">${invHtml || '<p style="color:#64748b; font-size:0.8em;">Vazia.</p>'}</div></div></div>`;
+            let cpRightHtml = '';
+            if (c.tipo === 'Criatura') {
+                let lootsHtml = '';
+                if(c.loots) Object.entries(c.loots).forEach(([key, loot]) => { const itemDB = DB_ITEMS[loot.item_id]; if(itemDB) lootsHtml += `<div class="cp-inv-item" onclick="removerLoot('${charId}','${key}')"><img src="${itemDB.imagem}" title="${itemDB.nome}"><div class="item-badge-cp">x${loot.qtd}</div></div>`; });
+                cpRightHtml = `<div style="display:flex; justify-content:space-between; align-items:center;"><h3>Loots / Drops</h3><button class="btn btn-green" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_loot', '${charId}')">+ Adicionar Drop</button></div><p style="font-size:0.7em; color:#94a3b8; margin-bottom:15px;">Clique em um drop para excluí-lo.</p><div class="cp-inv-grid">${lootsHtml || '<p style="color:#64748b; font-size:0.8em;">Nenhum drop configurado.</p>'}</div>`;
+            } else {
+                let invMap = {}; let equipableInv = {};
+                if(c.inventario) Object.entries(c.inventario).forEach(([key,item]) => { const idb = DB_ITEMS[item.item_id]; if(idb && (idb.categoria === 'Material' || idb.categoria === 'Consumivel')) invMap[item.item_id] = (invMap[item.item_id] || 0) + 1; else equipableInv[key] = item; });
+                let invHtml = ''; Object.entries(invMap).forEach(([itemId, qtd]) => { const itemDB = DB_ITEMS[itemId]; if(itemDB) invHtml += `<div class="cp-inv-item" onclick="abrirGerenciadorItem('${charId}', '${itemId}', ${qtd})"><img src="${itemDB.imagem}" title="${itemDB.nome}"><div class="item-badge-cp">x${qtd}</div></div>`; });
+                Object.entries(equipableInv).forEach(([key, item]) => { const itemDB = DB_ITEMS[item.item_id]; if(itemDB) invHtml += `<div class="cp-inv-item ${item.equipado ? 'equipped' : ''}" onclick="adminEquipItem('${key}')" style="${item.equipado ? 'border-color:var(--green)' : ''}"><img src="${itemDB.imagem}" title="${itemDB.nome}"></div>`; });
+                let skillsHtml = ''; if(c.skills) Object.keys(c.skills).forEach(sId => { const skill = DB_SKILLS[sId]; if(skill) skillsHtml += `<div class="cp-skill-item"><img src="${skill.imagem}"><div><strong style="color:var(--gold); font-size:0.8em;">${skill.nome}</strong><br><span style="font-size:0.7em; cursor:pointer; color:var(--red);" onclick="removerSkill('${charId}','${sId}')">Remover</span></div></div>`; });
+                cpRightHtml = `<div style="display:flex; justify-content:space-between; align-items:center;"><h3>Equipamentos</h3></div><div id="cp-equip-grid" class="cp-equip-grid"></div><div style="display:flex; justify-content:space-between; align-items:center;"><h3>Habilidades</h3><button class="btn" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_skill', '${charId}')">+ Ensinar</button></div><div class="cp-skill-list">${skillsHtml || '<p style="color:#64748b; font-size:0.8em;">Nenhuma.</p>'}</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;"><h3>Bolsa</h3><button class="btn btn-green" style="width:auto; padding:5px 15px;" onclick="abrirPicker('give_item', '${charId}')">+ Dar Item</button></div><div class="cp-inv-grid">${invHtml || '<p style="color:#64748b; font-size:0.8em;">Vazia.</p>'}</div>`;
+            }
+
+            const html = `<div class="char-profile-grid"><div class="cp-left"><img class="cp-avatar" src="${c.imagem}"><div class="cp-name">${c.nome}</div><div class="cp-class">${c.classe} | Pontos: ${c.pontos || 0}</div><div class="cp-vitals">${vitalsHtml}</div><div class="cp-stats-grid">${statsHtml}</div><button class="btn btn-red" style="margin-top:20px;" onclick="deletarChar('${charId}')">Excluir</button></div><div class="cp-right">${cpRightHtml}</div></div>`;
             document.getElementById('char-profile-content').innerHTML = html; document.getElementById('char-modal').classList.add('active');
-            renderAdminEquipGrid(c);
+            if(c.tipo !== 'Criatura') renderAdminEquipGrid(c);
         }
         function updateVitals(charId, type, value) { const [current, max] = value.split('/').map(Number); db.ref(`characters/${charId}`).update({ [type]: current,[`${type}_max`]: max }); }
         function removerSkill(charId, skillId) { db.ref(`characters/${charId}/skills/${skillId}`).remove(); }
+        function removerLoot(charId, lootKey) { if(confirm('Remover este drop da criatura?')) db.ref(`characters/${charId}/loots/${lootKey}`).remove(); }
         function deletarChar(id) { if(confirm("Apagar permanentemente?")) { db.ref('characters/'+id).remove(); closeModal('char-modal'); activeCharId = null; } }
         function abrirGerenciadorItem(charId, itemId, currentQtd) { document.getElementById('mi-title').innerText = `Gerenciar ${DB_ITEMS[itemId].nome}`; document.getElementById('mi-img').src = DB_ITEMS[itemId].imagem; document.getElementById('mi-current-qtd').innerText = currentQtd; document.getElementById('mi-add-btn').onclick = () => gerenciarQtdItem(charId, itemId, 'add'); document.getElementById('mi-remove-btn').onclick = () => gerenciarQtdItem(charId, itemId, 'remove'); document.getElementById('manage-item-modal').classList.add('active'); }
         function gerenciarQtdItem(charId, itemId, action) {
@@ -394,7 +373,7 @@
             });
             const renderSlot = (data, icon, type) => data ? `<div class="cp-equip-slot filled" onclick="adminUnequipItem('${data.key}')" title="${data.idb.nome} (Desequipar)"><img src="${data.idb.imagem}"></div>` : `<div class="cp-equip-slot" onclick="adminEquipFromSlot('${type}')" title="Equipar ${type}"><i class="fas ${icon}"></i></div>`;
             const grid = document.getElementById('cp-equip-grid');
-            grid.innerHTML = `${renderSlot(eqSlots.cabeca, 'fa-helmet-battle', 'cabeca')} ${renderSlot(eqSlots.peitoral, 'fa-tshirt', 'peitoral')} ${renderSlot(eqSlots.pernas, 'fa-shoe-prints', 'pernas')} ${renderSlot(eqSlots.arma1, 'fa-hand-rock', 'arma1')} ${renderSlot(eqSlots.arma2, 'fa-hand-rock', 'arma2')} ${renderSlot(eqSlots.acessorio, 'fa-ring', 'acessorio')}`;
+            if(grid) grid.innerHTML = `${renderSlot(eqSlots.cabeca, 'fa-helmet-battle', 'cabeca')} ${renderSlot(eqSlots.peitoral, 'fa-tshirt', 'peitoral')} ${renderSlot(eqSlots.pernas, 'fa-shoe-prints', 'pernas')} ${renderSlot(eqSlots.arma1, 'fa-hand-rock', 'arma1')} ${renderSlot(eqSlots.arma2, 'fa-hand-rock', 'arma2')} ${renderSlot(eqSlots.acessorio, 'fa-ring', 'acessorio')}`;
         }
         function adminEquipFromSlot(slotType) {
             const pickerGrid = document.getElementById('picker-grid'); pickerGrid.innerHTML = ''; let found = false;
@@ -414,7 +393,6 @@
         function adminFinalizeEquip(itemKey) { db.ref(`characters/${activeCharId}/inventario/${itemKey}/equipado`).set(true); closeModal('picker-modal'); }
         function adminUnequipItem(itemKey) { if(confirm("Desequipar este item?")) db.ref(`characters/${activeCharId}/inventario/${itemKey}/equipado`).set(false); }
 
-        // ======================= ITENS (CRIAR E EDITAR) =======================
         function toggleSubcat(catId, wrapperId, consumableId) { const cat = document.getElementById(catId).value; document.getElementById(wrapperId).style.display = (cat === 'Armadura') ? 'block' : 'none'; document.getElementById(consumableId).style.display = (cat === 'Consumivel') ? 'block' : 'none'; }
         function criarItem() {
             const id = document.getElementById('i-id').value; if(!id) return alert("Defina o ID do Item!");
@@ -441,7 +419,6 @@
         }
         function excluirItemMundo() { const id = document.getElementById('e-i-id').value; if(confirm("Excluir item da biblioteca?")) { db.ref('items/' + id).remove().then(() => closeModal('edit-item-modal')); }}
 
-        // ======================= HABILIDADES (CRIAR E EDITAR) =======================
         function criarSkill() { const id = document.getElementById('s-id').value; if(!id) return alert("Defina o ID da habilidade!"); db.ref('skills/' + id).set({ nome: document.getElementById('s-nome').value, imagem: document.getElementById('s-img').value, descricao: document.getElementById('s-desc').value, buffs: { for: Number(document.getElementById('sb-for').value), res: Number(document.getElementById('sb-res').value), vel: Number(document.getElementById('sb-vel').value), agi: Number(document.getElementById('sb-agi').value), per: Number(document.getElementById('sb-per').value), resm: Number(document.getElementById('sb-resm').value), esp: Number(document.getElementById('sb-esp').value), alm: Number(document.getElementById('sb-alm').value) }}).then(() => alert("Habilidade registrada!"));}
         function renderSkills() { const grid = document.getElementById('grid-skills'); grid.innerHTML = ''; Object.keys(DB_SKILLS).forEach(id => { const s = DB_SKILLS[id]; grid.innerHTML += `<div class="card" onclick="abrirPerfilSkill('${id}')" style="display:flex; align-items:center; padding:10px;"><img src="${s.imagem}" style="width:50px; height:50px; border-radius:8px; border:none; margin-right:15px; background:#000;"><h4 style="margin:0; font-size:1em;">${s.nome}</h4></div>`; });}
         function abrirPerfilSkill(skillId) {
@@ -458,12 +435,11 @@
         }
         function excluirSkillMundo() { const id = document.getElementById('e-s-id').value; if(confirm("Excluir habilidade da biblioteca?")) { db.ref('skills/' + id).remove().then(() => closeModal('edit-skill-modal')); }}
 
-        // ======================= PICKER UNIVERSAL =======================
         let pickerContext = { type: null, targetId: null, slotIndex: null };
         function abrirPicker(type, targetId = null, slotIndex = null) {
             pickerContext = { type, targetId, slotIndex }; const grid = document.getElementById('picker-grid'); grid.innerHTML = ''; const qtdBox = document.getElementById('picker-qtd-box'); document.getElementById('picker-qtd').value = 1; 
-            if(type === 'give_item' || type === 'craft_ing' || type === 'resultado_craft' || type === 'set_loot') {
-                document.getElementById('picker-title').innerText = "Selecione o Item"; qtdBox.style.display = type === 'set_loot' ? 'none' : 'flex'; 
+            if(type === 'give_item' || type === 'craft_ing' || type === 'resultado_craft' || type === 'give_loot') {
+                document.getElementById('picker-title').innerText = "Selecione o Item"; qtdBox.style.display = 'flex'; 
                 if(type === 'craft_ing') grid.innerHTML += `<div class="picker-item" onclick="selecionarPicker(null)"><div style="height:100%; min-height:80px; border:2px dashed var(--red); display:flex; align-items:center; justify-content:center; border-radius:8px; color:var(--red); font-weight:bold;">VAZIO</div></div>`;
                 Object.keys(DB_ITEMS).forEach(id => { grid.innerHTML += `<div class="picker-item" onclick="selecionarPicker('${id}')"><img src="${DB_ITEMS[id].imagem}"><br><span style="font-size:0.6em; color:#94a3b8;">${DB_ITEMS[id].nome}</span></div>`; });
             } else if (type === 'give_skill') {
@@ -473,21 +449,15 @@
             document.getElementById('picker-modal').classList.add('active');
         }
         function selecionarPicker(id_selecionado) {
-            if(pickerContext.type === 'set_loot') {
-                document.getElementById('c-loot-id').value = id_selecionado;
-                document.getElementById('c-loot-display').innerHTML = id_selecionado ? `<span style="color:var(--green)">Item de Drop Configurado:</span> ${DB_ITEMS[id_selecionado].nome}` : 'Nenhum item selecionado';
-                closeModal('picker-modal'); return;
-            }
-            
             const qtd = parseInt(document.getElementById('picker-qtd').value) || 1;
             if(pickerContext.type === 'give_item') { for(let i=0; i<qtd; i++) { db.ref(`characters/${pickerContext.targetId}/inventario`).push({ item_id: id_selecionado, equipado: false }); } }
             else if(pickerContext.type === 'give_skill') { db.ref(`characters/${pickerContext.targetId}/skills/${id_selecionado}`).set(true); } 
             else if(pickerContext.type === 'craft_ing') { adminCraftGrid[pickerContext.slotIndex] = id_selecionado ? { id: id_selecionado, qtd: qtd } : null; renderAdminCraftTable(); } 
             else if(pickerContext.type === 'resultado_craft') { adminCraftResult = id_selecionado ? { id: id_selecionado, qtd: qtd } : null; renderAdminCraftTable(); }
+            else if(pickerContext.type === 'give_loot') { db.ref(`characters/${pickerContext.targetId}/loots`).push({ item_id: id_selecionado, qtd: qtd }); }
             closeModal('picker-modal');
         }
 
-        // ======================= RECEITAS (CRAFTING) =======================
         let adminCraftGrid =[null, null, null, null, null, null, null, null, null];
         let adminCraftResult = null; 
         function renderAdminCraftTable() {
@@ -500,7 +470,7 @@
             if(!adminCraftGrid.some(item => item !== null && item !== "")) return alert("Coloque ao menos um ingrediente na mesa!");
             const gridSeguro = adminCraftGrid.map(item => item || ""); 
             const receitaId = 'rec_' + Date.now();
-            db.ref('recipes/' + receitaId).set({ grid: gridSeguro, resultado: adminCraftResult }).then(() => { alert("Receita gravada com sucesso!"); adminCraftGrid =[null,null,null,null,null,null,null,null,null]; adminCraftResult = null; renderAdminCraftTable(); });
+            db.ref('recipes/' + receitaId).set({ grid: gridSeguro, resultado: adminCraftResult }).then(() => { alert("Receita gravada!"); adminCraftGrid =[null,null,null,null,null,null,null,null,null]; adminCraftResult = null; renderAdminCraftTable(); });
         }
         function renderReceitasGrid() {
             const list = document.getElementById('list-recipes'); list.innerHTML = '';
@@ -583,7 +553,7 @@
             
             Object.entries(DB_CHARS).forEach(([id, char]) => {
                 const b = char.atributos_base || {};
-                const statsHtml = `<div class="card-stats"><span>❤️${char.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
+                const statsHtml = `<div class="card-stats"><span>❤${char.hp||0}</span><span>⚔${b.for||0}</span><span>🛡${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
                 
                 let inCombatClass = '';
                 if(combatTeamA[id] && combatTeamA[id].status === 'defeated') inCombatClass = 'defeated';
@@ -626,18 +596,16 @@
 
         function abrirTokenMenu(tId) {
             const combat = DB_COMBATS[activeCombatId];
-            if(!combat || !combat.tokens || !combat.tokens[tId]) return; // Só abre se tiver no combate
+            if(!combat || !combat.tokens || !combat.tokens[tId]) return; 
 
-            currentTokenId = tId;
             const token = combat.tokens[tId];
-            
             document.getElementById('token-menu-name').innerText = DB_CHARS[tId].nome;
             
             const controls = document.getElementById('token-status-controls');
             if(token.status === 'defeated') {
                 controls.innerHTML = `<button class="btn" style="background:var(--green);" onclick="setTokenStatus('${tId}', 'alive')">Reviver Personagem</button>`;
             } else {
-                controls.innerHTML = `<button class="btn btn-red" onclick="setTokenStatus('${tId}', 'defeated')">Marcar como Derrotado (Gera Loot)</button>`;
+                controls.innerHTML = `<button class="btn btn-red" onclick="setTokenStatus('${tId}', 'defeated')">Marcar como Derrotado (Gera Loot se houver)</button>`;
             }
 
             document.getElementById('token-remove-btn').onclick = () => { db.ref(`combat/sessions/${activeCombatId}/tokens/${tId}`).remove(); closeModal('token-menu-modal'); };
@@ -650,24 +618,13 @@
             
             if(status === 'defeated') {
                 const char = DB_CHARS[tId];
-                if(char && char.tipo === 'Criatura' && char.loot && char.loot.item_id) {
+                if(char && char.tipo === 'Criatura' && char.loots) {
                     db.ref(`combat/sessions/${activeCombatId}/loots/${tId}`).set({
-                        item_id: char.loot.item_id,
-                        qtd: char.loot.qtd || 1,
+                        items: char.loots,
                         collected: false
                     });
                 }
             }
-            closeModal('token-menu-modal');
-        }
-
-        function setTokenSpeech() {
-            const speechText = document.getElementById('token-speech-input').value;
-            if(!speechText || !currentTokenId || !activeCombatId) return;
-            const speechRef = db.ref(`combat/sessions/${activeCombatId}/tokens/${currentTokenId}/speech`);
-            speechRef.set(speechText);
-            document.getElementById('token-speech-input').value = '';
-            setTimeout(() => speechRef.set(null), 10000); 
             closeModal('token-menu-modal');
         }
 
