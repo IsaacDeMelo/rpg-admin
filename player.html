@@ -1923,29 +1923,67 @@ let isRolling = false;
 let diceHistory = [];
 
 function selectDice(sides, btn) {
-  selectedSides = sides;
-  document.querySelectorAll('.dice-type-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  document.getElementById('dice-result-num').textContent = '—';
-  document.getElementById('dice-result-num').className = 'dice-result-number result-normal';
-  document.getElementById('dice-result-num').style.color = 'var(--muted)';
-  document.getElementById('dice-result-label').textContent = '';
+  if (!sides || sides < 1) return;
+  selectedSides = parseInt(sides) || 4;
+  
+  const allBtns = document.querySelectorAll('.dice-type-btn');
+  if (!allBtns.length) return;
+  
+  allBtns.forEach(b => b.classList.remove('selected'));
+  
+  if (btn) {
+    btn.classList.add('selected');
+  } else {
+    const targetBtn = document.querySelector(`[data-sides="${selectedSides}"]`);
+    if (targetBtn) targetBtn.classList.add('selected');
+  }
+  
+  const resultNum = document.getElementById('dice-result-num');
+  const resultLabel = document.getElementById('dice-result-label');
+  if (resultNum) {
+    resultNum.textContent = '—';
+    resultNum.className = 'dice-result-number result-normal';
+    resultNum.style.color = 'var(--muted)';
+  }
+  if (resultLabel) resultLabel.textContent = '';
 }
 
 function rolarDado() {
   if (isRolling) return;
   isRolling = true;
   const btn = document.getElementById('roll-btn');
+  if (!btn) return;
   btn.disabled = true;
 
-  const sides = selectedSides;
-  const modifier = parseInt(document.getElementById('dice-modifier').value) || 0;
-  const reason = document.getElementById('dice-reason').value.trim() || `D${sides}`;
+  const sides = selectedSides || 4;
+  const modInput = document.getElementById('dice-modifier');
+  const reasonInput = document.getElementById('dice-reason');
+  
+  if (!modInput || !reasonInput) {
+    isRolling = false;
+    btn.disabled = false;
+    return;
+  }
+
+  const modifier = parseInt(modInput.value) || 0;
+  const reason = reasonInput.value.trim() || `D${sides}`;
 
   const container = document.getElementById('dice-container');
+  if (!container) {
+    isRolling = false;
+    btn.disabled = false;
+    return;
+  }
+  
   container.classList.add('dice-rolling');
 
   const faces = document.querySelectorAll('.dice-face');
+  
+  // Inicializar faces com números aleatórios
+  faces.forEach((f, i) => {
+    f.textContent = Math.floor(Math.random() * sides) + 1;
+  });
+
   const faceInterval = setInterval(() => {
     faces.forEach(f => f.textContent = Math.floor(Math.random() * sides) + 1);
   }, 100);
@@ -1957,25 +1995,36 @@ function rolarDado() {
     const raw = Math.floor(Math.random() * sides) + 1;
     const total = raw + modifier;
 
+    // Atualizar faces de forma mais realista
+    const faceValues = [raw];
+    for (let i = 1; i < faces.length; i++) {
+      faceValues.push(Math.floor(Math.random() * sides) + 1);
+    }
     faces.forEach((f, i) => {
-      f.textContent = Math.min(sides, Math.max(1, raw + i - 2));
+      f.textContent = faceValues[i];
     });
-    faces[0].textContent = raw;
 
     let resType = 'normal', lbl = '';
     if (raw === sides)  { resType = 'critical'; lbl = '✨ CRÍTICO!'; }
     else if (raw === 1) { resType = 'miss';     lbl = '💀 FALHA CRÍTICA'; }
 
     const numEl = document.getElementById('dice-result-num');
-    numEl.textContent = modifier !== 0 ? `${total}` : `${raw}`;
-    numEl.className = `dice-result-number result-${resType}`;
-    numEl.style.color = '';
+    if (numEl) {
+      numEl.textContent = modifier !== 0 ? `${total}` : `${raw}`;
+      numEl.className = `dice-result-number result-${resType}`;
+      numEl.style.color = '';
+    }
 
     const lblEl = document.getElementById('dice-result-label');
-    lblEl.textContent = modifier !== 0
-      ? `${raw} ${modifier >= 0 ? '+' : ''}${modifier}${lbl ? ' — ' + lbl : ''}`
-      : lbl;
-    lblEl.className = `dice-result-label ${lbl ? 'lbl-' + resType : ''}`;
+    if (lblEl) {
+      if (modifier !== 0 && modifier !== -0) {
+        const modStr = modifier > 0 ? `+${modifier}` : `${modifier}`;
+        lblEl.textContent = `${raw} ${modStr} = ${total}${lbl ? ' — ' + lbl : ''}`;
+      } else {
+        lblEl.textContent = lbl;
+      }
+      lblEl.className = `dice-result-label ${lbl ? 'lbl-' + resType : ''}`;
+    }
 
     if (resType === 'critical') spawnParticles();
 
@@ -1993,19 +2042,20 @@ function rolarDado() {
 
 function renderDiceLog() {
   const list = document.getElementById('dice-log-list');
-  if (!diceHistory.length) {
+  if (!diceHistory || diceHistory.length === 0) {
     list.innerHTML = '<p style="color:var(--muted);font-size:0.85em;text-align:center;padding:10px;">Nenhuma rolagem ainda...</p>';
     return;
   }
   list.innerHTML = diceHistory.map(e => {
     const icon = e.resType === 'critical' ? '✨' : e.resType === 'miss' ? '💀' : '🎲';
     const cls  = e.resType === 'critical' ? 'critical' : e.resType === 'miss' ? 'miss' : 'normal';
-    const modStr = e.modifier !== 0 ? ` ${e.modifier >= 0 ? '+' : ''}${e.modifier}` : '';
+    const modStr = e.modifier && e.modifier !== 0 ? (e.modifier > 0 ? ` +${e.modifier}` : ` ${e.modifier}`) : '';
+    const timeStr = new Date(e.at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     return `<div class="dice-log-entry">
       <span class="dice-log-icon">${icon}</span>
       <div class="dice-log-text">
         <strong>D${e.sides}${modStr}</strong> — ${e.reason}
-        <br><span style="font-size:0.8em;color:var(--muted);">${new Date(e.at).toLocaleTimeString()}</span>
+        <br><span style="font-size:0.8em;color:var(--muted);">${timeStr}</span>
       </div>
       <div class="dice-log-val ${cls}">${e.total}</div>
     </div>`;
