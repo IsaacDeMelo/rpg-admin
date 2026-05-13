@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Herói - RPG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        :root {
+            --bg: #080b12;
+            --surface: #0d1117;
+            --card: #151b23;
+            --border: #1c2533;
+            --text: #e8eaf0;
+            --muted: #6b7a94;
+            --gold: #e8c547;
+            --gold-glow: rgba(232, 197, 71, 0.25);
+            --crimson: #c0392b;
+            --crimson-dark: #8b1a1a;
+            --azure: #2980b9;
+            --azure-dark: #1a5276;
+            --emerald: #27ae60;
+            --violet: #8e44ad;
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* ---- LOGIN ---- */
+        #login-screen {
+            position: fixed; inset: 0; z-index: 999;
+            background: var(--bg);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 24px;
+        }
+        #login-screen .emblem {
+            width: 90px; height: 90px; margin-bottom: 20px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2em; color: var(--gold);
+            box-shadow: 0 0 30px var(--gold-glow), inset 0 0 20px var(--gold-glow);
+            animation: pulse-glow 2.5s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px var(--gold-glow), inset 0 0 15px var(--gold-glow); }
+            50% { box-shadow: 0 0 40px var(--gold-glow), inset 0 0 30px var(--gold-glow); }
+        }
+        #login-screen h1 {
+            font-family: 'Cinzel', serif; font-size: 1.6em;
+            color: var(--gold); margin-bottom: 6px; text-align: center;
+        }
+        #login-screen p { color: var(--muted); font-size: 0.8em; margin-bottom: 28px; text-align: center; }
+        #login-screen form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
+        #login-screen input {
+            width: 100%; padding: 14px 16px; border-radius: 10px;
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--text); font-size: 0.9em; outline: none;
+            transition: border-color 0.2s;
+        }
+        #login-screen input:focus { border-color: var(--gold); }
+        #login-screen button {
+            width: 100%; padding: 14px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--gold), #c9a020);
+            border: none; color: #000; font-weight: 700; font-size: 0.95em;
+            cursor: pointer; transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(232, 197, 71, 0.3);
+        }
+        #login-screen button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232, 197, 71, 0.5); }
+        #login-screen button:active { transform: translateY(0); }
+        #login-error { color: var(--crimson); font-size: 0.8em; text-align: center; display: none; }
+
+        /* ---- LOADING ---- */
+        #loading-screen {
+            position: fixed; inset: 0; z-index: 998;
+            background: var(--bg);
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        #loading-screen.active { display: flex; }
+        #loading-screen .spinner {
+            width: 50px; height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #loading-screen p { color: var(--muted); font-size: 0.85em; }
+
+        /* ---- APP ---- */
+        body {
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; padding-bottom: 80px;
+            opacity: 0; transition: opacity 0.5s ease;
+            overflow-x: hidden;
+        }
+        body.ready { opacity: 1; }
+
+        /* header */
+        .hero-bg {
+            height: 180px;
+            background: linear-gradient(180deg, transparent 40%, var(--bg) 100%),
+                        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800') center/cover;
+            position: relative;
+        }
+        .hero-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(232, 197, 71, 0.08) 0%, transparent 70%);
+        }
+        .char-float {
+            position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; z-index: 5;
+        }
+        .char-avatar {
+            width: 90px; height: 90px;
+            border-radius: 50%; border: 3px solid var(--gold);
+            object-fit: cover; background: var(--bg);
+            box-shadow: 0 0 25px var(--gold-glow);
+            animation: float-avatar 4s ease-in-out infinite;
+        }
+        @keyframes float-avatar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .char-info { text-align: center; margin-top: 10px; }
+        .char-name { font-family: 'Cinzel', serif; font-size: 1.3em; color: var(--gold); text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+        .char-class { font-size: 0.72em; color: var(--azure); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+        .pts-pill {
+            display: inline-block; margin-top: 6px;
+            background: var(--violet); padding: 3px 10px;
+            border-radius: 20px; font-size: 0.7em; font-weight: 700;
+        }
+
+        /* vitals */
+        .vitals { padding: 50px 16px 10px; display: flex; flex-direction: column; gap: 8px; }
+        .vital-bar {
+            width: 100%; height: 20px; border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+            display: none;
+        }
+        .vital-bar.on { display: block; }
+        .vital-fill {
+            height: 100%; border-radius: 9px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .vital-fill::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 50%; background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+            border-radius: 9px 9px 0 0;
+        }
+        #hp-fill { background: linear-gradient(90deg, var(--crimson-dark), var(--crimson)); }
+        #mp-fill { background: linear-gradient(90deg, var(--azure-dark), var(--azure)); }
+        #sp-fill { background: linear-gradient(90deg, #8a6010, var(--gold)); }
+        .vital-label {
+            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+            font-size: 0.65em; font-weight: 700; color: rgba(255,255,255,0.9);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .vital-num {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            font-size: 0.65em; font-weight: 700; color: rgba(255,255,255,0.9);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        /* tabs */
+        .tab-bar {
+            display: flex; overflow-x: auto; gap: 4px;
+            padding: 12px 16px 0;
+            scrollbar-width: none;
+        }
+        .tab-bar::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            flex-shrink: 0; padding: 8px 14px; border-radius: 8px 8px 0 0;
+            border: none; cursor: pointer; font-size: 0.8em; font-weight: 600;
+            background: transparent; color: var(--muted);
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .tab-btn i { display: block; font-size: 1.2em; margin-bottom: 2px; }
+
+        .tab-panel {
+            display: none; padding: 16px;
+            animation: tab-in 0.3s ease;
+        }
+        .tab-panel.on { display: block; }
+        @keyframes tab-in {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* sections */
+        .sec-title {
+            font-family: 'Cinzel', serif; font-size: 0.95em;
+            color: var(--gold); margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .sec-title::after {
+            content: ''; flex: 1; height: 1px;
+            background: linear-gradient(to right, var(--border), transparent);
+        }
+
+        /* equip slots */
+        .eq-map {
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto; gap: 12px;
+            max-width: 260px; margin: 0 auto 24px;
+        }
+        .eq-slot {
+            aspect-ratio: 1; border-radius: var(--radius);
+            background: var(--card); border: 1.5px dashed var(--border);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
+            position: relative; padding: 6px;
+        }
+        .eq-slot.on { border: 1.5px solid var(--gold); background: rgba(232,197,71,0.08); box-shadow: 0 0 12px var(--gold-glow); }
+        .eq-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        .eq-slot i { color: var(--border); font-size: 1.4em; transition: color 0.2s; }
+        .eq-slot.on i { color: var(--gold); }
+        .eq-slot-label { font-size: 0.6em; color: var(--muted); margin-top: 3px; font-weight: 600; text-transform: uppercase; }
+        .eq-center { grid-column: 2; }
+
+        /* attr cards */
+        .attr-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+            margin-bottom: 20px;
+        }
+        .attr-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 12px;
+            position: relative; overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .attr-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+        .attr-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 3px; height: 100%;
+        }
+        .attr-card[data-color="str"]::before { background: var(--crimson); }
+        .attr-card[data-color="res"]::before { background: var(--azure); }
+        .attr-card[data-color="agi"]::before { background: var(--emerald); }
+        .attr-card[data-color="int"]::before { background: var(--violet); }
+        .attr-card[data-color="per"]::before { background: var(--gold); }
+        .attr-name { font-size: 0.65em; color: var(--muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+        .attr-val { font-size: 1.4em; font-weight: 800; }
+        .attr-bonus { font-size: 0.7em; color: var(--emerald); vertical-align: super; }
+        .btn-up {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            width: 28px; height: 28px; border-radius: 8px;
+            background: var(--border); border: none; color: var(--text);
+            font-weight: 700; cursor: pointer; transition: background 0.2s;
+        }
+        .btn-up:hover { background: var(--gold); color: #000; }
+
+        /* skill cards */
+        .skill-list { display: flex; flex-direction: column; gap: 8px; }
+        .skill-card {
+            display: flex; gap: 12px; align-items: center;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 10px;
+            transition: transform 0.2s;
+        }
+        .skill-card:active { transform: scale(0.98); }
+        .skill-icon { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; border: 1px solid var(--gold); background: #000; flex-shrink: 0; }
+        .skill-name { font-size: 0.85em; font-weight: 700; }
+        .skill-desc { font-size: 0.72em; color: var(--muted); margin-top: 2px; }
+
+        /* inventory grid */
+        .inv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .inv-slot {
+            aspect-ratio: 1; border-radius: 8px;
+            background: var(--card); border: 1px solid var(--border);
+            overflow: hidden; position: relative;
+            cursor: pointer; display: flex;
+            align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .inv-slot.on { border-color: var(--emerald); opacity: 0.5; }
+        .inv-slot:active { transform: scale(0.95); }
+        .inv-slot img { width: 100%; height: 100%; object-fit: cover; }
+        .inv-badge { position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.8); color: #fff; font-size: 0.6em; font-weight: 700; padding: 1px 4px; border-radius: 4px; z-index: 2; }
+
+        /* crafting */
+        .craft-area { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
+        .craft-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .craft-grid { display: grid; grid-template-columns: repeat(3, 48px); gap: 5px; }
+        .craft-cell {
+            width: 48px; height: 48px; border-radius: 8px;
+            background: rgba(0,0,0,0.3); border: 1.5px dashed var(--border);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            position: relative; transition: border-color 0.2s;
+        }
+        .craft-cell.on { border-color: var(--gold); }
+        .craft-cell img { width: 90%; height: 90%; object-fit: cover; border-radius: 4px; }
+        .craft-cell .slot-badge { position: absolute; top: 1px; right: 1px; background: var(--violet); color: #fff; font-size: 0.55em; font-weight: 700; padding: 0 3px; border-radius: 3px; }
+        .craft-out { width: 56px; height: 56px; border-radius: 10px; background: rgba(0,0,0,0.3); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; transition: border-color 0.3s; }
+        .craft-out.success { border-color: var(--emerald); box-shadow: 0 0 10px rgba(39,174,96,0.3); }
+        .craft-out img { width: 90%; height: 90%; object-fit: cover; border-radius: 6px; }
+        .craft-out i { font-size: 1.6em; color: var(--border); }
+        .craft-inv {
+            display: flex; gap: 8px; overflow-x: auto; padding: 10px;
+            background: rgba(0,0,0,0.2); border-radius: 10px;
+            scrollbar-width: none; min-height: 66px; align-items: center;
+        }
+        .craft-inv::-webkit-scrollbar { display: none; }
+        .craft-mat {
+            width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0;
+            border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .craft-mat.on { border-color: var(--azure); box-shadow: 0 0 8px rgba(41,128,185,0.4); transform: scale(1.05); }
+        .craft-mat img { width: 100%; height: 100%; object-fit: cover; }
+        .craft-mat .slot-badge { position: absolute; bottom: 1px; right: 1px; background: rgba(0,0,0,0.85); color: #fff; font-size: 0.55em; font-weight: 700; padding: 0 3px; border-radius: 3px; }
+        .btn-forge {
+            width: 100%; padding: 12px; border-radius: var(--radius);
+            background: linear-gradient(135deg, var(--gold), #c9a020); border: none;
+            color: #000; font-weight: 700; font-size: 0.9em;
+            cursor: pointer; transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(232,197,71,0.25);
+        }
+        .btn-forge:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(232,197,71,0.4); }
+        .btn-forge:active { transform: translateY(0); }
+        .btn-forge:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-clean { width: 100%; padding: 9px; border-radius: var(--radius); background: var(--border); border: none; color: var(--muted); font-weight: 600; font-size: 0.82em; cursor: pointer; margin-bottom: 10px; transition: background 0.2s; }
+        .btn-clean:hover { background: var(--crimson-dark); color: #fff; }
+        .recipes-ready { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+        .rec-card {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--card); border: 1px solid var(--emerald);
+            border-radius: var(--radius); padding: 10px; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .rec-card:hover { background: rgba(39,174,96,0.1); }
+        .rec-card img { width: 38px; height: 38px; border-radius: 6px; object-fit: cover; background: #000; }
+        .rec-card-info { flex: 1; }
+        .rec-card-name { font-size: 0.85em; font-weight: 700; color: var(--gold); }
+        .rec-card-hint { font-size: 0.7em; color: var(--muted); }
+        .empty-msg { color: var(--muted); font-size: 0.8em; text-align: center; padding: 16px; }
+
+        /* grimorio */
+        .grim-cats { display: flex; flex-direction: column; gap: 16px; }
+        .grim-cat-title { font-family: 'Cinzel', serif; font-size: 0.9em; color: var(--azure); margin-bottom: 8px; }
+        .grim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+        .grim-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 8px;
+            cursor: pointer; text-align: center; transition: transform 0.2s, border-color 0.2s;
+        }
+        .grim-card:hover { transform: translateY(-2px); border-color: var(--gold); }
+        .grim-card img { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; border: 1px solid var(--gold); margin-bottom: 5px; background: #000; }
+        .grim-card-name { font-size: 0.7em; font-weight: 600; }
+
+        /* diario */
+        #diario {
+            width: 100%; min-height: 320px;
+            background: var(--card); border: 1px solid var(--border);
+            color: #d1d5db; padding: 14px; border-radius: var(--radius);
+            resize: none; font-size: 0.88em; line-height: 1.6; outline: none;
+            transition: border-color 0.2s;
+        }
+        #diario:focus { border-color: var(--gold); }
+        .save-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+        .btn-save {
+            padding: 8px 20px; border-radius: 8px;
+            background: var(--azure); border: none; color: #fff;
+            font-weight: 700; font-size: 0.82em; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-save:hover { background: var(--azure-dark); }
+
+        /* bottom nav */
+        .bot-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(13,17,23,0.95); backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around;
+            padding: 8px 0; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+            z-index: 50;
+        }
+        .nav-btn {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 3px; background: none; border: none; cursor: pointer;
+            color: var(--muted); font-size: 0.62em; font-weight: 600;
+            transition: color 0.25s, transform 0.25s; padding: 4px 8px;
+        }
+        .nav-btn i { font-size: 1.5em; transition: transform 0.25s; }
+        .nav-btn.on { color: var(--gold); transform: translateY(-2px); }
+        .nav-btn.on i { transform: scale(1.15); }
+
+        /* menu overlay */
+        .menu-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: none; align-items: flex-end;
+            z-index: 60;
+        }
+        .menu-overlay.on { display: flex; }
+        .menu-sheet {
+            width: 100%; max-width: 540px; margin: 0 auto;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px 16px 0 0;
+            padding: 16px;
+            box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
+        }
+        .menu-row {
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px; border-radius: 10px;
+            background: rgba(0,0,0,0.2); cursor: pointer;
+            margin-bottom: 8px; transition: background 0.2s;
+        }
+        .menu-row:hover { background: rgba(255,255,255,0.05); }
+        .menu-row i { width: 26px; text-align: center; color: var(--gold); font-size: 1.1em; }
+        .menu-row span { font-size: 0.88em; font-weight: 600; }
+        .menu-row .menu-hint { color: var(--muted); font-size: 0.75em; }
+
+        /* item modal */
+        .item-modal {
+            position: fixed; inset: 0; z-index: 70;
+            background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .item-modal.on { display: flex; }
+        .item-card {
+            width: 100%; max-width: 320px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 20px;
+            animation: modal-pop 0.25s ease;
+        }
+        @keyframes modal-pop {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .item-card-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; border: 1px solid var(--gold); margin-bottom: 14px; background: #000; }
+        .item-card-name { font-family: 'Cinzel', serif; font-size: 1.1em; color: var(--gold); margin-bottom: 4px; }
+        .item-card-cat { font-size: 0.75em; color: var(--muted); text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+        .item-card-desc { font-size: 0.82em; color: var(--text); line-height: 1.5; margin-bottom: 12px; }
+        .mod-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .mod-tag { background: var(--card); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; font-size: 0.72em; font-weight: 600; color: var(--emerald); }
+        .mod-tag.eff { color: var(--azure); }
+        .item-card-btns { display: flex; gap: 8px; }
+        .item-card-btns button { flex: 1; padding: 10px; border-radius: 10px; border: none; font-weight: 700; font-size: 0.82em; cursor: pointer; color: #fff; transition: opacity 0.2s; }
+        .item-card-btns button:active { opacity: 0.7; }
+        .item-close { background: var(--border); }
+
+        /* picker modal */
+        .picker-modal {
+            position: fixed; inset: 0; z-index: 70;
+            background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .picker-modal.on { display: flex; }
+        .picker-sheet {
+            width: 100%; max-width: 360px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 16px;
+            animation: modal-pop 0.25s ease;
+        }
+        .picker-title { font-family: 'Cinzel', serif; font-size: 1em; color: var(--gold); margin-bottom: 12px; text-align: center; }
+        .picker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .picker-item {
+            aspect-ratio: 1; border-radius: 8px; background: var(--card);
+            border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 4px; transition: border-color 0.2s;
+        }
+        .picker-item:hover { border-color: var(--gold); }
+        .picker-item img { width: 100%; height: 80%; object-fit: cover; border-radius: 4px; }
+        .picker-item span { font-size: 0.6em; color: var(--muted); text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100%; }
+        .picker-empty { grid-column: 1/-1; text-align: center; color: var(--muted); font-size: 0.8em; padding: 20px; }
+
+        /* recipe modal */
+        .recipe-modal {
+            position: fixed; inset: 0; z-index: 70;
+            background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .recipe-modal.on { display: flex; }
+        .recipe-sheet {
+            width: 100%; max-width: 300px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 16px;
+            animation: modal-pop 0.25s ease;
+        }
+        .recipe-sheet-title { font-family: 'Cinzel', serif; font-size: 0.95em; color: var(--gold); text-align: center; margin-bottom: 14px; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div id="login-screen">
+        <div class="emblem"><i class="fas fa-shield-halved"></i></div>
+        <h1>Aventureiro</h1>
+        <p>Insira suas credenciais para continuar</p>
+        <form id="login-form" onsubmit="return false;">
+            <input type="text" id="login-user" placeholder="Usuário" autocomplete="off">
+            <input type="password" id="login-pass" placeholder="Senha" autocomplete="off">
+            <button type="button" onclick="doLogin()">Entrar</button>
+        </form>
+        <p id="login-error">Credenciais inválidas.</p>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p>Carregando dados...</p>
+    </div>
+
+    <!-- HEADER -->
+    <div class="hero-bg"></div>
+    <div class="char-float">
+        <img id="char-avatar" class="char-avatar" src="" alt="">
+        <div class="char-info">
+            <div class="char-name" id="char-name">—</div>
+            <div class="char-class" id="char-class">—</div>
+            <div class="pts-pill hidden" id="pts-pill">0 pts</div>
+        </div>
+    </div>
+
+    <!-- VITALS -->
+    <div class="vitals">
+        <div class="vital-bar" id="hp-bar"><div class="vital-fill" id="hp-fill" style="width:0%"></div><span class="vital-label">HP</span><span class="vital-num" id="hp-num">—/—</span></div>
+        <div class="vital-bar" id="mp-bar"><div class="vital-fill" id="mp-fill" style="width:0%"></div><span class="vital-label">MP</span><span class="vital-num" id="mp-num">—/—</span></div>
+        <div class="vital-bar" id="sp-bar"><div class="vital-fill" id="sp-fill" style="width:0%"></div><span class="vital-label">SP</span><span class="vital-num" id="sp-num">—/—</span></div>
+    </div>
+
+    <!-- TAB BAR -->
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="tab-status" onclick="switchTab(this)"><i class="fas fa-user"></i>Status</button>
+        <button class="tab-btn" data-tab="tab-equip" onclick="switchTab(this)"><i class="fas fa-helmet-battle"></i>Equip</button>
+        <button class="tab-btn" data-tab="tab-bolsa" onclick="switchTab(this)"><i class="fas fa-bag-shopping"></i>Bolsa</button>
+        <button class="tab-btn" data-tab="tab-forge" onclick="switchTab(this)"><i class="fas fa-fire"></i>Forja</button>
+        <button class="tab-btn" data-tab="tab-grim" onclick="switchTab(this)"><i class="fas fa-book"></i>Grimório</button>
+        <button class="tab-btn" data-tab="tab-diario" onclick="switchTab(this)"><i class="fas fa-feather"></i>Diário</button>
+    </div>
+
+    <!-- TAB STATUS -->
+    <div class="tab-panel on" id="tab-status">
+        <div class="sec-title"><i class="fas fa-star"></i> Atributos</div>
+        <div class="attr-grid" id="attr-grid"></div>
+        <div class="sec-title"><i class="fas fa-wand-sparkles"></i> Habilidades</div>
+        <div class="skill-list" id="skill-list"></div>
+    </div>
+
+    <!-- TAB EQUIP -->
+    <div class="tab-panel" id="tab-equip">
+        <div class="sec-title"><i class="fas fa-sword"></i> Equipamentos</div>
+        <div class="eq-map" id="eq-map"></div>
+    </div>
+
+    <!-- TAB BOLSA -->
+    <div class="tab-panel" id="tab-bolsa">
+        <div class="sec-title"><i class="fas fa-backpack"></i> Inventário</div>
+        <div class="inv-grid" id="inv-grid"></div>
+    </div>
+
+    <!-- TAB FORGE -->
+    <div class="tab-panel" id="tab-forge">
+        <div class="sec-title"><i class="fas fa-fire"></i> Forja</div>
+        <button class="btn-clean" onclick="cleanBench()">Limpar Mesa</button>
+        <div class="craft-area">
+            <div class="craft-row">
+                <div class="craft-grid" id="craft-grid"></div>
+                <div style="font-size:1.4em;color:var(--gold);">→</div>
+                <div class="craft-out" id="craft-out"><i class="fas fa-question"></i></div>
+            </div>
+        </div>
+        <div class="craft-inv" id="craft-inv"></div>
+        <button class="btn-forge" id="btn-forge" onclick="doForge()" disabled>Forjar</button>
+        <div class="recipes-ready" id="recipes-ready"></div>
+    </div>
+
+    <!-- TAB GRIMORIO -->
+    <div class="tab-panel" id="tab-grim">
+        <div class="sec-title"><i class="fas fa-book-open"></i> Grimório de Receitas</div>
+        <div class="grim-cats" id="grim-cats"></div>
+    </div>
+
+    <!-- TAB DIARIO -->
+    <div class="tab-panel" id="tab-diario">
+        <div class="sec-title"><i class="fas fa-feather-pointed"></i> Diário de Aventuras</div>
+        <textarea id="diario" placeholder="Suas anotações..."></textarea>
+        <div class="save-row"><button class="btn-save" onclick="saveDiary()">Salvar</button></div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bot-nav">
+        <button class="nav-btn on" data-tab="tab-status" onclick="botNav(this)"><i class="fas fa-compass"></i><span>Status</span></button>
+        <button class="nav-btn" data-tab="tab-equip" onclick="botNav(this)"><i class="fas fa-shield-halved"></i><span>Equip</span></button>
+        <button class="nav-btn" data-tab="tab-bolsa" onclick="botNav(this)"><i class="fas fa-sack"></i><span>Bolsa</span></button>
+        <button class="nav-btn" onclick="openMenu()"><i class="fas fa-bars"></i><span>Menu</span></button>
+    </nav>
+
+    <!-- MENU -->
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="menu-sheet">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <span style="font-family:'Cinzel',serif;color:var(--gold);font-size:1em;">Menu</span>
+                <button onclick="closeMenu()" style="background:none;border:none;color:var(--muted);font-size:1.2em;cursor:pointer;"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="menu-row" onclick="openMenuTab('tab-forge')"><i class="fas fa-fire"></i><span>Forja</span><span class="menu-hint">Crie equipamentos</span></div>
+            <div class="menu-row" onclick="openMenuTab('tab-grim')"><i class="fas fa-book"></i><span>Grimório</span><span class="menu-hint">Receitasknown</span></div>
+            <div class="menu-row" onclick="openMenuTab('tab-diario')"><i class="fas fa-feather"></i><span>Diário</span><span class="menu-hint">Suas anotações</span></div>
+            <div class="menu-row" onclick="exportChar()"><i class="fas fa-download"></i><span>Exportar Ficha</span><span class="menu-hint">Baixar como imagem</span></div>
+        </div>
+    </div>
+
+    <!-- ITEM MODAL -->
+    <div class="item-modal" id="item-modal">
+        <div class="item-card">
+            <img class="item-card-img" id="mod-img" src="" alt="">
+            <div class="item-card-name" id="mod-name">—</div>
+            <div class="item-card-cat" id="mod-cat">—</div>
+            <div class="item-card-desc" id="mod-desc">—</div>
+            <div class="mod-list" id="mod-list"></div>
+            <div class="item-card-btns">
+                <button class="item-close" onclick="closeIModal()">Fechar</button>
+                <button id="mod-action" onclick="handleItem()">—</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PICKER MODAL -->
+    <div class="picker-modal" id="picker-modal">
+        <div class="picker-sheet">
+            <div class="picker-title" id="picker-title">Equipar</div>
+            <div class="picker-grid" id="picker-grid"></div>
+        </div>
+    </div>
+
+    <!-- RECIPE MODAL -->
+    <div class="recipe-modal" id="recipe-modal">
+        <div class="recipe-sheet">
+            <div class="recipe-sheet-title" id="recipe-sheet-title">Receita</div>
+            <div class="craft-grid" id="recipe-grid" style="display:grid;grid-template-columns:repeat(3,48px);gap:5px;margin:auto;justify-content:center;"></div>
+            <div style="text-align:center;margin-top:12px;"><button onclick="closeRModal()" style="padding:8px 20px;border-radius:8px;background:var(--border);border:none;color:var(--muted);font-weight:600;cursor:pointer;">Fechar</button></div>
+        </div>
+    </div>
+
+    <!-- EXPORT CARD (hidden) -->
+    <div id="export-card" style="position:fixed;left:-9999px;top:0;width:600px;background:#0d1117;border-radius:16px;padding:24px;display:none;">
+    </div>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBv6iU5RVA1V4uDTKcMIXnDaV1aNq1H6rE",
+    authDomain: "rpg-campaign-manager.firebaseapp.com",
+    databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/",
+    projectId: "rpg-campaign-manager",
+    storageBucket: "rpg-campaign-manager.appspot.com",
+    messagingSenderId: "921258795978",
+    appId: "1:921258795978:web:6b1d2e36e8a0f35c8c1f8a"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let session = null;
+let pData = null;
+let itemsDB = {};
+let recipesDB = {};
+let skillsDB = {};
+let charsDB = {};
+
+const attrNames = { for: 'Força', res: 'Resistência', vel: 'Velocidade', agi: 'Agilidade', per: 'Percepção', resm: 'Resist. Mágica', esp: 'Esperteza', alm: 'Alma' };
+
+let craftBench = [null,null,null,null,null,null,null,null,null];
+let craftSelected = null;
+let craftAvailable = {};
+let validRecipe = null;
+let multiRecipe = false;
+
+let curItemKey = null;
+let curItemId = null;
+let curItemDB = null;
+let curItemAction = '';
+let diaryDirty = false;
+
+let activeCombatId = null;
+let currentCombatData = null;
+
+function doLogin() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value;
+    if (u === 'Tohru' && p === 'admin') {
+        session = 'Tohru';
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('loading-screen').classList.add('active');
+        loadAll();
+    } else {
+        document.getElementById('login-error').style.display = 'block';
+    }
+}
+
+function loadAll() {
+    Promise.all([
+        db.ref('items').once('value'),
+        db.ref('recipes').once('value'),
+        db.ref('skills').once('value'),
+        db.ref('characters').once('value')
+    ]).then(([itemsSnap, recipesSnap, skillsSnap, charsSnap]) => {
+        itemsDB = itemsSnap.val() || {};
+        recipesDB = recipesSnap.val() || {};
+        skillsDB = skillsSnap.val() || {};
+        charsDB = charsSnap.val() || {};
+
+        db.ref(`characters/${session}`).on('value', d => {
+            pData = d.val();
+            if (pData) {
+                document.getElementById('loading-screen').classList.remove('active');
+                document.body.classList.add('ready');
+                renderAll();
+            } else {
+                document.getElementById('loading-screen').classList.remove('active');
+                alert('Personagem não encontrado. Verifique seu usuário.');
+            }
+        });
+    }).catch(err => {
+        console.error('Erro ao carregar dados:', err);
+        document.getElementById('loading-screen').classList.remove('active');
+        alert('Erro ao carregar dados do Firebase.');
+    });
+}
+
+function renderAll() {
+    if (!pData) return;
+    document.getElementById('char-name').innerText = pData.nome || '—';
+    document.getElementById('char-class').innerText = pData.classe || '—';
+    document.getElementById('char-avatar').src = pData.imagem || '';
+    const pts = pData.pontos || 0;
+    const ptsEl = document.getElementById('pts-pill');
+    if (pts > 0) { ptsEl.innerText = `${pts} pts`; ptsEl.classList.remove('hidden'); }
+    else ptsEl.classList.add('hidden');
+    renderVitals();
+    renderStatus();
+    renderEquip();
+    renderInventory();
+    initCraft();
+    renderGrimorio();
+    document.getElementById('diario').value = pData.anotacoes || '';
+}
+
+function renderVitals() {
+    ['hp','mp','sp'].forEach(t => {
+        const bar = document.getElementById(`${t}-bar`);
+        const max = pData[`${t}_max`] || 0;
+        if (max > 0) {
+            bar.classList.add('on');
+            const val = pData[t] || 0;
+            document.getElementById(`${t}-fill`).style.width = `${(val/max)*100}%`;
+            document.getElementById(`${t}-num`).innerText = `${val}/${max}`;
+        } else bar.classList.remove('on');
+    });
+}
+
+function renderStatus() {
+    let bonus = { for:0,res:0,vel:0,agi:0,per:0,resm:0,esp:0,alm:0 };
+    let eqItems = [];
+    if (pData.inventario) Object.values(pData.inventario).forEach(inv => { if (inv.equipado) eqItems.push(inv); });
+    eqItems.forEach(item => {
+        const idb = itemsDB[item.item_id];
+        if (idb && idb.mods) Object.keys(bonus).forEach(k => bonus[k] += (idb.mods[k]||0));
+    });
+    if (pData.skills) Object.keys(pData.skills).forEach(sId => {
+        const s = skillsDB[sId];
+        if (s && s.buffs) Object.keys(bonus).forEach(k => bonus[k] += (s.buffs[k]||0));
+    });
+    const base = pData.atributos_base || {};
+    const ag = document.getElementById('attr-grid');
+    ag.innerHTML = '';
+    Object.keys(attrNames).forEach(k => {
+        const total = (base[k]||0) + bonus[k];
+        let bStr = bonus[k] > 0 ? `<span class="attr-bonus">+${bonus[k]}</span>` : '';
+        let color = 'str';
+        if (k === 'res'||k==='resm') color = 'res';
+        else if (k === 'agi'||k==='vel') color = 'agi';
+        else if (k === 'int'||k==='esp'||k==='alm') color = 'int';
+        else if (k === 'per') color = 'per';
+        ag.innerHTML += `<div class="attr-card" data-color="${color}"><div class="attr-name">${attrNames[k]}</div><div class="attr-val">${total}${bStr}</div><button class="btn-up" onclick="doUp('${k}')">+</button></div>`;
+    });
+    const sl = document.getElementById('skill-list');
+    sl.innerHTML = '';
+    if (pData.skills) Object.keys(pData.skills).forEach(sId => {
+        const s = skillsDB[sId];
+        if (s) sl.innerHTML += `<div class="skill-card"><img class="skill-icon" src="${s.imagem}" onerror="this.src='https://via.placeholder.com/42'"><div><div class="skill-name">${s.nome}</div><div class="skill-desc">${s.descricao}</div></div></div>`;
+    });
+    if (sl.innerHTML === '') sl.innerHTML = '<p class="empty-msg">Nenhuma habilidade aprendida.</p>';
+}
+
+function renderEquip() {
+    let slots = { cabeca:null, peitoral:null, pernas:null, arma1:null, arma2:null, acessorio:null };
+    if (pData.inventario) Object.values(pData.inventario).forEach(inv => {
+        if (!inv.equipado) return;
+        const idb = itemsDB[inv.item_id];
+        if (!idb) return;
+        if (idb.categoria === 'Arma') { if (!slots.arma1) slots.arma1 = {inv,idb}; else if (!slots.arma2) slots.arma2 = {inv,idb}; }
+        else if (idb.categoria === 'Armadura') {
+            if (idb.slot_type === 'Cabeça' && !slots.cabeca) slots.cabeca = {inv,idb};
+            else if (idb.slot_type === 'Peitoral' && !slots.peitoral) slots.peitoral = {inv,idb};
+            else if (idb.slot_type === 'Pernas' && !slots.pernas) slots.pernas = {inv,idb};
+        }
+        else if (idb.categoria === 'Acessorio' && !slots.acessorio) slots.acessorio = {inv,idb};
+    });
+    const icons = { cabeca:'fa-helmet-battle', peitoral:'fa-shirt', pernas:'fa-shoe-prints', arma1:'fa-hand-fist', arma2:'fa-hand-fist', acessorio:'fa-ring' };
+    const labels = { cabeca:'Cabeça', peitoral:'Peitoral', pernas:'Pernas', arma1:'Mão 1', arma2:'Mão 2', acessorio:'Amuleto' };
+    const order = ['cabeca','acessorio','arma1','peitoral','arma2','pernas'];
+    const em = document.getElementById('eq-map');
+    em.innerHTML = '';
+    order.forEach(slot => {
+        const s = slots[slot];
+        const filled = s ? 'on' : '';
+        const content = s ? `<img src="${s.idb.imagem}">` : `<i class="fas ${icons[slot]}"></i>`;
+        const cls = slot === 'cabeca' || slot === 'peitoral' || slot === 'pernas' ? 'eq-center' : '';
+        em.innerHTML += `<div class="eq-slot ${filled} ${cls}" onclick="${s ? `openItem('${s.inv.__proto__ ? Object.keys(pData.inventario).find(k=>pData.inventario[k]===s.inv) : ''}', '${s.inv.item_id}', true)` : `openPicker('${slot}')`}">${content}<span class="eq-slot-label">${labels[slot]}</span></div>`;
+    });
+}
+
+function renderInventory() {
+    const ig = document.getElementById('inv-grid');
+    ig.innerHTML = '';
+    let qtyMap = {};
+    if (pData.inventario) {
+        Object.entries(pData.inventario).forEach(([k, inv]) => {
+            const idb = itemsDB[inv.item_id];
+            if (!idb) return;
+            if (['Material','Consumivel','Pet'].includes(idb.categoria)) {
+                if (!qtyMap[inv.item_id]) qtyMap[inv.item_id] = {count:0, sampleKey:k};
+                qtyMap[inv.item_id].count++;
+            } else {
+                const eq = inv.equipado ? ' on' : '';
+                const badge = '';
+                ig.innerHTML += `<div class="inv-slot${eq}" onclick="openItem('${k}','${inv.item_id}',${inv.equipado},1)"><img src="${idb.imagem}" onerror="this.src='https://via.placeholder.com/80'"></div>`;
+            }
+        });
+        Object.keys(qtyMap).forEach(itemId => {
+            const idb = itemsDB[itemId];
+            if (idb) ig.innerHTML += `<div class="inv-slot" onclick="openItem('${qtyMap[itemId].sampleKey}','${itemId}',false,${qtyMap[itemId].count})"><div class="inv-badge">x${qtyMap[itemId].count}</div><img src="${idb.imagem}" onerror="this.src='https://via.placeholder.com/80'"></div>`;
+        });
+    }
+    if (ig.innerHTML === '') ig.innerHTML = '<p class="empty-msg" style="grid-column:1/-1;">Bolsa vazia.</p>';
+}
+
+function initCraft() {
+    craftAvailable = {};
+    if (pData.inventario) Object.values(pData.inventario).forEach(inv => {
+        const idb = itemsDB[inv.item_id];
+        if (idb && idb.categoria === 'Material' && !inv.equipado) craftAvailable[inv.item_id] = (craftAvailable[inv.item_id]||0) + 1;
+    });
+    craftBench.forEach(slot => { if (slot && craftAvailable[slot.id]) craftAvailable[slot.id] -= slot.qtd; });
+    renderCraftUI();
+    renderRecipes();
+}
+
+function renderCraftUI() {
+    const cg = document.getElementById('craft-grid');
+    cg.innerHTML = '';
+    for (let i = 0; i < 9; i++) {
+        const slot = craftBench[i];
+        let inner = '';
+        if (slot && itemsDB[slot.id]) {
+            inner = `<div class="slot-badge">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}" onerror="this.src='https://via.placeholder.com/48'">`;
+        }
+        cg.innerHTML += `<div class="craft-cell${slot ? ' on' : ''}" onclick="clickCraft(${i})">${inner}</div>`;
+    }
+    const co = document.getElementById('craft-out');
+    if (validRecipe) {
+        const r = recipesDB[validRecipe];
+        if (r.resultados) {
+            multiRecipe = true;
+            co.innerHTML = '<i class="fas fa-question"></i>';
+            co.classList.add('success');
+        } else {
+            let resId = r.resultado.id || r.resultado;
+            let resQtd = r.resultado.qtd || 1;
+            if (itemsDB[resId]) {
+                co.innerHTML = `<div class="slot-badge">x${resQtd}</div><img src="${itemsDB[resId].imagem}" onerror="this.src='https://via.placeholder.com/56'">`;
+                co.classList.add('success');
+            }
+        }
+        document.getElementById('btn-forge').disabled = false;
+    } else {
+        co.innerHTML = '<i class="fas fa-question"></i>';
+        co.classList.remove('success');
+        document.getElementById('btn-forge').disabled = true;
+    }
+    const ci = document.getElementById('craft-inv');
+    ci.innerHTML = '';
+    Object.keys(craftAvailable).forEach(itemId => {
+        if (craftAvailable[itemId] > 0 && itemsDB[itemId]) {
+            const sel = craftSelected === itemId ? ' on' : '';
+            ci.innerHTML += `<div class="craft-mat${sel}" onclick="selectMat('${itemId}')"><div class="slot-badge">x${craftAvailable[itemId]}</div><img src="${itemsDB[itemId].imagem}" onerror="this.src='https://via.placeholder.com/48'"></div>`;
+        }
+    });
+    if (ci.innerHTML === '') ci.innerHTML = '<span style="color:var(--muted);font-size:0.8em;">Sem materiais.</span>';
+}
+
+function selectMat(id) { craftSelected = craftSelected === id ? null : id; renderCraftUI(); }
+
+function clickCraft(index) {
+    if (craftSelected && (craftAvailable[craftSelected]||0) > 0) {
+        if (!craftBench[index]) craftBench[index] = {id:craftSelected,qtd:1};
+        else if (craftBench[index].id === craftSelected) craftBench[index].qtd++;
+        else { craftAvailable[craftBench[index].id] = (craftAvailable[craftBench[index].id]||0) + craftBench[index].qtd; craftBench[index] = {id:craftSelected,qtd:1}; }
+        craftAvailable[craftSelected]--;
+        if (craftAvailable[craftSelected] <= 0) craftSelected = null;
+    } else if (!craftSelected && craftBench[index]) {
+        craftBench[index].qtd--;
+        craftAvailable[craftBench[index].id] = (craftAvailable[craftBench[index].id]||0) + 1;
+        if (craftBench[index].qtd <= 0) craftBench[index] = null;
+    }
+    checkRecipe();
+    renderCraftUI();
+}
+
+function cleanBench() {
+    craftBench.forEach(slot => { if (slot) craftAvailable[slot.id] = (craftAvailable[slot.id]||0) + slot.qtd; });
+    craftBench = [null,null,null,null,null,null,null,null,null];
+    craftSelected = null;
+    validRecipe = null;
+    renderCraftUI();
+}
+
+function checkRecipe() {
+    validRecipe = null; multiRecipe = false;
+    Object.keys(recipesDB).forEach(rId => {
+        const r = recipesDB[rId];
+        if (!r.grid) return;
+        let match = true;
+        for (let i = 0; i < 9; i++) {
+            let rSlot = r.grid[i];
+            if (typeof rSlot === 'string' && rSlot !== '') rSlot = {id:rSlot,qtd:1};
+            const cSlot = craftBench[i];
+            const rHas = rSlot && typeof rSlot === 'object';
+            const cHas = cSlot && cSlot !== null;
+            if ((rHas && !cHas) || (!rHas && cHas) || (rHas && cHas && (rSlot.id !== cSlot.id || cSlot.qtd < rSlot.qtd))) match = false;
+        }
+        if (match) validRecipe = rId;
+    });
+}
+
+function doForge() {
+    if (!validRecipe) return;
+    const r = recipesDB[validRecipe];
+    if (multiRecipe) {
+        const pg = document.getElementById('picker-grid');
+        pg.innerHTML = '';
+        r.resultados.forEach((res, idx) => {
+            const item = itemsDB[res.id];
+            if (item) pg.innerHTML += `<div class="picker-item" onclick="finishForge(${idx})"><img src="${item.imagem}" onerror="this.src='https://via.placeholder.com/80'"><span>${item.nome}</span><div class="slot-badge">x${res.qtd||1}</div></div>`;
+        });
+        document.getElementById('picker-title').innerText = 'Escolha o que criar:';
+        document.getElementById('picker-modal').classList.add('on');
+    } else {
+        finishForge(null);
+    }
+}
+
+function finishForge(resultIdx) {
+    closePicker();
+    const r = recipesDB[validRecipe];
+    let updates = {};
+    let tempInv = JSON.parse(JSON.stringify(pData.inventario||{}));
+    for (let i = 0; i < 9; i++) {
+        let rSlot = r.grid[i];
+        if (typeof rSlot === 'string' && rSlot !== '') rSlot = {id:rSlot,qtd:1};
+        if (rSlot && typeof rSlot === 'object') {
+            const needId = rSlot.id;
+            let needAmt = rSlot.qtd || 1;
+            let keys = Object.keys(tempInv);
+            for (let k = 0; k < keys.length && needAmt > 0; k++) {
+                const key = keys[k];
+                if (tempInv[key].item_id === needId && !tempInv[key].equipado) {
+                    updates[key] = null;
+                    delete tempInv[key];
+                    needAmt--;
+                }
+            }
+        }
+    }
+    let finalRes = resultIdx !== null ? r.resultados[resultIdx] : (r.resultado.id ? r.resultado : {id:r.resultado,qtd:1});
+    for (let j = 0; j < (finalRes.qtd||1); j++) {
+        const nk = db.ref(`characters/${session}/inventario`).push().key;
+        updates[nk] = {item_id: finalRes.id, equipado: false};
+    }
+    db.ref(`characters/${session}/inventario`).update(updates).then(() => {
+        alert('Forjado com sucesso!');
+        craftBench = [null,null,null,null,null,null,null,null,null];
+        craftSelected = null;
+        validRecipe = null;
+        initCraft();
+    });
+}
+
+function renderRecipes() {
+    const rr = document.getElementById('recipes-ready');
+    rr.innerHTML = '';
+    let count = 0;
+    Object.keys(recipesDB).forEach(rId => {
+        const r = recipesDB[rId];
+        if (!r.grid) return;
+        let pode = true;
+        let invTemp = {...craftAvailable};
+        for (let i = 0; i < 9; i++) {
+            let rSlot = r.grid[i];
+            if (typeof rSlot === 'string' && rSlot !== '') rSlot = {id:rSlot,qtd:1};
+            if (rSlot && typeof rSlot === 'object') {
+                if ((invTemp[rSlot.id]||0) < rSlot.qtd) pode = false;
+                else invTemp[rSlot.id] -= rSlot.qtd;
+            }
+        }
+        if (pode) {
+            count++;
+            const addResult = (res) => {
+                let resId = res.id || res;
+                const resItem = itemsDB[resId];
+                if (resItem) rr.innerHTML += `<div class="rec-card" onclick="autoFill('${rId}')"><img src="${resItem.imagem}" onerror="this.src='https://via.placeholder.com/38'"><div class="rec-card-info"><div class="rec-card-name">${resItem.nome}</div><div class="rec-card-hint">Clique para preparar</div></div></div>`;
+            };
+            if (r.resultados) r.resultados.forEach(addResult);
+            else if (r.resultado) addResult(r.resultado);
+        }
+    });
+    if (count === 0) rr.innerHTML = '<p class="empty-msg">Nenhuma receita disponível.</p>';
+}
+
+function autoFill(rId) {
+    const r = recipesDB[rId];
+    cleanBench();
+    for (let i = 0; i < 9; i++) {
+        let rSlot = r.grid[i];
+        if (typeof rSlot === 'string' && rSlot !== '') rSlot = {id:rSlot,qtd:1};
+        if (rSlot && typeof rSlot === 'object') craftBench[i] = {...rSlot};
+    }
+    initCraft();
+}
+
+function renderGrimorio() {
+    const gc = document.getElementById('grim-cats');
+    gc.innerHTML = '';
+    let byCat = {};
+    Object.entries(recipesDB).forEach(([rId, r]) => {
+        let resId = (r.resultado||(r.resultados||[])[0]||{}).id||r.resultado;
+        const item = itemsDB[resId];
+        if (item) {
+            if (!byCat[item.categoria]) byCat[item.categoria] = [];
+            byCat[item.categoria].push({rId,...r});
+        }
+    });
+    Object.entries(byCat).forEach(([cat, recipes]) => {
+        gc.innerHTML += `<div class="grim-cat-title">${cat}</div>`;
+        let grid = document.createElement('div');
+        grid.className = 'grim-grid';
+        recipes.forEach(r => {
+            let resId = (r.resultado||(r.resultados||[])[0]||{}).id||r.resultado;
+            const item = itemsDB[resId];
+            if (item) grid.innerHTML += `<div class="grim-card" onclick="viewRecipe('${r.rId}')"><img src="${item.imagem}" onerror="this.src='https://via.placeholder.com/56'"><div class="grim-card-name">${item.nome}</div></div>`;
+        });
+        gc.appendChild(grid);
+    });
+    if (gc.innerHTML === '') gc.innerHTML = '<p class="empty-msg">Grimório vazio.</p>';
+}
+
+function viewRecipe(rId) {
+    const r = recipesDB[rId];
+    let resId = (r.resultado||(r.resultados||[])[0]||{}).id||r.resultado;
+    document.getElementById('recipe-sheet-title').innerText = `Receita: ${itemsDB[resId] ? itemsDB[resId].nome : '???'}`;
+    const rg = document.getElementById('recipe-grid');
+    rg.innerHTML = '';
+    for (let i = 0; i < 9; i++) {
+        let slot = r.grid ? r.grid[i] : null;
+        let inner = '';
+        if (slot && typeof slot === 'object' && itemsDB[slot.id]) inner = `<div class="slot-badge">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}" onerror="this.src='https://via.placeholder.com/48'">`;
+        rg.innerHTML += `<div class="craft-cell" style="pointer-events:none;"><div style="width:90%;height:90%;">${inner}</div></div>`;
+    }
+    document.getElementById('recipe-modal').classList.add('on');
+}
+function closeRModal() { document.getElementById('recipe-modal').classList.remove('on'); }
+
+function openItem(key, itemId, equipado, count) {
+    const idb = itemsDB[itemId];
+    if (!idb) return;
+    curItemKey = key; curItemId = itemId; curItemDB = idb;
+    document.getElementById('mod-img').src = idb.imagem;
+    document.getElementById('mod-name').innerText = idb.nome;
+    document.getElementById('mod-cat').innerText = idb.categoria + (count > 1 ? ` (x${count})` : '');
+    document.getElementById('mod-desc').innerText = idb.descricao || '';
+    const ml = document.getElementById('mod-list');
+    ml.innerHTML = '';
+    if (idb.mods) Object.keys(attrNames).forEach(k => { if (idb.mods[k] > 0) ml.innerHTML += `<span class="mod-tag">${attrNames[k]} +${idb.mods[k]}</span>`; });
+    if (idb.effects) Object.entries(idb.effects).forEach(([k,v]) => { if (v > 0) ml.innerHTML += `<span class="mod-tag eff">${k.toUpperCase()} +${v}</span>`; });
+    const actBtn = document.getElementById('mod-action');
+    actBtn.style.display = 'none';
+    if (idb.categoria === 'Consumivel') {
+        actBtn.style.display = 'block'; actBtn.style.background = 'var(--azure)'; actBtn.innerText = 'Usar'; curItemAction = 'use';
+    } else if (idb.categoria === 'Pet') {
+        actBtn.style.display = 'block'; actBtn.style.background = 'var(--violet)'; actBtn.innerText = activeCombatId ? 'Invocar' : 'Sem combate'; curItemAction = 'summon';
+        if (!activeCombatId) actBtn.disabled = true; else actBtn.disabled = false;
+    } else if (['Arma','Armadura','Acessorio'].includes(idb.categoria)) {
+        actBtn.style.display = 'block';
+        if (equipado) { actBtn.style.background = 'var(--crimson)'; actBtn.innerText = 'Desequipar'; }
+        else { actBtn.style.background = 'var(--emerald)'; actBtn.innerText = 'Equipar'; }
+        curItemAction = 'equip';
+    }
+    document.getElementById('item-modal').classList.add('on');
+}
+
+function handleItem() {
+    if (curItemAction === 'equip') db.ref(`characters/${session}/inventario/${curItemKey}/equipado`).set(!pData.inventario[curItemKey].equipado);
+    else if (curItemAction === 'use') {
+        const eff = curItemDB.effects;
+        if (!eff) return;
+        let upd = {};
+        if (eff.hp > 0 && pData.hp_max > 0) upd.hp = Math.min(pData.hp_max, (pData.hp||0) + eff.hp);
+        if (eff.mp > 0 && pData.mp_max > 0) upd.mp = Math.min(pData.mp_max, (pData.mp||0) + eff.mp);
+        if (eff.sp > 0 && pData.sp_max > 0) upd.sp = Math.min(pData.sp_max, (pData.sp||0) + eff.sp);
+        db.ref(`characters/${session}`).update(upd);
+        db.ref(`characters/${session}/inventario/${curItemKey}`).remove();
+    } else if (curItemAction === 'summon') { summonPet(curItemKey, curItemId); }
+    closeIModal();
+}
+
+function closeIModal() { document.getElementById('item-modal').classList.remove('on'); }
+
+function openPicker(slotType) {
+    const pg = document.getElementById('picker-grid');
+    pg.innerHTML = '';
+    let found = false;
+    if (pData.inventario) Object.entries(pData.inventario).forEach(([k, inv]) => {
+        const idb = itemsDB[inv.item_id];
+        if (idb && !inv.equipado) {
+            let match = false;
+            if ((slotType === 'arma1' || slotType === 'arma2') && idb.categoria === 'Arma') match = true;
+            if (slotType === 'acessorio' && idb.categoria === 'Acessorio') match = true;
+            if (idb.categoria === 'Armadura') {
+                if (slotType === 'cabeca' && idb.slot_type === 'Cabeça') match = true;
+                if (slotType === 'peitoral' && idb.slot_type === 'Peitoral') match = true;
+                if (slotType === 'pernas' && idb.slot_type === 'Pernas') match = true;
+            }
+            if (match) { found = true; pg.innerHTML += `<div class="picker-item" onclick="doEquip('${k}')"><img src="${idb.imagem}" onerror="this.src='https://via.placeholder.com/80'"><span>${idb.nome}</span></div>`; }
+        }
+    });
+    if (!found) pg.innerHTML = '<div class="picker-empty">Nenhum item compatível.</div>';
+    document.getElementById('picker-title').innerText = 'Equipar';
+    document.getElementById('picker-modal').classList.add('on');
+}
+
+function doEquip(key) { db.ref(`characters/${session}/inventario/${key}/equipado`).set(true); closePicker(); }
+
+function closePicker() { document.getElementById('picker-modal').classList.remove('on'); }
+
+function summonPet(itemKey, itemId) {
+    if (!activeCombatId || !currentCombatData) return;
+    const item = itemsDB[itemId];
+    if (!item) return;
+    const myTeam = (currentCombatData.tokens||{})[session]?.team || 'A';
+    const summon = {
+        nome: item.nome || 'Pet',
+        imagem: item.imagem || 'https://via.placeholder.com/150',
+        team: myTeam, owner: session, status: 'alive',
+        hp: (item.summon&&item.summon.hp) ? item.summon.hp : 10,
+        hp_max: (item.summon&&item.summon.hp_max) ? item.summon.hp_max : 10,
+        atributos_base: (item.summon&&item.summon.atributos_base) ? item.summon.atributos_base : {for:0,res:0,agi:0}
+    };
+    const sk = db.ref(`combat/sessions/${activeCombatId}/summons`).push().key;
+    db.ref(`combat/sessions/${activeCombatId}/summons/${sk}`).set(summon);
+    db.ref(`characters/${session}/inventario/${itemKey}`).remove();
+}
+
+function doUp(attr) {
+    if ((pData.pontos||0) <= 0) return alert('Sem pontos.');
+    if (confirm(`Investir 1 ponto em ${attrNames[attr]}?`)) {
+        const base = pData.atributos_base ? (pData.atributos_base[attr]||0) : 0;
+        db.ref(`characters/${session}/pontos`).set(pData.pontos - 1);
+        db.ref(`characters/${session}/atributos_base/${attr}`).set(base + 1);
+    }
+}
+
+function switchTab(el) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+    el.classList.add('active');
+    const tabId = el.dataset.tab;
+    document.getElementById(tabId).classList.add('on');
+}
+
+function botNav(el) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    const tab = el.dataset.tab;
+    if (tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+        const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+        if (btn) btn.classList.add('active');
+        document.getElementById(tab).classList.add('on');
+    }
+}
+
+function openMenu() { document.getElementById('menu-overlay').classList.add('on'); }
+function closeMenu() { document.getElementById('menu-overlay').classList.remove('on'); }
+function openMenuTab(id) { closeMenu(); const btn = document.querySelector(`.tab-btn[data-tab="${id}"]`); if (btn) switchTab(btn); }
+
+function saveDiary() {
+    db.ref(`characters/${session}/anotacoes`).set(document.getElementById('diario').value);
+    diaryDirty = false;
+    alert('Diário salvo!');
+}
+
+document.getElementById('diario').addEventListener('input', () => { diaryDirty = true; });
+
+async function exportChar() {
+    const card = document.getElementById('export-card');
+    card.style.display = 'block';
+    const data = {
+        nome: pData.nome, classe: pData.classe, imagem: pData.imagem,
+        atributos: {}, equipamentos: [], habilidades: []
+    };
+    document.querySelectorAll('#attr-grid .attr-card').forEach(el => {
+        data.atributos[el.querySelector('.attr-name').innerText] = el.querySelector('.attr-val').innerText;
+    });
+    document.querySelectorAll('#eq-map .eq-slot.on').forEach(el => {
+        const img = el.querySelector('img');
+        if (img) data.equipamentos.push(img.src);
+    });
+    document.querySelectorAll('#skill-list .skill-card').forEach(el => {
+        const img = el.querySelector('img');
+        const name = el.querySelector('.skill-name');
+        if (img && name) data.habilidades.push({img: img.src, nome: name.innerText});
+    });
+    const gc = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim();
+    const bc = getComputedStyle(document.documentElement).getPropertyValue('--azure').trim();
+    let atHtml = Object.entries(data.atributos).map(([k,v]) => `<div style="flex:1;min-width:70px;text-align:center;background:rgba(0,0,0,0.3);padding:5px;border-radius:5px;"><strong style="color:${gc};display:block;">${k}</strong>${v}</div>`).join('');
+    let eqHtml = data.equipamentos.map(s => `<img src="${s}" style="width:48px;height:48px;border-radius:5px;border:1px solid var(--border);object-fit:cover;">`).join('');
+    let skHtml = data.habilidades.map(s => `<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;"><img src="${s.img}" style="width:28px;height:28px;border-radius:4px;"><span style="font-size:0.85em;">${s.nome}</span></div>`).join('');
+    card.innerHTML = `<div style="text-align:center;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;"><img src="${data.imagem}" style="width:90px;height:90px;border-radius:50%;border:2px solid ${gc};margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif;color:${gc};margin:0;">${data.nome}</h2><p style="color:${bc};font-size:0.85em;">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif;margin:8px 0;color:${bc};font-size:0.9em;">Atributos</h4><div style="display:flex;gap:6px;flex-wrap:wrap;font-size:0.8em;">${atHtml}</div><h4 style="font-family:'Cinzel',serif;margin:8px 0;color:${bc};font-size:0.9em;">Equipamentos</h4><div style="display:flex;gap:6px;flex-wrap:wrap;">${eqHtml||'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif;margin:8px 0;color:${bc};font-size:0.9em;">Habilidades</h4><div style="font-size:0.85em;">${skHtml||'Nenhuma.'}</div>`;
+    card.style.position = 'fixed';
+    card.style.left = '-9999px';
+    card.style.display = 'block';
+    card.style.width = '600px';
+    try {
+        const { default: html2canvas } = await import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.esm.min.js');
+        const canvas = await html2canvas(card, { backgroundColor: '#0d1117', useCORS: true, scale: 2 });
+        const link = document.createElement('a');
+        link.download = `ficha_${session}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    } catch(e) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 600; canvas.height = 800;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#0d1117';
+        ctx.fillRect(0, 0, 600, 800);
+        ctx.fillStyle = '#e8c547';
+        ctx.font = 'bold 24px Cinzel';
+        ctx.textAlign = 'center';
+        ctx.fillText(data.nome, 300, 60);
+        ctx.fillStyle = '#6b7a94';
+        ctx.font = '16px Poppins';
+        ctx.fillText(data.classe, 300, 90);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => { ctx.drawImage(img, 250, 110, 100, 100); };
+        img.src = data.imagem;
+        const link = document.createElement('a');
+        link.download = `ficha_${session}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+    card.style.display = 'none';
+}
+
+db.ref('combat/sessions').orderByChild('status').limitToLast(1).on('child_added', snap => {
+    const sess = snap.val();
+    if (!sess) return;
+    const myToken = sess.tokens ? sess.tokens[session] : null;
+    if (myToken) {
+        activeCombatId = snap.key;
+        currentCombatData = sess;
+    } else {
+        activeCombatId = null;
+        currentCombatData = null;
+    }
+});
+
+const urlSession = new URLSearchParams(window.location.search).get('session');
+if (urlSession === 'Tohru') { session = 'Tohru'; document.getElementById('login-screen').style.display = 'none'; document.getElementById('loading-screen').classList.add('active'); loadAll(); }
+
+requestAnimationFrame(() => document.body.classList.add('ready'));
+</script>
+</body>
+</html>

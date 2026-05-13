@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sua Ficha - RPG</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2040/2040523.png" type="image/png">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@400;500;700&display=swap"
         rel="stylesheet">
@@ -13,6 +14,35 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
+        /* Estilos da Tela de Carregamento */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg, #0f172a);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #loading-icon {
+            width: 80px;
+            height: 80px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+        }
+
         /* Scrollbar fina e sutil - tema azul escuro */
 
         /* Chrome, Edge e Safari */
@@ -85,7 +115,7 @@
 
         .header-bg {
             height: 140px;
-            background: url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=1920') center/cover;
+            background: url('https://i.pinimg.com/736x/13/d4/60/13d46035503be60634544331c962dbb5.jpg') center/cover;
             position: relative;
         }
 
@@ -1062,6 +1092,10 @@
 
 <body>
 
+    <div id="loading-screen">
+        <img id="loading-icon" src="" alt="Carregando...">
+    </div>
+
     <div class="header-bg">
         <div class="header-overlay"></div>
     </div>
@@ -1228,6 +1262,29 @@
         let itemAtualKey = null; let itemAtualId = null; let itemAtualDBData = null; let itemAtualAction = 'equip';
         let activeCombatId = null;
         let diaryDirty = false;
+
+        // --- LÓGICA DA TELA DE CARREGAMENTO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const faviconLink = document.querySelector("link[rel~='icon']");
+            const loadingIcon = document.getElementById('loading-icon');
+            if (faviconLink && loadingIcon) {
+                loadingIcon.src = faviconLink.href;
+            }
+        });
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500); // Deve corresponder à duração da transição do CSS
+            }
+            // Inicia o fade in do corpo da página
+            requestAnimationFrame(() => document.body.classList.add('app-ready'));
+        }
+        // --- FIM DA LÓGICA DA TELA DE CARREGAMENTO ---
+
 
         db.ref('items').on('value', snap => { itemsDB = snap.val() || {}; checkRender(); });
         db.ref('skills').on('value', snap => { skillsDB = snap.val() || {}; checkRender(); });
@@ -1453,7 +1510,17 @@
         }
 
         // ================= FUNÇÕES PADRÃO (Completas) =================
-        function checkRender() { if (pData) { renderStatusEInv(); inicializarCrafting(); renderGrimorio(); } }
+        function checkRender() {
+            if (pData) {
+                renderStatusEInv();
+                inicializarCrafting();
+                renderGrimorio();
+                // Verifica se o app já está pronto para evitar múltiplas chamadas
+                if (!document.body.classList.contains('app-ready')) {
+                    hideLoadingScreen();
+                }
+            }
+        }
 
         function renderStatusEInv() {
             let bonus = { for: 0, res: 0, vel: 0, agi: 0, per: 0, resm: 0, esp: 0, alm: 0 };
@@ -1506,10 +1573,16 @@
             if (!found) grid.innerHTML = `<p style="color:#64748b; font-size:0.8em;">Nenhum item compatível na bolsa.</p>`;
             document.getElementById('picker-title').innerText = `Equipar`; document.getElementById('picker-modal').classList.add('active');
         }
-        function finalizarEquip(itemKey) { db.ref(`characters/${session}/inventario/${itemKey}/equipado`).set(true); closeModal('picker-modal'); }
+        function finalizarEquip(itemKey) { db.ref(`characters/${session}/inventario/${itemKey}/equipado`).set(true); fecharModal('picker-modal'); }
         function inicializarCrafting() {
             inventarioCraftDisponivel = {};
-            if (pData.inventario) Object.values(pData.inventario).forEach(inv => { const idb = itemsDB[inv.item_id]; if (idb && idb.categoria === 'Material' && !inv.equipado) inventarioCraftDisponivel[inv.item_id] = (inventarioCraftDisponivel[inv.item_id] || 0) + 1; });
+            if (pData.inventario) Object.values(pData.inventario).forEach(inv => {
+                const idb = itemsDB[inv.item_id];
+                // ALTERAÇÃO: Remove a verificação de 'Material' para incluir todos os itens não equipados
+                if (idb && !inv.equipado) {
+                    inventarioCraftDisponivel[inv.item_id] = (inventarioCraftDisponivel[inv.item_id] || 0) + 1;
+                }
+            });
             craftMesa.forEach(slot => { if (slot && inventarioCraftDisponivel[slot.id]) inventarioCraftDisponivel[slot.id] -= slot.qtd; });
             renderUIForja(); renderReceitasProntas();
         }
@@ -1545,7 +1618,7 @@
         let receitaValidaId = null; let receitaMultipla = false;
         function verificarReceitaEmTempoReal() { receitaValidaId = null; receitaMultipla = false; const resSlot = document.getElementById('craft-result'); Object.keys(recipesDB).forEach(rId => { const r = recipesDB[rId]; if (!r.grid) return; let match = true; for (let i = 0; i < 9; i++) { let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 }; const cSlot = craftMesa[i]; const rTem = rSlot && typeof rSlot === 'object'; const cTem = cSlot && cSlot !== null; if ((rTem && !cTem) || (!rTem && cTem) || (rTem && cTem && (rSlot.id !== cSlot.id || cSlot.qtd < rSlot.qtd))) match = false; } if (match) receitaValidaId = rId; }); if (receitaValidaId && (recipesDB[receitaValidaId].resultado || recipesDB[receitaValidaId].resultados)) { const r = recipesDB[receitaValidaId]; if (r.resultados) { receitaMultipla = true; resSlot.innerHTML = `<i class="fas fa-question" style="font-size:2em; color:var(--gold);"></i>`; resSlot.style.borderColor = 'var(--gold)'; } else { let resId = r.resultado.id || r.resultado; let resQtd = r.resultado.qtd || 1; if (itemsDB[resId]) { resSlot.innerHTML = `<div class="item-badge" style="top:2px; bottom:auto;">x${resQtd}</div><img src="${itemsDB[resId].imagem}">`; resSlot.style.borderColor = "#10b981"; } } } else { resSlot.innerHTML = ''; resSlot.style.borderColor = "#f59e0b"; } }
         function tentarForjar() { if (!receitaValidaId) return alert("Receita inválida!"); const r = recipesDB[receitaValidaId]; if (receitaMultipla) { const pickerGrid = document.getElementById('picker-grid'); pickerGrid.innerHTML = ''; r.resultados.forEach((res, index) => { const item = itemsDB[res.id]; if (item) pickerGrid.innerHTML += `<div class="picker-item" onclick="finalizarCraftMultiplo(${index})"><img src="${item.imagem}"><span style="font-size:0.7em">${item.nome}</span><div class="item-badge">x${res.qtd}</div></div>`; }); document.getElementById('picker-title').innerText = 'Escolha o que criar:'; document.getElementById('picker-modal').classList.add('active'); } else { finalizarCraftUnico(); } }
-        function finalizarCraftMultiplo(resultadoIndex) { finalizarCraftUnico(resultadoIndex); closeModal('picker-modal'); }
+        function finalizarCraftMultiplo(resultadoIndex) { finalizarCraftUnico(resultadoIndex); fecharModal('picker-modal'); }
         function finalizarCraftUnico(resultadoIndex = null) { const r = recipesDB[receitaValidaId]; let updates = {}; let tempInv = JSON.parse(JSON.stringify(pData.inventario || {})); for (let i = 0; i < 9; i++) { let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 }; if (rSlot && typeof rSlot === 'object') { const idNeeded = rSlot.id; let amountNeeded = rSlot.qtd || 1; let keys = Object.keys(tempInv); for (let k = 0; k < keys.length && amountNeeded > 0; k++) { const key = keys[k]; if (tempInv[key].item_id === idNeeded && !tempInv[key].equipado) { updates[`${key}`] = null; delete tempInv[key]; amountNeeded--; } } } } let finalResult = resultadoIndex !== null ? r.resultados[resultadoIndex] : (r.resultado.id ? r.resultado : { id: r.resultado, qtd: 1 }); for (let j = 0; j < finalResult.qtd; j++) { const newKey = db.ref(`characters/${session}/inventario`).push().key; updates[`${newKey}`] = { item_id: finalResult.id, equipado: false }; } db.ref(`characters/${session}/inventario`).update(updates).then(() => { alert("Forjado com sucesso!"); limparMesa(); }); }
         function renderGrimorio() { const container = document.getElementById('recipe-book-container'); container.innerHTML = ''; let recipesByCategory = {}; Object.entries(recipesDB).forEach(([rId, r]) => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; if (resItem) { if (!recipesByCategory[resItem.categoria]) recipesByCategory[resItem.categoria] = []; recipesByCategory[resItem.categoria].push({ rId, ...r }); } }); Object.entries(recipesByCategory).forEach(([category, recipes]) => { container.innerHTML += `<h3 class="section-title">${category}</h3>`; let grid = document.createElement('div'); grid.className = 'recipe-book-grid'; recipes.forEach(r => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; grid.innerHTML += `<div class="skill-card" onclick="verReceita('${r.rId}')"><img class="skill-img" src="${resItem.imagem}"><h4>${resItem.nome}</h4></div>`; }); container.appendChild(grid); }); if (container.innerHTML === '') container.innerHTML = '<p style="color:#64748b; text-align:center;">O grimório está vazio.</p>'; }
         function verReceita(rId) { const r = recipesDB[rId]; let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; document.getElementById('recipe-modal-title').innerText = `Receita de ${itemsDB[resId].nome}`; const bench = document.getElementById('recipe-modal-bench'); let gridHtml = '<div class="craft-grid">'; for (let i = 0; i < 9; i++) { let slot = r.grid[i]; let imgHtml = ''; if (slot && typeof slot === 'object' && itemsDB[slot.id]) { imgHtml = `<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`; } gridHtml += `<div class="craft-slot">${imgHtml}</div>`; } gridHtml += '</div>'; bench.innerHTML = gridHtml; document.getElementById('recipe-modal').classList.add('active'); }
@@ -1580,7 +1653,6 @@
             }
             document.getElementById(id).classList.add('active');
         }
-        requestAnimationFrame(() => document.body.classList.add('app-ready'));
     </script>
 </body>
 
