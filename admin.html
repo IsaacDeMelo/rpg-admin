@@ -536,8 +536,12 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <input type="text" id="c-classe" placeholder="Ex: Guerreiro, Besta, Arquimago…">
         <label class="field-label">Descrição / Lore</label>
         <textarea id="c-desc" rows="3" placeholder="Visível para jogadores no combate…"></textarea>
-        <label class="field-label">URL da Imagem</label>
-        <input type="text" id="c-img" placeholder="https://…">
+        <label class="field-label">Imagem</label>
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <input type="text" id="c-img" placeholder="URL ou clique para enviar" style="flex:1;">
+          <input type="file" id="c-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'c-img')">
+          <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('c-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+        </div>
         <label class="field-label">Pontos de Atributo Livres</label>
         <input type="number" id="c-pts" value="0">
       </div>
@@ -587,8 +591,12 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <input type="text" id="i-id" placeholder="ex: espada_das_chamas">
           <label class="field-label">Nome de Exibição</label>
           <input type="text" id="i-nome" placeholder="Espada das Chamas">
-          <label class="field-label">URL da Imagem</label>
-          <input type="text" id="i-img" placeholder="https://…">
+          <label class="field-label">Imagem</label>
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <input type="text" id="i-img" placeholder="URL ou clique para enviar" style="flex:1;">
+            <input type="file" id="i-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'i-img')">
+            <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('i-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+          </div>
           <label class="field-label">Raridade</label>
           <select id="i-rarity">
             <option value="Comum">Comum</option>
@@ -687,8 +695,12 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <input type="text" id="s-id" placeholder="ex: furia_dos_orcs">
           <label class="field-label">Nome</label>
           <input type="text" id="s-nome" placeholder="Fúria dos Orcs">
-          <label class="field-label">URL do Ícone</label>
-          <input type="text" id="s-img" placeholder="https://…">
+          <label class="field-label">Ícone</label>
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <input type="text" id="s-img" placeholder="URL ou clique para enviar" style="flex:1;">
+            <input type="file" id="s-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'s-img')">
+            <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('s-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+          </div>
           <label class="field-label">Descrição do Efeito</label>
           <textarea id="s-desc" rows="4" placeholder="Ao ativar, o guerreiro entra em estado de frenesi…"></textarea>
         </div>
@@ -780,11 +792,11 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         </div>
 
         <div class="teams-grid">
-          <div class="team-box" ondrop="drop(event,'A')" ondragover="allowDrop(event)">
+          <div class="team-box" ondrop="drop(event,'A')" ondragover="allowDrop(event)" ontouchend="touchEndDrag(event,'A')">
             <div class="team-title team-allies"><i class="fas fa-shield-alt"></i> Aliados</div>
             <div class="token-grid" id="combat-team-a"></div>
           </div>
-          <div class="team-box" ondrop="drop(event,'B')" ondragover="allowDrop(event)">
+          <div class="team-box" ondrop="drop(event,'B')" ondragover="allowDrop(event)" ontouchend="touchEndDrag(event,'B')">
             <div class="team-title team-enemies"><i class="fas fa-skull-crossbones"></i> Oponentes</div>
             <div class="token-grid" id="combat-team-b"></div>
           </div>
@@ -874,8 +886,12 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <div><label class="field-label">Nome</label><input id="ec-nome" placeholder="Nome verdadeiro"></div>
         <div><label class="field-label">Classe</label><input id="ec-classe" placeholder="Classe"></div>
       </div>
-      <label class="field-label">URL da Imagem</label>
-      <input id="ec-img" placeholder="https://…">
+      <label class="field-label">Imagem</label>
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <input id="ec-img" placeholder="URL ou clique para enviar" style="flex:1;">
+        <input type="file" id="ec-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'ec-img')">
+        <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('ec-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+      </div>
       <div class="three-col" style="margin-bottom:10px;">
         <div><label class="field-label">HP Atual</label><input type="number" id="ec-hp" class="mb-0"></div>
         <div><label class="field-label">HP Máx</label><input type="number" id="ec-hp_max" class="mb-0"></div>
@@ -1110,6 +1126,19 @@ function toNumber(v){ return Math.max(0, Number(v)||0); }
 function ensureId(v,lbl){ v=(v||'').trim(); if(!v){showToast(`${lbl} é obrigatório.`,'error');return null;} if(/\s/.test(v)){showToast(`${lbl} não pode ter espaços.`,'error');return null;} return v; }
 function ensureRequired(v,lbl){ v=(v||'').trim(); if(!v){showToast(`${lbl} é obrigatório.`,'error');return null;} return v; }
 function badgeClass(tipo){ return tipo==='Jogador'?'badge-jogador':tipo==='NPC'?'badge-npc':'badge-criatura'; }
+
+function handleFileUpload(input, targetId){
+  const file = input.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ showToast('Selecione uma imagem válido.','error'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById(targetId).value = e.target.result;
+    showToast('Imagem carregada!','success');
+  };
+  reader.onerror = function(){ showToast('Erro ao ler arquivo.','error'); };
+  reader.readAsDataURL(file);
+}
 
 /* ── NAV ─────────────────────────────────────────────────────────────────── */
 function nav(id, el){
@@ -1615,7 +1644,7 @@ function renderCombatSetup(){
     if(inCombat.has(id)&&combat.tokens[id]){
       status=combat.tokens[id].status||'alive';
     }
-    const card=`<div class="token-card ${status==='defeated'?'defeated':''}" draggable="true" ondragstart="drag(event,'${id}')" onclick="abrirTokenMenu('${id}')">
+    const card=`<div class="token-card ${status==='defeated'?'defeated':''}" draggable="true" ondragstart="drag(event,'${id}')" ontouchstart="touchStartDrag(event,'${id}')" ontouchend="touchEndDrag(event,'tray')" onclick="abrirTokenMenu('${id}')">
       <img src="${char.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'" alt="${char.nome||''}">
       <p>${(char.nome||'?').split(' ')[0]}</p></div>`;
     if(inCombat.has(id)){
@@ -1629,6 +1658,21 @@ function renderCombatSetup(){
 function allowDrop(ev){ ev.preventDefault(); }
 function drag(ev,charId){ ev.dataTransfer.setData('charId',charId); }
 function drop(ev,team){ ev.preventDefault(); const charId=ev.dataTransfer.getData('charId'); if(!activeCombatId) return; let u={}; Object.keys(DB_COMBATS[activeCombatId].tokens||{}).forEach(id=>{ if(id===charId) u[id]=null; }); if(team!=='tray') u[charId]={team,status:'alive'}; db.ref(`combat/sessions/${activeCombatId}/tokens`).update(u); }
+
+let touchDragCharId=null;
+function touchStartDrag(e,charId){ touchDragCharId=charId; e.target.style.opacity='0.5'; }
+function touchEndDrag(e,team){
+  if(!touchDragCharId) return;
+  e.target.style.opacity='1';
+  if(!activeCombatId) return;
+  let u={}; Object.keys(DB_COMBATS[activeCombatId].tokens||{}).forEach(id=>{ if(id===touchDragCharId) u[id]=null; });
+  if(team!=='tray') u[touchDragCharId]={team,status:'alive'};
+  db.ref(`combat/sessions/${activeCombatId}/tokens`).update(u);
+  touchDragCharId=null;
+}
+document.querySelectorAll('.team-box, .char-tray').forEach(el=>{
+  el.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+});
 function iniciarCombate(){
   if(!activeCombatId||!DB_COMBATS[activeCombatId]) return;
   if(!DB_COMBATS[activeCombatId].tokens||!Object.keys(DB_COMBATS[activeCombatId].tokens).length){
