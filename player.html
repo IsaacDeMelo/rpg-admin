@@ -1,1659 +1,1431 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sua Ficha - RPG</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2040/2040523.png" type="image/png">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@400;500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        /* Estilos da Tela de Carregamento */
-        #loading-screen {
-            position: fixed;
-            inset: 0;
-            background-color: var(--bg, #0f172a);
-            z-index: 9999;
+        #loading-screen { position: fixed; inset: 0; background-color: var(--bg, #0f172a); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-out; }
+        #loading-icon { width: 80px; height: 80px; animation: pulse 1.5s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #1e3a8a, #2563eb); border-radius: 999px; border: 1px solid #0f172a; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #2563eb, #3b82f6); }
+        * { scrollbar-width: thin; scrollbar-color: #2563eb #0f172a; }
+        :root { --bg: #0f172a; --panel: #1e293b; --border: #334155; --text: #f8fafc; --gold: #f59e0b; --blue: #3b82f6; --green: #10b981; --red: #ef4444; --purple: #a855f7; --cyan: #0891b2; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,.15), transparent 60%), radial-gradient(900px 500px at 90% 0%, rgba(16,185,129,.12), transparent 60%), var(--bg); color: var(--text); padding-bottom: 100px; overflow-x: hidden; opacity: 0; transform: translateY(4px); transition: opacity .3s ease, transform .3s ease; min-height: 100vh; }
+        body.app-ready { opacity: 1; transform: none; }
+        .header-bg { height: 140px; background: url('https://i.pinimg.com/736x/13/d4/60/13d46035503be60634544331c962dbb5.jpg') center/cover; position: relative; }
+        .header-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 5%, transparent); }
+        .char-info { position: relative; margin-top: -70px; padding: 0 20px; display: flex; align-items: flex-end; gap: 15px; }
+        .char-avatar { width: 90px; height: 90px; min-width: 90px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(245,158,11,.3); z-index: 2; background: #000; cursor: pointer; transition: transform .15s; }
+        .char-avatar:active { transform: scale(.95); }
+        .char-texts { z-index: 2; margin-bottom: 5px; flex: 1; }
+        .char-name { font-family: 'Cinzel', serif; font-size: 1.5em; color: var(--gold); text-shadow: 2px 2px 4px #000; }
+        .char-class { font-weight: 600; color: var(--blue); text-transform: uppercase; font-size: .8em; letter-spacing: 1px; }
+        .pts-pill { display: inline-block; background: var(--purple); padding: 3px 10px; border-radius: 20px; font-size: .75em; font-weight: bold; margin-top: 5px; }
+        .vitals-section { padding: 0 20px 10px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .status-bar { width: 100%; height: 28px; background: rgba(0,0,0,.5); border-radius: 8px; border: 1px solid var(--border); position: relative; overflow: hidden; opacity: .6; transition: opacity .3s, height .3s; }
+        .status-bar.active { opacity: 1; }
+        .status-bar-inner { height: 100%; transition: width .5s; border-radius: 5px; }
+        .status-bar-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: .75em; font-weight: bold; color: white; text-shadow: 1px 1px 2px #000; pointer-events: none; letter-spacing: .5px; }
+        #hp-bar .status-bar-inner { background: linear-gradient(to right, var(--red), #b91c1c); }
+        #mp-bar .status-bar-inner { background: linear-gradient(to right, var(--blue), #1d4ed8); }
+        #sp-bar .status-bar-inner { background: linear-gradient(to right, var(--gold), #b45309); }
+        .attr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        .attr-card { background: rgba(0,0,0,.3); border-radius: 10px; padding: 10px; border-left: 3px solid var(--blue); position: relative; }
+        .attr-name { font-size: .75em; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+        .attr-value { font-size: 1.3em; font-weight: 800; }
+        .val-bonus { font-size: .6em; color: var(--green); vertical-align: super; }
+        .btn-add { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: var(--border); color: white; width: 36px; height: 36px; border-radius: 8px; font-weight: bold; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .15s, background .15s; }
+        .btn-add:active { transform: translateY(-50%) scale(.92); background: var(--blue); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(30,41,59,.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 50; padding-bottom: env(safe-area-inset-bottom, 10px); }
+        .nav-item { color: #64748b; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: .7em; font-weight: 600; cursor: pointer; transition: color .2s, transform .2s; flex: 1; padding: 8px 4px; border-radius: 8px; }
+        .nav-item:active { transform: scale(.9); }
+        .nav-item i { font-size: 1.6em; }
+        .nav-item.active { color: var(--gold); transform: translateY(-3px); }
+        .nav-item.hidden { display: none !important; }
+        .hidden { display: none !important; }
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: flex-end; z-index: 60; }
+        .menu-overlay.active { display: flex; }
+        .menu-sheet { width: 100%; max-width: 540px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); border-radius: 16px 16px 0 0; padding: 16px; box-shadow: 0 -10px 30px rgba(0,0,0,.35); }
+        .menu-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .menu-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.1em; }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 12px; border-radius: 10px; background: rgba(0,0,0,.25); border: 1px solid transparent; cursor: pointer; margin-bottom: 8px; transition: background .15s, border-color .15s; }
+        .menu-item:hover, .menu-item:active { border-color: var(--blue); background: rgba(59,130,246,.1); }
+        .menu-item i { width: 24px; text-align: center; color: var(--blue); }
+        .menu-item .hint { color: #94a3b8; font-size: .75em; }
+        .tab-content { display: none; padding: 16px; padding-bottom: 30px; max-width: 980px; margin: 0 auto; }
+        .tab-content.active { display: block; animation: fade .3s; }
+        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title { font-family: 'Cinzel', serif; color: var(--blue); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 1.1em; display: flex; align-items: center; gap: 8px; }
+        .equip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; justify-items: center; margin-bottom: 25px; }
+        .equip-slot { width: 70px; height: 70px; background: rgba(0,0,0,.4); border: 2px dashed var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; position: relative; cursor: pointer; transition: transform .15s, border-color .15s, box-shadow .15s; }
+        .equip-slot:active { transform: scale(.95); }
+        .equip-slot.filled { border: 2px solid var(--gold); box-shadow: 0 0 10px rgba(245,158,11,.3); background: #000; }
+        .equip-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+        .equip-slot-label { position: absolute; bottom: -20px; font-size: .6em; color: #94a3b8; font-weight: 600; text-transform: uppercase; white-space: nowrap; }
+        .slot-cabeca { grid-column: 2; } .slot-peitoral { grid-column: 2; } .slot-pernas { grid-column: 2; }
+        .slot-arma1 { grid-column: 1; grid-row: 2; justify-self: end; margin-right: -10px; }
+        .slot-arma2 { grid-column: 3; grid-row: 2; justify-self: start; margin-left: -10px; }
+        .slot-acessorio { grid-column: 1; grid-row: 1; justify-self: end; margin-right: -10px; }
+        .skills-grid, .recipe-book-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .skill-card { display: flex; align-items: center; gap: 15px; background: var(--panel); border: 1px solid var(--border); padding: 10px; border-radius: 10px; }
+        .skill-img { width: 45px; height: 45px; border-radius: 8px; border: 1px solid var(--gold); object-fit: cover; background: #000; }
+        .inv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .item-slot { background: var(--panel); border-radius: 10px; overflow: hidden; position: relative; border: 1px solid var(--border); aspect-ratio: 1; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform .15s, border-color .15s; }
+        .item-slot:active { transform: scale(.95); }
+        .item-slot.equipped { border-color: var(--green); box-shadow: 0 0 10px rgba(16,185,129,.3); opacity: .6; }
+        .item-badge { position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,.8); color: white; font-size: .65em; font-weight: bold; padding: 1px 5px; border-radius: 6px; z-index: 5; }
+        .item-img { width: 100%; height: 100%; object-fit: cover; }
+        .crafting-bench { display: flex; align-items: center; justify-content: center; gap: 15px; background: var(--panel); padding: 20px 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .craft-grid { display: grid; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); gap: 5px; }
+        .craft-slot { width: 50px; height: 50px; background: rgba(0,0,0,.4); border: 2px dashed #475569; border-radius: 8px; position: relative; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .craft-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 4px; }
+        .craft-result-slot { width: 60px; height: 60px; background: rgba(0,0,0,.4); border: 2px solid var(--gold); border-radius: 10px; position: relative; display: flex; justify-content: center; align-items: center; }
+        .craft-result-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 6px; }
+        .inv-craft-selector { width: 100%; overflow-x: auto; white-space: nowrap; padding: 10px; background: var(--panel); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; min-height: 70px; }
+        .inv-craft-item { display: inline-block; width: 45px; height: 45px; margin-right: 8px; position: relative; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; }
+        .inv-craft-item.selected { border-color: var(--blue); box-shadow: 0 0 10px rgba(56,189,248,.5); }
+        .inv-craft-item img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-action { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; margin-bottom: 12px; color: white; cursor: pointer; transition: transform .1s, filter .1s; font-size: 1em; }
+        .btn-action:active { transform: scale(.97); filter: brightness(.9); }
+        .btn-forge { background: var(--gold); color: #000; }
+        .recipe-ready-card { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--green); border-radius: 10px; padding: 10px; margin-bottom: 10px; cursor: pointer; }
+        .recipe-ready-card img { width: 40px; height: 40px; border-radius: 6px; background: #000; }
+        textarea#diario { width: 100%; height: 350px; background: var(--panel); border: 1px solid var(--border); color: #cbd5e1; padding: 15px; border-radius: 12px; resize: none; font-size: 1em; outline: none; line-height: 1.5; }
+        textarea#diario:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(59,130,246,.2); }
+        .summon-bar { margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .summon-card { background: rgba(0,0,0,.35); border: 1px solid var(--border); border-radius: 10px; padding: 8px; text-align: center; }
+        .summon-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 6px; background: #000; }
+        .summon-card h4 { font-size: .8em; color: var(--gold); margin-bottom: 6px; }
+        .summon-card button { width: 100%; border: none; border-radius: 8px; padding: 8px; background: var(--purple); color: #fff; font-weight: bold; cursor: pointer; }
+        .pov-viewport { width: calc(100% + 40px); margin-left: -20px; height: 320px; overflow-x: auto; overflow-y: hidden; position: relative; scroll-behavior: smooth; background: #000; border-radius: 12px; }
+        .pov-bg { position: absolute; left: 0; top: 0; width: 150%; height: 100%; background-size: cover; background-position: center bottom; background-repeat: no-repeat; z-index: 1; }
+        .pov-scene { position: absolute; top: 0; left: 0; width: 150%; height: 100%; z-index: 3; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 40px; gap: 80px; pointer-events: none; }
+        .pov-team { display: flex; gap: 20px; align-items: flex-end; pointer-events: auto; }
+        .pov-team.allies { flex-direction: row-reverse; }
+        .pov-team.enemies { flex-direction: row; }
+        .pov-char-card { text-align: center; position: relative; animation: float 3s ease-in-out infinite; cursor: pointer; transition: transform .2s; display: flex; flex-direction: column; align-items: center; width: 100px; }
+        .pov-char-card:active { transform: scale(.95); }
+        .pov-char-card img { width: 80px; height: 100px; object-fit: cover; border-radius: 8px; border: 3px solid; background: #000; box-shadow: 0 10px 20px rgba(0,0,0,.8); }
+        .pov-team.allies img { border-color: var(--blue); }
+        .pov-team.enemies img { border-color: var(--red); }
+        .pov-char-details { background: rgba(0,0,0,.9); padding: 8px; border-radius: 8px; width: 100px; margin-top: -12px; z-index: 5; position: relative; border: 1px solid var(--border); }
+        .pov-char-name { color: white; font-size: .7em; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
+        .pov-char-hp-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+        .pov-char-hp-fill { height: 100%; background: var(--red); transition: width .3s; }
+        .card-stats { display: flex; justify-content: space-around; font-size: .6em; background: rgba(0,0,0,.5); padding: 4px; border-top: 1px solid #333; border-radius: 4px; color: #cbd5e1; }
+        .pov-char-card.defeated { animation: none; z-index: 1; }
+        .pov-char-card.defeated img { filter: grayscale(100%) brightness(.6); transform: translateY(40px) rotate(90deg) scale(.8); border-color: #555 !important; }
+        .pov-char-card.defeated .pov-char-details { display: none; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 100; display: none; justify-content: center; align-items: center; padding: 10px; }
+        .modal.active { display: flex; animation: fade .2s; }
+        .modal-card { background: var(--panel); width: 90vw; max-width: 380px; border-radius: 16px; padding: 20px; text-align: center; border: 1px solid var(--blue); position: relative; max-height: 85vh; overflow-y: auto; margin: 10px; }
+        .close-btn { position: absolute; top: 10px; right: 15px; color: #94a3b8; font-size: 1.5em; cursor: pointer; z-index: 10; }
+        .mod-img { width: 90px; height: 90px; border-radius: 12px; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: cover; }
+        .mod-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.2em; margin-bottom: 5px; }
+        .mod-cat { font-size: .7em; color: var(--blue); margin-bottom: 10px; text-transform: uppercase; font-weight: bold; }
+        .mod-desc { color: #cbd5e1; font-size: .8em; margin-bottom: 15px; }
+        .mod-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 15px; }
+        .mod-tag { background: rgba(16,185,129,.2); border: 1px solid var(--green); color: var(--green); padding: 3px 8px; border-radius: 10px; font-size: .7em; font-weight: bold; }
+        .btn-equip { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; background: var(--green); color: white; }
+        .picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 10px; max-height: 50vh; overflow-y: auto; padding-right: 10px; }
+        .picker-item { text-align: center; cursor: pointer; background: rgba(0,0,0,.3); border-radius: 10px; padding: 6px; position: relative; transition: transform .15s; }
+        .picker-item:active { transform: scale(.92); }
+        .picker-item img { width: 100%; aspect-ratio: 1; object-fit: cover; border: 2px solid transparent; border-radius: 8px; }
+        .picker-item:hover img, .picker-item.selected img { border-color: var(--blue); }
+        #export-card-container { position: fixed; left: -9999px; top: -9999px; width: 350px; background: var(--panel); border: 2px solid var(--gold); border-radius: 10px; padding: 15px; color: white; }
+
+        /* ===================== IA COMBAT SYSTEM ===================== */
+        .ia-combat-wrapper {
+            margin-top: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.1), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .ia-combat-header {
+            background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(59,130,246,0.15));
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(168,85,247,0.3);
             display: flex;
-            justify-content: center;
             align-items: center;
-            transition: opacity 0.5s ease-out;
+            gap: 10px;
         }
 
-        #loading-icon {
-            width: 80px;
-            height: 80px;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 0.7;
-            }
-        }
-
-        /* Scrollbar fina e sutil - tema azul escuro */
-
-        /* Chrome, Edge e Safari */
-        ::-webkit-scrollbar {
-            width: 7px;
-            height: 7px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-            /* fundo */
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg,
-                    #1e3a8a,
-                    #2563eb);
-            border-radius: 999px;
-            border: 1px solid #0f172a;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg,
-                    #2563eb,
-                    #3b82f6);
-        }
-
-        /* Firefox */
-        * {
-            scrollbar-width: thin;
-            scrollbar-color: #2563eb #0f172a;
-        }
-
-        :root {
-            --bg: #0f172a;
-            --panel: #1e293b;
-            --border: #334155;
-            --text: #f8fafc;
-            --gold: #f59e0b;
-            --blue: #3b82f6;
-            --green: #10b981;
-            --red: #ef4444;
-            --purple: #a855f7;
-            --cyan: #0891b2;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background: radial-gradient(1200px 600px at 20% -10%, rgba(59, 130, 246, 0.15), transparent 60%), radial-gradient(900px 500px at 90% 0%, rgba(16, 185, 129, 0.12), transparent 60%), var(--bg);
-            color: var(--text);
-            padding-bottom: 90px;
-            overflow-x: hidden;
-            opacity: 0;
-            transform: translateY(4px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        body.app-ready {
-            opacity: 1;
-            transform: none;
-            min-height: 100vh
-        }
-
-        .header-bg {
-            height: 140px;
-            background: url('https://i.pinimg.com/736x/13/d4/60/13d46035503be60634544331c962dbb5.jpg') center/cover;
-            position: relative;
-        }
-
-        .header-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, var(--bg) 5%, transparent);
-        }
-
-        .char-info {
-            position: relative;
-            margin-top: -70px;
-            padding: 0 20px;
-            display: flex;
-            align-items: flex-end;
-            gap: 15px;
-        }
-
-        .char-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid var(--gold);
-            object-fit: cover;
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
-            z-index: 2;
-            background: #000;
-        }
-
-        .char-texts {
-            z-index: 2;
-            margin-bottom: 5px;
+        .ia-combat-header .ia-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1em;
             flex: 1;
         }
 
-        .char-name {
-            font-family: 'Cinzel', serif;
-            font-size: 1.5em;
-            color: var(--gold);
-            text-shadow: 2px 2px 4px #000;
-        }
-
-        .char-class {
-            font-weight: 600;
-            color: var(--blue);
-            text-transform: uppercase;
-            font-size: 0.8em;
-            letter-spacing: 1px;
-        }
-
-        .pts-pill {
-            display: inline-block;
-            background: var(--purple);
+        .ia-combat-header .ia-status-pill {
+            font-size: 0.65em;
+            font-weight: 700;
             padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.75em;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .vitals-section {
-            padding: 0 20px 10px;
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .status-bar {
-            width: 100%;
-            height: 22px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-            display: none;
-        }
-
-        .status-bar.active {
-            display: block;
-        }
-
-        .status-bar-inner {
-            height: 100%;
-            transition: width 0.5s;
-            border-radius: 5px;
-        }
-
-        .status-bar-text {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.7em;
-            font-weight: bold;
-            color: white;
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        #hp-bar .status-bar-inner {
-            background: linear-gradient(to right, var(--red), #b91c1c);
-        }
-
-        #mp-bar .status-bar-inner {
-            background: linear-gradient(to right, var(--blue), #1d4ed8);
-        }
-
-        #sp-bar .status-bar-inner {
-            background: linear-gradient(to right, var(--gold), #b45309);
-        }
-
-        .total-stats-details {
-            margin-top: 15px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-        .total-stats-details summary {
-            font-family: 'Cinzel', serif;
-            color: var(--blue);
-            cursor: pointer;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .attr-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .attr-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 10px;
-            border-left: 3px solid var(--blue);
-            position: relative;
-        }
-
-        .attr-name {
-            font-size: 0.75em;
-            color: #94a3b8;
-            font-weight: 600;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
         }
 
-        .attr-value {
-            font-size: 1.3em;
-            font-weight: 800;
-        }
+        .ia-status-pill.active { background: rgba(16,185,129,0.25); color: var(--green); border: 1px solid var(--green); }
+        .ia-status-pill.idle { background: rgba(100,116,139,0.25); color: #64748b; border: 1px solid #475569; }
+        .ia-status-pill.ended { background: rgba(245,158,11,0.25); color: var(--gold); border: 1px solid var(--gold); }
+        .ia-status-pill.loading { background: rgba(168,85,247,0.25); color: var(--purple); border: 1px solid var(--purple); }
 
-        .val-bonus {
-            font-size: 0.6em;
-            color: var(--green);
-            vertical-align: super;
-        }
-
-        .btn-add {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--border);
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            font-weight: bold;
-            border: none;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(10px);
+        /* Miniatura dos combatentes */
+        .ia-combatants-bar {
             display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid var(--border);
-            z-index: 50;
-            padding-bottom: env(safe-area-inset-bottom, 10px);
+            align-items: stretch;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .nav-item {
-            color: #64748b;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.7em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
+        .ia-combatant {
             flex: 1;
-        }
-
-        .nav-item i {
-            font-size: 1.6em;
-        }
-
-        .nav-item.active {
-            color: var(--gold);
-            transform: translateY(-3px);
-        }
-
-        .nav-item.hidden {
-            display: none !important;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            align-items: flex-end;
-            z-index: 60;
-        }
-
-        .menu-overlay.active {
-            display: flex;
-        }
-
-        .menu-sheet {
-            width: 100%;
-            max-width: 540px;
-            margin: 0 auto;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 16px 16px 0 0;
-            padding: 16px;
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.35);
-        }
-
-        .menu-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .menu-title {
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            font-size: 1.1em;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid transparent;
-            cursor: pointer;
-            margin-bottom: 8px;
-        }
-
-        .menu-item:hover {
-            border-color: var(--blue);
-        }
-
-        .menu-item i {
-            width: 24px;
-            text-align: center;
-            color: var(--blue);
-        }
-
-        .menu-item .hint {
-            color: #94a3b8;
-            font-size: 0.75em;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 20px;
-            max-width: 980px;
-            margin: 0 auto;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fade 0.3s;
-        }
-
-        @keyframes fade {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .section-title {
-            font-family: 'Cinzel', serif;
-            color: var(--blue);
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 5px;
-            font-size: 1.1em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .equip-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            justify-items: center;
-            margin-bottom: 25px;
-        }
-
-        .equip-slot {
-            width: 65px;
-            height: 65px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px dashed var(--border);
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .equip-slot.filled {
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
-            background: #000;
-        }
-
-        .equip-slot img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .equip-slot-label {
-            position: absolute;
-            bottom: -20px;
-            font-size: 0.6em;
-            color: #94a3b8;
-            font-weight: 600;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-
-        .slot-cabeca {
-            grid-column: 2;
-        }
-
-        .slot-peitoral {
-            grid-column: 2;
-        }
-
-        .slot-pernas {
-            grid-column: 2;
-        }
-
-        .slot-arma1 {
-            grid-column: 1;
-            grid-row: 2;
-            justify-self: end;
-            margin-right: -10px;
-        }
-
-        .slot-arma2 {
-            grid-column: 3;
-            grid-row: 2;
-            justify-self: start;
-            margin-left: -10px;
-        }
-
-        .slot-acessorio {
-            grid-column: 1;
-            grid-row: 1;
-            justify-self: end;
-            margin-right: -10px;
-        }
-
-        .skills-grid,
-        .recipe-book-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .skill-card {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        .skill-img {
-            width: 45px;
-            height: 45px;
-            border-radius: 8px;
-            border: 1px solid var(--gold);
-            object-fit: cover;
-            background: #000;
-        }
-
-        .inv-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .item-slot {
-            background: var(--panel);
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid var(--border);
-            aspect-ratio: 1;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .item-slot.equipped {
-            border-color: var(--green);
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-            opacity: 0.6;
-        }
-
-        .item-badge {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            font-size: 0.65em;
-            font-weight: bold;
-            padding: 1px 5px;
-            border-radius: 6px;
-            z-index: 5;
-        }
-
-        .item-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .crafting-bench {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            background: var(--panel);
-            padding: 20px 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 15px;
-        }
-
-        .craft-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 50px);
-            grid-template-rows: repeat(3, 50px);
-            gap: 5px;
-        }
-
-        .craft-slot {
-            width: 50px;
-            height: 50px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px dashed #475569;
-            border-radius: 8px;
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .craft-slot img {
-            width: 90%;
-            height: 90%;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .craft-result-slot {
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid var(--gold);
-            border-radius: 10px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .craft-result-slot img {
-            width: 90%;
-            height: 90%;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-
-        .inv-craft-selector {
-            width: 100%;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 10px;
-            background: var(--panel);
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            margin-bottom: 15px;
-            min-height: 70px;
-        }
-
-        .inv-craft-item {
-            display: inline-block;
-            width: 45px;
-            height: 45px;
-            margin-right: 8px;
-            position: relative;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .inv-craft-item.selected {
-            border-color: var(--blue);
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-        }
-
-        .inv-craft-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .btn-action {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: white;
-            cursor: pointer;
-        }
-
-        .btn-forge {
-            background: var(--gold);
-            color: #000;
-        }
-
-        .recipe-ready-card {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--panel);
-            border: 1px solid var(--green);
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .recipe-ready-card img {
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
-            background: #000;
-        }
-
-        textarea#diario {
-            width: 100%;
-            height: 350px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            color: #cbd5e1;
-            padding: 15px;
-            border-radius: 12px;
-            resize: none;
-            font-size: 0.9em;
-            outline: none;
-        }
-
-        .summon-bar {
-            margin-top: 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-        }
-
-        .summon-card {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 8px;
-            text-align: center;
-        }
-
-        .summon-card img {
-            width: 100%;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            background: #000;
-        }
-
-        .summon-card h4 {
-            font-size: 0.8em;
-            color: var(--gold);
-            margin-bottom: 6px;
-        }
-
-        .summon-card button {
-            width: 100%;
-            border: none;
-            border-radius: 8px;
-            padding: 8px;
-            background: var(--purple);
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* POV COMBAT MAP */
-        .pov-viewport {
-            width: calc(100% + 40px);
-            margin-left: -20px;
-            height: 420px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            position: relative;
-            scroll-behavior: smooth;
-            background: #000;
-            perspective: 1000px;
-        }
-
-        .pov-bg-far {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 150%;
-            height: 100%;
-            background-size: cover;
-            background-position: center bottom;
-            background-repeat: no-repeat;
-            z-index: 1;
-            image-rendering: pixelated;
-        }
-
-        .pov-bg {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 150%;
-            height: 100%;
-            background-size: cover;
-            background-position: center bottom;
-            background-repeat: no-repeat;
-            z-index: 1;
-            image-rendering: pixelated;
-        }
-
-        .pov-bg-near {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 150%;
-            height: 100%;
-            background-size: cover;
-            background-position: center bottom;
-            background-repeat: no-repeat;
-            z-index: 2;
-            image-rendering: pixelated;
-        }
-
-        .pov-scene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 150%;
-            height: 100%;
-            z-index: 3;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 40px;
-            gap: 80px;
-            pointer-events: none;
-        }
-
-        .pov-team {
-            display: flex;
-            gap: 20px;
-            align-items: flex-end;
-            pointer-events: auto;
-        }
-
-        .pov-team.allies {
-            flex-direction: row-reverse;
-        }
-
-        .pov-team.enemies {
-            flex-direction: row;
-        }
-
-        .pov-char-card {
-            text-align: center;
-            position: relative;
-            animation: float 3s ease-in-out infinite;
-            cursor: pointer;
-            transition: 0.2s;
+            padding: 10px 14px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            width: 110px;
+            gap: 4px;
         }
 
-        .pov-char-card:hover {
-            transform: scale(1.05);
-        }
+        .ia-combatant.player-side { border-right: 1px solid rgba(59,130,246,0.3); background: rgba(59,130,246,0.05); }
+        .ia-combatant.enemy-side { background: rgba(239,68,68,0.05); }
 
-        .pov-char-card img {
-            width: 90px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 3px solid;
-            background: #000;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
-        }
+        .ia-comb-name { font-size: 0.75em; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ia-comb-name.blue { color: var(--blue); }
+        .ia-comb-name.red { color: var(--red); }
 
-        .pov-team.allies img {
-            border-color: var(--blue);
-        }
+        .ia-comb-hp-track { height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .ia-comb-hp-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+        .ia-comb-hp-fill.blue { background: linear-gradient(to right, #3b82f6, #60a5fa); }
+        .ia-comb-hp-fill.red { background: linear-gradient(to right, #ef4444, #f87171); }
 
-        .pov-team.enemies img {
-            border-color: var(--red);
-        }
+        .ia-comb-stats { font-size: 0.65em; color: #94a3b8; display: flex; gap: 8px; flex-wrap: wrap; }
 
-        .pov-char-details {
-            background: rgba(0, 0, 0, 0.85);
-            padding: 8px;
-            border-radius: 8px;
-            width: 110px;
-            margin-top: -15px;
-            z-index: 5;
-            position: relative;
-            border: 1px solid var(--border);
-        }
-
-        .pov-char-name {
-            color: white;
-            font-size: 0.7em;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 5px;
-        }
-
-        .pov-char-hp-bar {
-            width: 100%;
-            height: 6px;
-            background: #333;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .pov-char-hp-fill {
-            height: 100%;
-            background: var(--red);
-            transition: width 0.3s;
-        }
-
-        .card-stats {
-            display: flex;
-            justify-content: space-around;
-            font-size: 0.6em;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 4px;
-            border-top: 1px solid #333;
-            border-radius: 4px;
-            color: #cbd5e1;
-        }
-
-        .card-stats span {
+        .ia-vs-divider {
             display: flex;
             align-items: center;
-            gap: 2px;
-        }
-
-        .pov-char-card.defeated {
-            animation: none;
-            z-index: 1;
-        }
-
-        .pov-char-card.defeated img {
-            filter: grayscale(100%) brightness(0.6);
-            transform: translateY(40px) rotate(90deg) scale(0.8);
-            border-color: #555 !important;
-        }
-
-        .pov-char-card.defeated .pov-char-details {
-            display: none;
-        }
-
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 100;
-            display: none;
             justify-content: center;
-            align-items: center;
-            padding: 10px;
-        }
-
-        .modal.active {
-            display: flex;
-            animation: fade 0.2s;
-        }
-
-        .modal-card {
-            background: var(--panel);
-            width: 100%;
-            max-width: 380px;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid var(--blue);
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: #94a3b8;
-            font-size: 1.5em;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .mod-img {
-            width: 90px;
-            height: 90px;
-            border-radius: 12px;
-            border: 2px solid var(--gold);
-            margin-bottom: 10px;
-            object-fit: cover;
-        }
-
-        .mod-title {
+            padding: 0 10px;
             font-family: 'Cinzel', serif;
             color: var(--gold);
-            font-size: 1.2em;
-            margin-bottom: 5px;
+            font-size: 0.85em;
+            background: rgba(245,158,11,0.08);
+            border-left: 1px solid rgba(245,158,11,0.2);
+            border-right: 1px solid rgba(245,158,11,0.2);
         }
 
-        .mod-cat {
-            font-size: 0.7em;
-            color: var(--blue);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .mod-desc {
-            color: #cbd5e1;
-            font-size: 0.8em;
-            margin-bottom: 15px;
-        }
-
-        .mod-stats {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 6px;
-            margin-bottom: 15px;
-        }
-
-        .mod-tag {
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid var(--green);
-            color: var(--green);
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.7em;
-            font-weight: bold;
-        }
-
-        .btn-equip {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            border: none;
-            background: var(--green);
-            color: white;
-        }
-
-        .picker-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-            gap: 10px;
-            max-height: 50vh;
+        /* Chat de mensagens */
+        .ia-chat-area {
+            height: 320px;
             overflow-y: auto;
-            padding-right: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scroll-behavior: smooth;
         }
 
-        .picker-item {
-            text-align: center;
-            cursor: pointer;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 5px;
+        .ia-msg {
+            max-width: 90%;
+            padding: 10px 13px;
+            border-radius: 12px;
+            font-size: 0.82em;
+            line-height: 1.55;
+            animation: msgIn 0.25s ease;
             position: relative;
         }
 
-        .picker-item img {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border: 2px solid transparent;
-            border-radius: 8px;
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .picker-item:hover img {
-            border-color: var(--blue);
-        }
-
-        #export-card-container {
-            position: fixed;
-            left: -9999px;
-            top: -9999px;
-            width: 350px;
-            background: var(--panel);
-            border: 2px solid var(--gold);
+        /* Narrador — centro */
+        .ia-msg.narrador {
+            align-self: center;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(59,130,246,0.08));
+            border: 1px solid rgba(168,85,247,0.3);
+            color: #e2d9f3;
+            max-width: 100%;
             border-radius: 10px;
-            padding: 15px;
-            color: white;
+            font-style: italic;
         }
+
+        /* Inimigo — esquerda */
+        .ia-msg.inimigo {
+            align-self: flex-start;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-bottom-left-radius: 3px;
+            color: #fca5a5;
+        }
+
+        /* Jogador — direita */
+        .ia-msg.jogador {
+            align-self: flex-end;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.35);
+            border-bottom-right-radius: 3px;
+            color: #93c5fd;
+        }
+
+        /* Sistema — centro pequeno */
+        .ia-msg.sistema {
+            align-self: center;
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            color: var(--gold);
+            font-size: 0.75em;
+            font-weight: 600;
+            text-align: center;
+            max-width: 100%;
+            border-radius: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .ia-msg-label {
+            font-size: 0.72em;
+            font-weight: 700;
+            margin-bottom: 3px;
+            display: block;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Área de input */
+        .ia-input-area {
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding: 12px 14px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .ia-input-hint {
+            font-size: 0.7em;
+            color: #475569;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .ia-input-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .ia-textarea {
+            flex: 1;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(168,85,247,0.3);
+            border-radius: 10px;
+            padding: 10px 13px;
+            color: var(--text);
+            font-size: 0.85em;
+            resize: none;
+            height: 44px;
+            max-height: 110px;
+            outline: none;
+            transition: border-color 0.2s, height 0.2s;
+            line-height: 1.4;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .ia-textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(168,85,247,0.15); height: 80px; }
+        .ia-textarea::placeholder { color: #475569; }
+        .ia-textarea:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .ia-send-btn {
+            background: linear-gradient(135deg, var(--purple), #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s, filter 0.2s;
+            flex-shrink: 0;
+            font-size: 1em;
+        }
+
+        .ia-send-btn:active { transform: scale(0.92); }
+        .ia-send-btn:disabled { background: var(--border); cursor: not-allowed; opacity: 0.5; }
+
+        /* Botões rápidos de ação */
+        .ia-quick-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ia-quick-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 7px 6px;
+            border-radius: 8px;
+            border: 1px solid;
+            background: rgba(0,0,0,0.3);
+            color: var(--text);
+            font-size: 0.72em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .ia-quick-btn:active { transform: scale(0.95); }
+        .ia-quick-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .ia-quick-btn.ataque { border-color: rgba(239,68,68,0.5); color: #fca5a5; }
+        .ia-quick-btn.ataque:active { background: rgba(239,68,68,0.2); }
+        .ia-quick-btn.defesa { border-color: rgba(59,130,246,0.5); color: #93c5fd; }
+        .ia-quick-btn.defesa:active { background: rgba(59,130,246,0.2); }
+        .ia-quick-btn.especial { border-color: rgba(168,85,247,0.5); color: #d8b4fe; }
+        .ia-quick-btn.especial:active { background: rgba(168,85,247,0.2); }
+        .ia-quick-btn.fuga { border-color: rgba(245,158,11,0.5); color: #fcd34d; }
+        .ia-quick-btn.fuga:active { background: rgba(245,158,11,0.2); }
+
+        /* Estado fim de combate */
+        .ia-end-banner {
+            padding: 16px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .ia-end-banner.vitoria { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(245,158,11,0.08)); }
+        .ia-end-banner.derrota { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(168,85,247,0.08)); }
+
+        .ia-end-title { font-family: 'Cinzel', serif; font-size: 1.1em; margin-bottom: 6px; }
+        .ia-end-title.vitoria { color: var(--green); }
+        .ia-end-title.derrota { color: var(--red); }
+        .ia-end-sub { font-size: 0.78em; color: #94a3b8; margin-bottom: 14px; }
+
+        .ia-end-actions { display: flex; gap: 8px; }
+        .ia-end-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85em; transition: transform 0.1s; }
+        .ia-end-btn:active { transform: scale(0.96); }
+        .ia-end-btn.restart { background: var(--blue); color: white; }
+        .ia-end-btn.exit { background: rgba(255,255,255,0.1); color: #94a3b8; border: 1px solid var(--border); }
+
+        /* Loader de digitação */
+        .ia-typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 14px;
+            background: rgba(168,85,247,0.08);
+            border: 1px solid rgba(168,85,247,0.2);
+            border-radius: 10px;
+            align-self: flex-start;
+            max-width: 120px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--purple);
+            border-radius: 50%;
+            animation: typingBounce 1.2s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* Loot panel */
+        .ia-loot-panel {
+            background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.3);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .ia-loot-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 0.85em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .ia-loot-items { display: flex; gap: 8px; flex-wrap: wrap; }
+        .ia-loot-item { background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; padding: 6px; text-align: center; }
+        .ia-loot-item img { width: 36px; height: 36px; object-fit: cover; border-radius: 5px; display: block; margin: 0 auto 3px; }
+        .ia-loot-item span { font-size: 0.65em; color: #94a3b8; display: block; }
+        .ia-collect-btn { width: 100%; margin-top: 10px; padding: 10px; border-radius: 8px; border: none; background: linear-gradient(135deg, var(--gold), #d97706); color: #000; font-weight: 700; cursor: pointer; font-size: 0.85em; transition: transform 0.1s; }
+        .ia-collect-btn:active { transform: scale(0.97); }
     </style>
 </head>
-
 <body>
 
-    <div id="loading-screen">
-        <img id="loading-icon" src="" alt="Carregando...">
-    </div>
+<div id="loading-screen">
+    <img id="loading-icon" src="" alt="Carregando...">
+</div>
 
-    <div class="header-bg">
-        <div class="header-overlay"></div>
+<div class="header-bg"><div class="header-overlay"></div></div>
+<div class="char-info">
+    <img id="p-img" class="char-avatar" src="https://via.placeholder.com/150">
+    <div class="char-texts">
+        <div class="char-name" id="p-nome">Carregando...</div>
+        <div class="char-class" id="p-classe">Classe</div>
     </div>
-    <div class="char-info">
-        <img id="p-img" class="char-avatar" src="https://via.placeholder.com/150">
-        <div class="char-texts">
-            <div class="char-name" id="p-nome">Carregando...</div>
-            <div class="char-class" id="p-classe">Classe</div>
+</div>
+<div class="vitals-section">
+    <div id="hp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">HP</div></div>
+    <div id="mp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">MP</div></div>
+    <div id="sp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">SP</div></div>
+</div>
+
+<!-- TABS -->
+<div id="tab-status" class="tab-content active">
+    <div class="pts-pill" style="margin-bottom:20px; text-align:center; display:block;"><i class="fas fa-star"></i> <span id="p-pontos">0</span> Pts de Atributo</div>
+    <h3 class="section-title"><i class="fas fa-heartbeat"></i> Atributos Base</h3>
+    <div id="p-atributos-base" class="attr-grid"></div>
+    <h3 class="section-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3>
+    <div id="p-skills" class="skills-grid"></div>
+</div>
+<div id="tab-equip" class="tab-content">
+    <h3 class="section-title"><i class="fas fa-tshirt"></i> Equipamentos Ativos</h3>
+    <p style="font-size:.8em; text-align:center; color:#94a3b8; margin-bottom:20px;">Clique em um espaço vazio para equipar um item da bolsa.</p>
+    <div class="equip-grid" id="p-equipamentos"></div>
+</div>
+<div id="tab-bolsa" class="tab-content">
+    <div class="inv-grid" id="p-inventario"></div>
+</div>
+<div id="tab-forja" class="tab-content">
+    <h3 class="section-title"><i class="fas fa-lightbulb"></i> Receitas Prontas</h3>
+    <div id="receitas-prontas"></div>
+    <h3 class="section-title" style="margin-top:20px;"><i class="fas fa-hammer"></i> Mesa de Trabalho</h3>
+    <div class="inv-craft-selector" id="craft-inventory"></div>
+    <div class="crafting-bench">
+        <div class="craft-grid" id="craft-table"></div><i class="fas fa-arrow-right"></i>
+        <div class="craft-result-slot" id="craft-result"></div>
+    </div>
+    <button class="btn-action btn-forge" onclick="tentarForjar()">Forjar</button>
+    <button class="btn-action" style="background:var(--border);" onclick="limparMesa()">Limpar Mesa</button>
+</div>
+<div id="tab-grimorio" class="tab-content">
+    <div id="recipe-book-container"></div>
+</div>
+<div id="tab-combat" class="tab-content">
+    <div id="combat-view"></div>
+</div>
+<div id="tab-diario" class="tab-content">
+    <textarea id="diario" placeholder="Anotações..." onchange="salvarDiario()"></textarea>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+    <div class="nav-item active" data-tab="tab-status" onclick="mudarAba('tab-status', this)"><i class="fas fa-user-shield"></i>Status</div>
+    <div class="nav-item" data-tab="tab-equip" onclick="mudarAba('tab-equip', this)"><i class="fas fa-tshirt"></i>Equip</div>
+    <div class="nav-item" data-tab="tab-bolsa" onclick="mudarAba('tab-bolsa', this)"><i class="fas fa-shopping-bag"></i>Bolsa</div>
+    <div class="nav-item" data-tab="tab-forja" onclick="mudarAba('tab-forja', this)"><i class="fas fa-hammer"></i>Forja</div>
+    <div class="nav-item" onclick="openMenu()"><i class="fas fa-ellipsis-h"></i>Mais</div>
+</div>
+
+<div class="menu-overlay" id="menu-overlay" onclick="closeMenu()">
+    <div class="menu-sheet" onclick="event.stopPropagation()">
+        <div class="menu-header">
+            <div class="menu-title">Menu</div>
+            <i class="fas fa-times" style="cursor:pointer; color:#94a3b8;" onclick="closeMenu()"></i>
+        </div>
+        <div class="menu-item" onclick="openMenuTab('tab-grimorio')"><i class="fas fa-book-open"></i>
+            <div><div>Grimório</div><div class="hint">Receitas e registros</div></div>
+        </div>
+        <div class="menu-item hidden" id="menu-combat" onclick="openMenuTab('tab-combat')"><i class="fas fa-fire" style="color:var(--red);"></i>
+            <div><div>Combate</div><div class="hint">Cena e táticas</div></div>
+        </div>
+        <div class="menu-item" onclick="openMenuTab('tab-diario')"><i class="fas fa-feather"></i>
+            <div><div>Diário</div><div class="hint">Notas pessoais</div></div>
         </div>
     </div>
-    <div class="vitals-section">
-        <div id="hp-bar" class="status-bar">
-            <div class="status-bar-inner"></div>
-            <div class="status-bar-text">HP</div>
-        </div>
-        <div id="mp-bar" class="status-bar">
-            <div class="status-bar-inner"></div>
-            <div class="status-bar-text">MP</div>
-        </div>
-        <div id="sp-bar" class="status-bar">
-            <div class="status-bar-inner"></div>
-            <div class="status-bar-text">SP</div>
-        </div>
+</div>
 
+<!-- MODAIS -->
+<div class="modal" id="item-modal">
+    <div class="modal-card">
+        <i class="fas fa-times close-btn" onclick="fecharModal('item-modal')"></i>
+        <img id="mod-img" class="mod-img" src="">
+        <div class="mod-title" id="mod-nome"></div>
+        <div class="mod-cat" id="mod-cat"></div>
+        <div class="mod-desc" id="mod-desc"></div>
+        <div class="mod-stats" id="mod-stats-box"></div>
+        <button id="mod-btn" class="btn-equip" onclick="handleItemAction()">Ação</button>
     </div>
+</div>
+<div class="modal" id="combat-char-modal">
+    <div class="modal-card" style="padding-top:30px;">
+        <i class="fas fa-times close-btn" onclick="fecharModal('combat-char-modal')"></i>
+        <img id="cc-img" class="mod-img" src="">
+        <div class="mod-title" id="cc-nome"></div>
+        <div class="mod-cat" id="cc-classe"></div>
+        <p id="cc-desc" style="font-size:.8em; margin-bottom:10px; font-style:italic; color:#94a3b8;"></p>
+        <div id="cc-vitals" class="vitals-section" style="padding:0; margin-top:0;"></div>
+        <h4 style="font-family:'Cinzel',serif; color:var(--blue); margin-top:15px; border-bottom:1px solid var(--border); padding-bottom:5px;">Equipamentos</h4>
+        <div id="cc-equips" class="equip-grid" style="margin-top:15px; margin-bottom:15px;"></div>
+        <h4 style="font-family:'Cinzel',serif; color:var(--blue); border-bottom:1px solid var(--border); padding-bottom:5px;">Atributos Totais</h4>
+        <div id="cc-stats" class="attr-grid" style="margin-top:15px; margin-bottom:20px;"></div>
+    </div>
+</div>
+<div class="modal" id="picker-modal">
+    <div class="modal-card" style="max-width:320px;">
+        <i class="fas fa-times close-btn" onclick="fecharModal('picker-modal')"></i>
+        <h3 id="picker-title" class="section-title" style="justify-content:center;"></h3>
+        <div id="picker-grid" class="picker-grid"></div>
+    </div>
+</div>
+<div class="modal" id="recipe-modal">
+    <div class="modal-card">
+        <i class="fas fa-times close-btn" onclick="fecharModal('recipe-modal')"></i>
+        <h3 id="recipe-modal-title" class="section-title" style="justify-content:center;"></h3>
+        <div class="crafting-bench" id="recipe-modal-bench" style="background:transparent; border:none; padding:0;"></div>
+    </div>
+</div>
 
-    <!-- TABS -->
-    <div id="tab-status" class="tab-content active">
-        <div class="pts-pill" style="margin-bottom:20px; text-align:center; display:block;"><i class="fas fa-star"></i>
-            <span id="p-pontos">0</span> Pts de Atributo</div>
-        <h3 class="section-title"><i class="fas fa-heartbeat"></i> Atributos Base</h3>
-        <div id="p-atributos-base" class="attr-grid"></div>
-        <h3 class="section-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3>
-        <div id="p-skills" class="skills-grid"></div>
-    </div>
-    <div id="tab-equip" class="tab-content">
-        <h3 class="section-title"><i class="fas fa-tshirt"></i> Equipamentos Ativos</h3>
-        <p style="font-size:0.8em; text-align:center; color:#94a3b8; margin-bottom:20px;">Clique em um espaço vazio para
-            equipar um item da bolsa.</p>
-        <div class="equip-grid" id="p-equipamentos"></div>
-    </div>
-    <div id="tab-bolsa" class="tab-content">
-        <div class="inv-grid" id="p-inventario"></div>
-    </div>
-    <div id="tab-forja" class="tab-content">
-        <h3 class="section-title"><i class="fas fa-lightbulb"></i> Receitas Prontas</h3>
-        <div id="receitas-prontas"></div>
-        <h3 class="section-title" style="margin-top:20px;"><i class="fas fa-hammer"></i> Mesa de Trabalho</h3>
-        <div class="inv-craft-selector" id="craft-inventory"></div>
-        <div class="crafting-bench">
-            <div class="craft-grid" id="craft-table"></div><i class="fas fa-arrow-right"></i>
-            <div class="craft-result-slot" id="craft-result"></div>
-        </div><button class="btn-action btn-forge" onclick="tentarForjar()">Forjar</button><button class="btn-action"
-            style="background:var(--border);" onclick="limparMesa()">Limpar Mesa</button>
-    </div>
-    <div id="tab-grimorio" class="tab-content">
-        <div id="recipe-book-container"></div>
-    </div>
-    <div id="tab-combat" class="tab-content">
-        <div id="combat-view"></div>
-    </div>
-    <div id="tab-diario" class="tab-content"><textarea id="diario" placeholder="Anotações..."
-            onchange="salvarDiario()"></textarea></div>
+<div id="export-card-container"></div>
 
-    <!-- BOTTOM NAV -->
-    <div class="bottom-nav">
-        <div class="nav-item active" data-tab="tab-status" onclick="mudarAba('tab-status', this)"><i
-                class="fas fa-user-shield"></i>Status</div>
-        <div class="nav-item" data-tab="tab-equip" onclick="mudarAba('tab-equip', this)"><i
-                class="fas fa-tshirt"></i>Equip</div>
-        <div class="nav-item" data-tab="tab-bolsa" onclick="mudarAba('tab-bolsa', this)"><i
-                class="fas fa-shopping-bag"></i>Bolsa</div>
-        <div class="nav-item" data-tab="tab-forja" onclick="mudarAba('tab-forja', this)"><i
-                class="fas fa-hammer"></i>Forja</div>
-        <div class="nav-item" onclick="openMenu()"><i class="fas fa-ellipsis-h"></i>Mais</div>
-    </div>
+<script>
+// ─── FIREBASE CONFIG ────────────────────────────────────────────────
+const firebaseConfig = { databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/" };
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const session = localStorage.getItem('rpg_session');
+if (!session || session === 'admin') window.location.href = 'index.html';
 
-    <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()">
-        <div class="menu-sheet" onclick="event.stopPropagation()">
-            <div class="menu-header">
-                <div class="menu-title">Menu</div>
-                <i class="fas fa-times" style="cursor:pointer; color:#94a3b8;" onclick="closeMenu()"></i>
-            </div>
-            <div class="menu-item" onclick="openMenuTab('tab-grimorio')"><i class="fas fa-book-open"></i>
-                <div>
-                    <div>Grimorio</div>
-                    <div class="hint">Receitas e registros</div>
-                </div>
-            </div>
-            <div class="menu-item hidden" id="menu-combat" onclick="openMenuTab('tab-combat')"><i class="fas fa-fire"
-                    style="color:var(--red);"></i>
-                <div>
-                    <div>Combate</div>
-                    <div class="hint">Cena e taticas</div>
-                </div>
-            </div>
-            <div class="menu-item" onclick="openMenuTab('tab-diario')"><i class="fas fa-feather"></i>
-                <div>
-                    <div>Diario</div>
-                    <div class="hint">Notas pessoais</div>
-                </div>
-            </div>
-        </div>
-    </div>
+let pData = null, itemsDB = {}, recipesDB = {}, skillsDB = {}, charsDB = {};
+const attrNames = { for: 'Força', res: 'Resistência', vel: 'Velocidade', agi: 'Agilidade', per: 'Percepção', resm: 'Res. Mágica', esp: 'Espírito', alm: 'Alma' };
+let craftMesa = [null,null,null,null,null,null,null,null,null];
+let itemCraftSelecionado = null, inventarioCraftDisponivel = {};
+let itemAtualKey = null, itemAtualId = null, itemAtualDBData = null, itemAtualAction = 'equip';
+let activeCombatId = null, currentCombatData = null;
+let diaryDirty = false;
 
-    <!-- MODAIS -->
-    <div class="modal" id="item-modal">
-        <div class="modal-card"> <i class="fas fa-times close-btn" onclick="fecharModal('item-modal')"></i> <img
-                id="mod-img" class="mod-img" src="">
-            <div class="mod-title" id="mod-nome"></div>
-            <div class="mod-cat" id="mod-cat"></div>
-            <div class="mod-desc" id="mod-desc"></div>
-            <div class="mod-stats" id="mod-stats-box"></div> <button id="mod-btn" class="btn-equip"
-                onclick="handleItemAction()">Ação</button>
-        </div>
-    </div>
-    <div class="modal" id="combat-char-modal">
-        <div class="modal-card" style="padding-top:30px;"> <i class="fas fa-times close-btn"
-                onclick="fecharModal('combat-char-modal')"></i> <img id="cc-img" class="mod-img" src="">
-            <div class="mod-title" id="cc-nome"></div>
-            <div class="mod-cat" id="cc-classe"></div>
-            <p id="cc-desc" style="font-size:0.8em; margin-bottom:10px; font-style:italic; color:#94a3b8;"></p>
-            <div id="cc-vitals" class="vitals-section" style="padding:0; margin-top:0;"></div>
-            <h4
-                style="font-family:'Cinzel',serif; color:var(--blue); margin-top:15px; border-bottom:1px solid var(--border); padding-bottom:5px;">
-                Equipamentos</h4>
-            <div id="cc-equips" class="equip-grid" style="margin-top:15px; margin-bottom:15px;"></div>
-            <h4
-                style="font-family:'Cinzel',serif; color:var(--blue); border-bottom:1px solid var(--border); padding-bottom:5px;">
-                Atributos Totais</h4>
-            <div id="cc-stats" class="attr-grid" style="margin-top:15px; margin-bottom:20px;"></div>
-        </div>
-    </div>
-    <div class="modal" id="picker-modal">
-        <div class="modal-card" style="max-width:320px;"> <i class="fas fa-times close-btn"
-                onclick="fecharModal('picker-modal')"></i>
-            <h3 id="picker-title" class="section-title" style="justify-content:center;"></h3>
-            <div id="picker-grid" class="picker-grid"></div>
-        </div>
-    </div>
-    <div class="modal" id="recipe-modal">
-        <div class="modal-card"><i class="fas fa-times close-btn" onclick="fecharModal('recipe-modal')"></i>
-            <h3 id="recipe-modal-title" class="section-title" style="justify-content:center;"></h3>
-            <div class="crafting-bench" id="recipe-modal-bench" style="background:transparent; border:none; padding:0;">
-            </div>
-        </div>
-    </div>
+// ─── IA COMBAT STATE ─────────────────────────────────────────────────
+const IA_API_URL = "https://apifreellm.com/api/v1/chat";
+const IA_API_KEY = "apf_v8r4f6o52yqb287m0r7z0e5j";
 
-    <!-- CONTAINER EXPORTAÇÃO OCULTO -->
-    <div id="export-card-container"></div>
+let iaCombat = {
+    active: false,
+    ended: false,
+    result: null,          // 'vitoria' | 'derrota'
+    playerHP: 0,
+    playerHPMax: 0,
+    enemyHP: 0,
+    enemyHPMax: 0,
+    enemyId: null,
+    enemyData: null,
+    lootItems: null,       // { itemId: qty } para loot de criaturas
+    messages: [],          // histórico completo de mensagens
+    aiMessages: [],        // histórico para a IA (role/content)
+    isLoading: false
+};
 
-    <script>
-        const firebaseConfig = { databaseURL: "https://rpg-roleplay-on-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const session = localStorage.getItem('rpg_session');
-        if (!session || session === 'admin') window.location.href = 'index.html';
+function resetIACombat() {
+    iaCombat = { active: false, ended: false, result: null, playerHP: 0, playerHPMax: 0, enemyHP: 0, enemyHPMax: 0, enemyId: null, enemyData: null, lootItems: null, messages: [], aiMessages: [], isLoading: false };
+}
 
-        let pData = null; let itemsDB = {}; let recipesDB = {}; let skillsDB = {}; let charsDB = {};
-        const attrNames = { for: 'Força', res: 'Resistência', vel: 'Velocidade', agi: 'Agilidade', per: 'Percepção', resm: 'Res. Mágica', esp: 'Espírito', alm: 'Alma' };
+// ─── CARREGAMENTO ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    const icon = document.getElementById('loading-icon');
+    const fav = document.querySelector("link[rel~='icon']");
+    if (fav && icon) icon.src = fav.href;
+});
 
-        let craftMesa = [null, null, null, null, null, null, null, null, null];
-        let itemCraftSelecionado = null; let inventarioCraftDisponivel = {};
-        let itemAtualKey = null; let itemAtualId = null; let itemAtualDBData = null; let itemAtualAction = 'equip';
-        let activeCombatId = null;
-        let diaryDirty = false;
+function hideLoadingScreen() {
+    const ls = document.getElementById('loading-screen');
+    if (ls) { ls.style.opacity = '0'; setTimeout(() => ls.style.display = 'none', 500); }
+    requestAnimationFrame(() => document.body.classList.add('app-ready'));
+}
 
-        // --- LÓGICA DA TELA DE CARREGAMENTO ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const faviconLink = document.querySelector("link[rel~='icon']");
-            const loadingIcon = document.getElementById('loading-icon');
-            if (faviconLink && loadingIcon) {
-                loadingIcon.src = faviconLink.href;
-            }
-        });
+db.ref('items').on('value', s => { itemsDB = s.val() || {}; checkRender(); });
+db.ref('skills').on('value', s => { skillsDB = s.val() || {}; checkRender(); });
+db.ref('recipes').on('value', s => { recipesDB = s.val() || {}; });
+db.ref('characters').on('value', s => { charsDB = s.val() || {}; });
+db.ref('characters/' + session).on('value', snap => {
+    if (!snap.exists()) return (window.location.href = 'index.html');
+    pData = snap.val();
+    document.getElementById('p-nome').innerText = pData.nome;
+    document.getElementById('p-classe').innerText = pData.classe || "Aventureiro";
+    document.getElementById('p-pontos').innerText = pData.pontos || 0;
+    if (pData.imagem) document.getElementById('p-img').src = pData.imagem;
+    const diaryEl = document.getElementById('diario');
+    if (diaryEl && !diaryDirty) diaryEl.value = pData.anotacoes || '';
+    checkRender();
+});
 
-        function hideLoadingScreen() {
-            const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) {
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500); // Deve corresponder à duração da transição do CSS
-            }
-            // Inicia o fade in do corpo da página
-            requestAnimationFrame(() => document.body.classList.add('app-ready'));
+function checkRender() {
+    if (pData) {
+        renderStatusEInv();
+        inicializarCrafting();
+        renderGrimorio();
+        if (!document.body.classList.contains('app-ready')) hideLoadingScreen();
+    }
+}
+
+// ─── COMBATE POV ─────────────────────────────────────────────────────
+db.ref('combat/sessions').on('value', snap => {
+    const sessions = snap.val() || {};
+    let myCombat = null, myCombatId = null;
+    Object.entries(sessions).forEach(([cId, combat]) => {
+        if (combat.tokens && combat.tokens[session]) { myCombat = combat; myCombatId = cId; }
+    });
+
+    const menuCombat = document.getElementById('menu-combat');
+    const combatView = document.getElementById('combat-view');
+
+    if (myCombat && myCombat.status === 'active') {
+        const justEntered = activeCombatId !== myCombatId;
+        activeCombatId = myCombatId; currentCombatData = myCombat;
+        if (menuCombat) menuCombat.classList.remove('hidden');
+
+        // Detecta inimigo para o combate IA
+        const myTeam = myCombat.tokens[session].team;
+        const enemyEntry = Object.entries(myCombat.tokens || {}).find(([id, t]) => t.team !== myTeam);
+        const newEnemyId = enemyEntry ? enemyEntry[0] : null;
+
+        // Se o inimigo mudou ou é nova sessão, reseta o combate IA
+        if (justEntered || iaCombat.enemyId !== newEnemyId) {
+            resetIACombat();
         }
-        // --- FIM DA LÓGICA DA TELA DE CARREGAMENTO ---
 
+        combatView.innerHTML = `
+            <h3 class="section-title" id="combat-scene-name"><i class="fas fa-khanda"></i> ${myCombat.name}</h3>
+            <p style="font-size:.75em; color:#94a3b8; margin-bottom:10px;">Deslize para ver. Clique num guerreiro para análise tática.</p>
+            <div class="pov-viewport" id="combat-viewport" onscroll="updateParallax(this)">
+                <div class="pov-bg" id="combat-bg" style="background-image:url(${myCombat.background})"></div>
+                <div class="pov-scene">
+                    <div class="pov-team allies" id="combat-allies"></div>
+                    <div class="pov-team enemies" id="combat-enemies"></div>
+                </div>
+            </div>
+            <h4 class="section-title" style="margin-top:15px;"><i class="fas fa-magic"></i> Pets</h4>
+            <div class="summon-bar" id="summon-bar"></div>
+            <div id="ia-combat-mount"></div>
+        `;
 
-        db.ref('items').on('value', snap => { itemsDB = snap.val() || {}; checkRender(); });
-        db.ref('skills').on('value', snap => { skillsDB = snap.val() || {}; checkRender(); });
-        db.ref('recipes').on('value', snap => { recipesDB = snap.val() || {}; });
-        db.ref('characters').on('value', snap => { charsDB = snap.val() || {}; });
+        const alliesBox = document.getElementById('combat-allies');
+        const enemiesBox = document.getElementById('combat-enemies');
 
-        db.ref('characters/' + session).on('value', snap => {
-            if (!snap.exists()) return (window.location.href = 'index.html');
-            pData = snap.val();
-            document.getElementById('p-nome').innerText = pData.nome;
-            document.getElementById('p-classe').innerText = pData.classe || "Aventureiro";
-            document.getElementById('p-pontos').innerText = pData.pontos || 0;
-            if (pData.imagem) document.getElementById('p-img').src = pData.imagem;
-            const diaryEl = document.getElementById('diario');
-            if (diaryEl && !diaryDirty) diaryEl.value = pData.anotacoes || '';
-            checkRender();
+        const renderChar = (id, data) => {
+            const char = charsDB[id]; if (!char) return '';
+            let cardClass = "pov-char-card";
+            let hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, ((char.hp || 0) / char.hp_max) * 100)) : 100;
+            let hpDisplay = char.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
+            const b = char.atributos_base || {};
+            const statsBar = `<div class="card-stats"><span>❤️${char.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
+            let lootHtml = '';
+            if (data.status === 'defeated') {
+                cardClass += ' defeated'; hpDisplay = `<div class="pov-char-name" style="color:var(--red);">DERROTADO</div>`;
+                const loot = (myCombat.loots || {})[id];
+                if (loot && !loot.collected_by) lootHtml = `<button class="loot-btn" onclick="coletarLoot('${id}')"><i class="fas fa-gem"></i> Coletar</button>`;
+            }
+            return `<div class="${cardClass}">${lootHtml}<img src="${char.imagem}" onclick="verStatsCombate('${id}', ${myCombat.public_inspection})"><div class="pov-char-details"><div class="pov-char-name">${char.nome.split(' ')[0]}</div>${hpDisplay}${data.status !== 'defeated' ? statsBar : ''}</div></div>`;
+        };
+
+        const renderSummon = (summon) => {
+            if (!summon) return '';
+            let hpPercent = summon.hp_max > 0 ? Math.max(0, Math.min(100, ((summon.hp || 0) / summon.hp_max) * 100)) : 100;
+            let hpDisplay = summon.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
+            const b = summon.atributos_base || {};
+            return `<div class="pov-char-card"><img src="${summon.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'" alt="${summon.nome||'Pet'}"><div class="pov-char-details"><div class="pov-char-name">${(summon.nome||'Pet').split(' ')[0]}</div>${hpDisplay}<div class="card-stats"><span>❤️${summon.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div></div></div>`;
+        };
+
+        Object.entries(myCombat.tokens).forEach(([id, data]) => {
+            if (data.team === myTeam) { if (id !== session) alliesBox.innerHTML += renderChar(id, data); }
+            else enemiesBox.innerHTML += renderChar(id, data);
+        });
+        Object.values(myCombat.summons || {}).forEach(summon => {
+            if (!summon || !summon.team) return;
+            if (summon.team === myTeam) alliesBox.innerHTML += renderSummon(summon);
+            else enemiesBox.innerHTML += renderSummon(summon);
         });
 
-        // ================= CENA DE COMBATE (POV 3D E LOOT) =================
-        let currentCombatData = null;
-        db.ref('combat/sessions').on('value', snap => {
-            const sessions = snap.val() || {}; let myCombat = null; let myCombatId = null;
-            Object.entries(sessions).forEach(([cId, combat]) => { if (combat.tokens && combat.tokens[session]) { myCombat = combat; myCombatId = cId; } });
+        renderSummonBar();
 
-            const menuCombat = document.getElementById('menu-combat');
-            const combatView = document.getElementById('combat-view');
+        if (justEntered) {
+            setTimeout(() => {
+                const v = document.getElementById('combat-viewport');
+                if (v) v.scrollLeft = (v.scrollWidth - v.clientWidth) / 2;
+                setTimeout(() => iniciarIACombate(newEnemyId), 400);
+            }, 200);
+        } else {
+            renderIACombatUI();
+        }
 
-            if (myCombat && myCombat.status === 'active') {
-                const justEntered = activeCombatId !== myCombatId;
-                activeCombatId = myCombatId; currentCombatData = myCombat;
-                if (menuCombat) menuCombat.classList.remove('hidden');
+    } else if (myCombat && myCombat.status === 'ended_pending_loot') {
+        activeCombatId = myCombatId; currentCombatData = myCombat;
+        if (menuCombat) menuCombat.classList.remove('hidden');
+        let lootsAvailable = false;
+        if (myCombat.loots) Object.values(myCombat.loots).forEach(l => { if (!l.collected_by) lootsAvailable = true; });
+        combatView.innerHTML = `<h3 class="section-title" style="color:var(--gold);">Batalha Encerrada</h3>` +
+            (lootsAvailable
+                ? `<p style="color:#94a3b8; text-align:center;">Os espólios aguardam os vitoriosos.</p><button class="btn-action" style="background:var(--gold); color:black; margin-top:20px;" onclick="pegarRecompensas()">Pegar Recompensas</button>`
+                : `<p style="color:#94a3b8; text-align:center;">Não há mais recompensas.</p><button class="btn-action" style="background:var(--border);" onclick="sairDoCombate()">Sair da Cena</button>`);
+    } else {
+        activeCombatId = null; currentCombatData = null;
+        resetIACombat();
+        if (menuCombat) menuCombat.classList.add('hidden');
+        if (document.getElementById('tab-combat').classList.contains('active')) mudarAba('tab-status');
+    }
+});
 
-                combatView.innerHTML = `
-                    <h3 class="section-title" id="combat-scene-name"><i class="fas fa-khanda"></i> ${myCombat.name}</h3>
-                    <p style="font-size:0.75em; color:#94a3b8; margin-bottom:10px;">Deslize para ver. Clique num guerreiro para análise tática.</p>
-                    <div class="pov-viewport" id="combat-viewport" onscroll="updateParallax(this)">
-                        <div class="pov-bg" id="combat-bg" style="background-image: url(${myCombat.background})"></div>
-                        <div class="pov-scene">
-                            <div class="pov-team allies" id="combat-allies"></div>
-                            <div class="pov-team enemies" id="combat-enemies"></div>
-                        </div>
+// ─── IA COMBAT — INICIALIZAÇÃO ───────────────────────────────────────
+function iniciarIACombate(enemyId) {
+    if (!enemyId || !charsDB[enemyId] || !pData) {
+        renderIACombatUI();
+        return;
+    }
+
+    const enemy = charsDB[enemyId];
+    iaCombat.enemyId = enemyId;
+    iaCombat.enemyData = enemy;
+    iaCombat.active = true;
+    iaCombat.ended = false;
+    iaCombat.result = null;
+    iaCombat.messages = [];
+    iaCombat.aiMessages = [];
+    iaCombat.lootItems = null;
+
+    // HP inicial do inimigo
+    iaCombat.enemyHP = enemy.hp || enemy.hp_max || 50;
+    iaCombat.enemyHPMax = enemy.hp_max || 50;
+    iaCombat.playerHP = pData.hp || pData.hp_max || 100;
+    iaCombat.playerHPMax = pData.hp_max || 100;
+
+    // Verifica se tem loot configurado (criaturas no Firebase costumam ter loot)
+    const combatLoots = currentCombatData && (currentCombatData.loots || {})[enemyId];
+    if (combatLoots && combatLoots.items) {
+        iaCombat.lootItems = combatLoots.items;
+    }
+
+    // Prompt de sistema para a IA
+    const systemPrompt = buildSystemPrompt(enemy);
+
+    // Mensagem inicial — cena de abertura narrada pela IA
+    iaCombat.aiMessages.push({ role: 'user', content: `[INÍCIO DO COMBATE] Crie a cena de abertura: o ${enemy.nome} surge e se prepara para atacar o jogador ${pData.nome}. Descreva em 2-3 frases curtas e dramáticas, no estilo ${enemy.tipo === 'Criatura' ? 'de animal/fera selvagem agindo por instinto' : 'de combatente calculista/humano'}. IMPORTANTE: Termine com o estado atual de HP de ambos em uma linha separada no formato exato: [HP_JOGADOR:${iaCombat.playerHP}/${iaCombat.playerHPMax}] [HP_INIMIGO:${iaCombat.enemyHP}/${iaCombat.enemyHPMax}]` });
+
+    renderIACombatUI();
+    setIALoading(true);
+
+    callIA(systemPrompt, iaCombat.aiMessages).then(resp => {
+        const { text, playerHP, enemyHP } = parseIAResponse(resp, iaCombat.playerHP, iaCombat.enemyHP);
+        iaCombat.aiMessages.push({ role: 'assistant', content: resp });
+        if (playerHP !== null) iaCombat.playerHP = playerHP;
+        if (enemyHP !== null) iaCombat.enemyHP = enemyHP;
+        adicionarMensagem('narrador', text, '⚔️ Narrador');
+        setIALoading(false);
+        renderIACombatUI();
+    }).catch(() => {
+        adicionarMensagem('narrador', `${enemy.nome} surge das sombras, pronto para o confronto!`, '⚔️ Narrador');
+        setIALoading(false);
+        renderIACombatUI();
+    });
+}
+
+function buildSystemPrompt(enemy) {
+    const pStats = getPlayerStats();
+    const eStats = getEnemyStats(enemy);
+    const tipo = enemy.tipo === 'Criatura' ? 'uma criatura selvagem/animal que age por instinto e comportamento animal' : 'um personagem humanoide que pensa, fala e age como um combatente';
+    const descEnemy = enemy.descricao || enemy.description || 'um adversário misterioso';
+
+    return `Você é o Narrador de um RPG de mesa, controlando o inimigo em combate por turnos.
+
+INIMIGO: ${enemy.nome} — ${tipo}
+Descrição: ${descEnemy}
+HP atual: ${iaCombat.enemyHP}/${iaCombat.enemyHPMax}
+Atributos: FOR=${eStats.for}, RES=${eStats.res}, VEL=${eStats.vel}, AGI=${eStats.agi}, PER=${eStats.per}, ESP=${eStats.esp}
+
+JOGADOR: ${pData.nome} (${pData.classe || 'Aventureiro'})
+HP atual: ${iaCombat.playerHP}/${iaCombat.playerHPMax}
+Atributos: FOR=${pStats.for}, RES=${pStats.res}, VEL=${pStats.vel}, AGI=${pStats.agi}, PER=${pStats.per}, ESP=${pStats.esp}
+
+REGRAS ABSOLUTAS:
+1. A cada turno: receba a ação do jogador, narre o resultado, depois faça o inimigo agir baseado em seus atributos e personalidade.
+2. Calcule dano com base nos atributos (FOR/AGI para físico, ESP para mágico) e RES para defesa. Inclua variação aleatória.
+3. Ao narrar, seja cinematográfico, curto (3-4 frases). Se o inimigo é animal, descreva comportamento instintivo. Se humanoide, inclua falas e pensamentos táticos.
+4. NUNCA mate o jogador. Se HP chegar a 0, o inimigo o deixa inconsciente/fugiu/poupou por algum motivo narrativo.
+5. Se o inimigo for derrotado (HP=0), narre a derrota dele de forma épica.
+6. Ao final de CADA resposta, coloque OBRIGATORIAMENTE na última linha, no formato exato:
+   [HP_JOGADOR:X/Y] [HP_INIMIGO:A/B]
+7. Quando o combate terminar (alguém chegou a 0 HP), na última linha adicione também: [RESULTADO:VITORIA] ou [RESULTADO:DERROTA]
+8. Fale em português do Brasil. Seja imersivo e dramático.`;
+}
+
+// ─── IA COMBAT — ENVIO DE AÇÃO ──────────────────────────────────────
+function enviarAcaoIA(acaoTexto) {
+    if (!acaoTexto.trim() || iaCombat.isLoading || iaCombat.ended || !iaCombat.active) return;
+
+    adicionarMensagem('jogador', acaoTexto, '🗡️ ' + (pData.nome || 'Você'));
+    setIALoading(true);
+    toggleIAControls(false);
+
+    const userMsg = `[TURNO] Ação do jogador: "${acaoTexto}"
+HP atual JOGADOR: ${iaCombat.playerHP}/${iaCombat.playerHPMax}
+HP atual INIMIGO: ${iaCombat.enemyHP}/${iaCombat.enemyHPMax}
+Narre o resultado da ação do jogador, depois faça o inimigo responder. Não esqueça de calcular danos com base nos atributos. Termine com [HP_JOGADOR:X/Y] [HP_INIMIGO:A/B] (e [RESULTADO:...] se o combate terminou).`;
+
+    iaCombat.aiMessages.push({ role: 'user', content: userMsg });
+
+    const systemPrompt = buildSystemPrompt(iaCombat.enemyData);
+
+    callIA(systemPrompt, iaCombat.aiMessages).then(resp => {
+        iaCombat.aiMessages.push({ role: 'assistant', content: resp });
+        const { text, playerHP, enemyHP, resultado } = parseIAResponse(resp, iaCombat.playerHP, iaCombat.enemyHP);
+
+        if (playerHP !== null) iaCombat.playerHP = Math.max(0, playerHP);
+        if (enemyHP !== null) iaCombat.enemyHP = Math.max(0, enemyHP);
+
+        // Separa narrador vs inimigo: se há aspas ou nome do inimigo falando, divide
+        const partes = separarNarracaoEInimigo(text, iaCombat.enemyData);
+        partes.forEach(p => adicionarMensagem(p.tipo, p.texto, p.label));
+
+        setIALoading(false);
+
+        if (resultado === 'VITORIA') {
+            encerrarCombateIA('vitoria');
+        } else if (resultado === 'DERROTA') {
+            encerrarCombateIA('derrota');
+        } else {
+            // Verifica HP manualmente como fallback
+            if (iaCombat.enemyHP <= 0) encerrarCombateIA('vitoria');
+            else if (iaCombat.playerHP <= 0) encerrarCombateIA('derrota');
+            else { toggleIAControls(true); renderIACombatUI(); }
+        }
+    }).catch(err => {
+        console.error('IA error:', err);
+        adicionarMensagem('sistema', 'Houve um problema com a conexão. Tente novamente.', '⚠️ Sistema');
+        setIALoading(false);
+        toggleIAControls(true);
+        renderIACombatUI();
+    });
+}
+
+function enviarAcaoRapida(texto) {
+    const textarea = document.getElementById('ia-action-input');
+    if (textarea) textarea.value = '';
+    enviarAcaoIA(texto);
+}
+
+function separarNarracaoEInimigo(text, enemy) {
+    // Heurística: separa em "narrador" geral e se encontrar traço/aspas com nome do inimigo, divide
+    const lines = text.split('\n').filter(l => l.trim());
+    const result = [];
+    let narParts = [];
+    lines.forEach(line => {
+        const l = line.trim();
+        // Linha que parece fala do inimigo (começa com —, -, " ou nome do inimigo)
+        const isFala = enemy && (l.startsWith('—') || l.startsWith('-') || l.startsWith('"') || (enemy.nome && l.startsWith(enemy.nome)));
+        if (isFala) {
+            if (narParts.length) { result.push({ tipo: 'narrador', texto: narParts.join(' '), label: '📖 Narrador' }); narParts = []; }
+            result.push({ tipo: 'inimigo', texto: l, label: `👹 ${enemy.nome}` });
+        } else {
+            narParts.push(l);
+        }
+    });
+    if (narParts.length) result.push({ tipo: 'narrador', texto: narParts.join(' '), label: '📖 Narrador' });
+    return result.length ? result : [{ tipo: 'narrador', texto: text, label: '📖 Narrador' }];
+}
+
+function parseIAResponse(resp, currentPlayerHP, currentEnemyHP) {
+    let text = resp;
+    let playerHP = null, enemyHP = null, resultado = null;
+
+    // Extrai HP
+    const hpPlayerMatch = resp.match(/\[HP_JOGADOR:(\d+)\/(\d+)\]/i);
+    const hpEnemyMatch = resp.match(/\[HP_INIMIGO:(\d+)\/(\d+)\]/i);
+    const resultMatch = resp.match(/\[RESULTADO:(VITORIA|DERROTA)\]/i);
+
+    if (hpPlayerMatch) playerHP = parseInt(hpPlayerMatch[1]);
+    if (hpEnemyMatch) enemyHP = parseInt(hpEnemyMatch[1]);
+    if (resultMatch) resultado = resultMatch[1].toUpperCase();
+
+    // Remove as tags do texto exibido
+    text = resp.replace(/\[HP_JOGADOR:\d+\/\d+\]/gi, '').replace(/\[HP_INIMIGO:\d+\/\d+\]/gi, '').replace(/\[RESULTADO:(VITORIA|DERROTA)\]/gi, '').trim();
+
+    return { text, playerHP, enemyHP, resultado };
+}
+
+async function callIA(systemPrompt, messages) {
+    const resp = await fetch(IA_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${IA_API_KEY}` },
+        body: JSON.stringify({
+            model: 'apifreellm',
+            system: systemPrompt,
+            messages: messages
+        })
+    });
+    if (!resp.ok) throw new Error('API Error ' + resp.status);
+    const data = await resp.json();
+    // Tenta diferentes formatos de resposta
+    return data.response || data.content || data.choices?.[0]?.message?.content || data.message || "O combate continua...";
+}
+
+function encerrarCombateIA(resultado) {
+    iaCombat.ended = true;
+    iaCombat.active = false;
+    iaCombat.result = resultado;
+
+    if (resultado === 'vitoria') {
+        adicionarMensagem('sistema', '🏆 VITÓRIA! Você venceu o combate!', '⚔️ Sistema');
+        // Verifica loot disponível no Firebase
+        if (currentCombatData && iaCombat.enemyId) {
+            const loot = (currentCombatData.loots || {})[iaCombat.enemyId];
+            if (loot && loot.items && !loot.collected_by) {
+                iaCombat.lootItems = loot.items;
+            }
+        }
+    } else {
+        adicionarMensagem('sistema', '💔 Você foi derrotado... mas sobreviveu para lutar outro dia.', '⚔️ Sistema');
+    }
+
+    // Limpa histórico IA (mantém apenas mensagens de exibição)
+    iaCombat.aiMessages = [];
+
+    renderIACombatUI();
+}
+
+function adicionarMensagem(tipo, texto, label) {
+    iaCombat.messages.push({ tipo, texto, label, timestamp: Date.now() });
+    appendIAMessage(tipo, texto, label);
+}
+
+function appendIAMessage(tipo, texto, label) {
+    const chatArea = document.getElementById('ia-chat-area');
+    if (!chatArea) return;
+    // Remove indicador de digitação se existir
+    const typing = document.getElementById('ia-typing');
+    if (typing) typing.remove();
+    const div = document.createElement('div');
+    div.className = `ia-msg ${tipo}`;
+    div.innerHTML = `<span class="ia-msg-label">${label}</span>${escapeHTML(texto)}`;
+    chatArea.appendChild(div);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function escapeHTML(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── IA COMBAT — RENDER UI ───────────────────────────────────────────
+function renderIACombatUI() {
+    const mount = document.getElementById('ia-combat-mount');
+    if (!mount) return;
+
+    if (!iaCombat.active && !iaCombat.ended) {
+        mount.innerHTML = '';
+        return;
+    }
+
+    const enemy = iaCombat.enemyData;
+    if (!enemy) { mount.innerHTML = ''; return; }
+
+    const pStats = getPlayerStats();
+    const eStats = getEnemyStats(enemy);
+    const pHPPct = Math.max(0, Math.min(100, (iaCombat.playerHP / iaCombat.playerHPMax) * 100));
+    const eHPPct = Math.max(0, Math.min(100, (iaCombat.enemyHP / iaCombat.enemyHPMax) * 100));
+    const statusClass = iaCombat.isLoading ? 'loading' : iaCombat.ended ? 'ended' : 'active';
+    const statusLabel = iaCombat.isLoading ? '⟳ Narrando...' : iaCombat.ended ? (iaCombat.result === 'vitoria' ? '🏆 Encerrado' : '💔 Encerrado') : '⚔️ Em Combate';
+
+    // Mensagens existentes
+    const msgsHTML = iaCombat.messages.map(m =>
+        `<div class="ia-msg ${m.tipo}"><span class="ia-msg-label">${m.label}</span>${escapeHTML(m.texto)}</div>`
+    ).join('');
+
+    // Loot HTML
+    let lootHTML = '';
+    if (iaCombat.ended && iaCombat.result === 'vitoria' && iaCombat.lootItems) {
+        const lootItemsHTML = Object.entries(iaCombat.lootItems).map(([itemId, qty]) => {
+            const item = itemsDB[itemId];
+            if (!item) return '';
+            return `<div class="ia-loot-item"><img src="${item.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/36'"><span>${item.nome}${qty > 1 ? ` x${qty}` : ''}</span></div>`;
+        }).join('');
+        lootHTML = `
+            <div class="ia-loot-panel">
+                <div class="ia-loot-title"><i class="fas fa-gem"></i> Espólios de Guerra</div>
+                <div class="ia-loot-items">${lootItemsHTML || '<span style="color:#64748b; font-size:0.8em;">Nenhum item encontrado.</span>'}</div>
+                <button class="ia-collect-btn" onclick="coletarLootIA()"><i class="fas fa-hand-sparkles"></i> Coletar Loot</button>
+            </div>`;
+    }
+
+    // Área de fim
+    let endHTML = '';
+    if (iaCombat.ended) {
+        const isVit = iaCombat.result === 'vitoria';
+        endHTML = `
+            <div class="ia-end-banner ${iaCombat.result}">
+                ${lootHTML}
+                <div class="ia-end-title ${iaCombat.result}">${isVit ? '⚔️ Vitória!' : '💔 Derrota'}</div>
+                <div class="ia-end-sub">${isVit ? `${enemy.nome} foi derrotado.` : 'Você não estava em seu melhor dia...'}</div>
+                <div class="ia-end-actions">
+                    <button class="ia-end-btn restart" onclick="reiniciarIACombate()"><i class="fas fa-redo"></i> Novo Combate</button>
+                    <button class="ia-end-btn exit" onclick="sairIACombate()"><i class="fas fa-door-open"></i> Sair</button>
+                </div>
+            </div>`;
+    }
+
+    // Input area
+    const inputHTML = !iaCombat.ended ? `
+        <div class="ia-input-area">
+            <div class="ia-input-hint">Descreva sua ação com detalhes — a IA irá narrar o resultado e contra-atacar!</div>
+            <div class="ia-input-row">
+                <textarea class="ia-textarea" id="ia-action-input" placeholder="Ex: Lanço uma investida lateral, tentando acertar o flanco..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submeterAcaoIA();}" ${iaCombat.isLoading ? 'disabled' : ''}></textarea>
+                <button class="ia-send-btn" id="ia-send-btn" onclick="submeterAcaoIA()" ${iaCombat.isLoading ? 'disabled' : ''}><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div class="ia-quick-actions">
+                <button class="ia-quick-btn ataque" onclick="enviarAcaoRapida('Ataco com força, desferindo um golpe direto.')" ${iaCombat.isLoading ? 'disabled' : ''}><i class="fas fa-sword"></i> Atacar</button>
+                <button class="ia-quick-btn defesa" onclick="enviarAcaoRapida('Me posiciono defensivamente, tentando bloquear e esquivar.')" ${iaCombat.isLoading ? 'disabled' : ''}><i class="fas fa-shield-alt"></i> Defender</button>
+                <button class="ia-quick-btn especial" onclick="enviarAcaoRapida('Uso minha habilidade especial com toda minha energia espiritual.')" ${iaCombat.isLoading ? 'disabled' : ''}><i class="fas fa-magic"></i> Especial</button>
+                <button class="ia-quick-btn fuga" onclick="enviarAcaoRapida('Tento fugir do combate, buscando uma rota de escape.')" ${iaCombat.isLoading ? 'disabled' : ''}><i class="fas fa-running"></i> Fugir</button>
+            </div>
+        </div>` : endHTML;
+
+    mount.innerHTML = `
+        <div class="ia-combat-wrapper" id="ia-combat-section">
+            <div class="ia-combat-header">
+                <i class="fas fa-dragon" style="color:var(--purple); font-size:1.1em;"></i>
+                <span class="ia-title">Cena de Combate — IA</span>
+                <span class="ia-status-pill ${statusClass}">${statusLabel}</span>
+            </div>
+
+            <div class="ia-combatants-bar">
+                <div class="ia-combatant player-side">
+                    <div class="ia-comb-name blue">${pData.nome}</div>
+                    <div class="ia-comb-hp-track"><div class="ia-comb-hp-fill blue" style="width:${pHPPct}%"></div></div>
+                    <div class="ia-comb-stats">
+                        <span>❤️ ${iaCombat.playerHP}/${iaCombat.playerHPMax}</span>
+                        <span>⚔️ FOR ${pStats.for}</span>
+                        <span>🛡️ RES ${pStats.res}</span>
+                        <span>⚡ AGI ${pStats.agi}</span>
                     </div>
-                    <h4 class="section-title" style="margin-top:15px;"><i class="fas fa-magic"></i> Pets</h4>
-                    <div class="summon-bar" id="summon-bar"></div>
-                `;
-                const alliesBox = document.getElementById('combat-allies');
-                const enemiesBox = document.getElementById('combat-enemies');
-                const myTeam = myCombat.tokens[session].team;
+                </div>
+                <div class="ia-vs-divider">VS</div>
+                <div class="ia-combatant enemy-side">
+                    <div class="ia-comb-name red">${enemy.nome}</div>
+                    <div class="ia-comb-hp-track"><div class="ia-comb-hp-fill red" style="width:${eHPPct}%"></div></div>
+                    <div class="ia-comb-stats">
+                        <span>❤️ ${iaCombat.enemyHP}/${iaCombat.enemyHPMax}</span>
+                        <span>⚔️ FOR ${eStats.for}</span>
+                        <span>🛡️ RES ${eStats.res}</span>
+                        <span>⚡ AGI ${eStats.agi}</span>
+                    </div>
+                </div>
+            </div>
 
-                const renderChar = (id, data) => {
-                    const char = charsDB[id]; if (!char) return '';
-                    let cardClass = "pov-char-card"; let lootHtml = "";
-                    let hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, ((char.hp || 0) / char.hp_max) * 100)) : 100;
-                    let hpDisplay = char.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
-                    const b = char.atributos_base || {};
-                    const statsBar = `<div class="card-stats"><span>❤️${char.hp || 0}</span><span>⚔️${b.for || 0}</span><span>🛡️${b.res || 0}</span><span>⚡${b.agi || 0}</span></div>`;
+            <div class="ia-chat-area" id="ia-chat-area">
+                ${msgsHTML}
+                ${iaCombat.isLoading ? '<div class="ia-typing-indicator" id="ia-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>' : ''}
+            </div>
 
-                    if (data.status === 'defeated') {
-                        cardClass += " defeated"; hpDisplay = `<div class="pov-char-name" style="color:var(--red);">DERROTADO</div>`;
-                        const loot = (myCombat.loots || {})[id];
-                        if (loot && !loot.collected_by) { lootHtml = `<button class="loot-btn" onclick="coletarLoot('${id}')"><i class="fas fa-gem"></i> Coletar</button>`; }
-                    }
-                    return `<div class="${cardClass}">${lootHtml}<img src="${char.imagem}" onclick="verStatsCombate('${id}', ${myCombat.public_inspection})"><div class="pov-char-details"><div class="pov-char-name">${char.nome.split(' ')[0]}</div>${hpDisplay}${data.status !== 'defeated' ? statsBar : ''}</div></div>`;
-                };
+            ${inputHTML}
+        </div>`;
 
-                const renderSummon = (summon) => {
-                    if (!summon) return '';
-                    let cardClass = "pov-char-card";
-                    let hpPercent = summon.hp_max > 0 ? Math.max(0, Math.min(100, ((summon.hp || 0) / summon.hp_max) * 100)) : 100;
-                    let hpDisplay = summon.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
-                    const b = summon.atributos_base || {};
-                    const statsBar = `<div class="card-stats"><span>❤️${summon.hp || 0}</span><span>⚔️${b.for || 0}</span><span>🛡️${b.res || 0}</span><span>⚡${b.agi || 0}</span></div>`;
-                    return `<div class="${cardClass}"><img src="${summon.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'" alt="${summon.nome || 'Pet'}"><div class="pov-char-details"><div class="pov-char-name">${(summon.nome || 'Pet').split(' ')[0]}</div>${hpDisplay}${statsBar}</div></div>`;
-                };
+    // Scrolla pro final
+    const chatArea = document.getElementById('ia-chat-area');
+    if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+}
 
-                Object.entries(myCombat.tokens).forEach(([id, data]) => {
-                    if (data.team === myTeam) { if (id !== session) alliesBox.innerHTML += renderChar(id, data); }
-                    else { enemiesBox.innerHTML += renderChar(id, data); }
-                });
+function setIALoading(val) {
+    iaCombat.isLoading = val;
+    // Apenas atualiza o indicador de digitação e botões sem re-renderizar tudo
+    const chatArea = document.getElementById('ia-chat-area');
+    const existingTyping = document.getElementById('ia-typing');
+    if (val && chatArea && !existingTyping) {
+        const div = document.createElement('div');
+        div.className = 'ia-typing-indicator';
+        div.id = 'ia-typing';
+        div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+        chatArea.appendChild(div);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    } else if (!val && existingTyping) {
+        existingTyping.remove();
+    }
+    // Atualiza status pill
+    const pill = document.querySelector('.ia-status-pill');
+    if (pill) {
+        if (val) { pill.className = 'ia-status-pill loading'; pill.textContent = '⟳ Narrando...'; }
+        else if (iaCombat.ended) { pill.className = 'ia-status-pill ended'; pill.textContent = iaCombat.result === 'vitoria' ? '🏆 Encerrado' : '💔 Encerrado'; }
+        else { pill.className = 'ia-status-pill active'; pill.textContent = '⚔️ Em Combate'; }
+    }
+    // Atualiza barras de HP
+    const pFill = document.querySelector('.ia-comb-hp-fill.blue');
+    const eFill = document.querySelector('.ia-comb-hp-fill.red');
+    if (pFill) pFill.style.width = Math.max(0, Math.min(100, (iaCombat.playerHP / iaCombat.playerHPMax) * 100)) + '%';
+    if (eFill) eFill.style.width = Math.max(0, Math.min(100, (iaCombat.enemyHP / iaCombat.enemyHPMax) * 100)) + '%';
+    // Atualiza textos de HP
+    const combStats = document.querySelectorAll('.ia-comb-stats');
+    if (combStats[0]) combStats[0].querySelector('span').textContent = `❤️ ${iaCombat.playerHP}/${iaCombat.playerHPMax}`;
+    if (combStats[1]) combStats[1].querySelector('span').textContent = `❤️ ${iaCombat.enemyHP}/${iaCombat.enemyHPMax}`;
+}
 
-                Object.values(myCombat.summons || {}).forEach(summon => {
-                    if (!summon || !summon.team) return;
-                    if (summon.team === myTeam) alliesBox.innerHTML += renderSummon(summon);
-                    else enemiesBox.innerHTML += renderSummon(summon);
-                });
+function toggleIAControls(enabled) {
+    ['ia-action-input', 'ia-send-btn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !enabled;
+    });
+    document.querySelectorAll('.ia-quick-btn').forEach(btn => btn.disabled = !enabled);
+}
 
-                renderSummonBar();
+function submeterAcaoIA() {
+    const input = document.getElementById('ia-action-input');
+    if (!input) return;
+    const texto = input.value.trim();
+    if (!texto) return;
+    input.value = '';
+    input.style.height = '44px';
+    enviarAcaoIA(texto);
+}
 
-                if (justEntered) setTimeout(() => { const v = document.getElementById('combat-viewport'); if (v) v.scrollLeft = (v.scrollWidth - v.clientWidth) / 2; }, 200);
+function reiniciarIACombate() {
+    if (!currentCombatData || !iaCombat.enemyId) return;
+    resetIACombat();
+    iniciarIACombate(iaCombat.enemyId || Object.keys(currentCombatData.tokens || {}).find(id => id !== session));
+}
 
-            } else if (myCombat && myCombat.status === 'ended_pending_loot') {
-                activeCombatId = myCombatId; currentCombatData = myCombat;
-                if (menuCombat) menuCombat.classList.remove('hidden');
-                let lootsAvailable = false;
-                if (myCombat.loots) Object.values(myCombat.loots).forEach(l => { if (!l.collected_by) lootsAvailable = true });
+function sairIACombate() {
+    resetIACombat();
+    const mount = document.getElementById('ia-combat-mount');
+    if (mount) mount.innerHTML = '';
+}
 
-                if (lootsAvailable) {
-                    combatView.innerHTML = `<h3 class="section-title" style="color:var(--gold);">Batalha Encerrada</h3><p style="color:#94a3b8; text-align:center;">Os espólios aguardam os vitoriosos.</p><button class="btn-action" style="background:var(--gold); color:black; margin-top:20px;" onclick="pegarRecompensas()">Pegar Recompensas</button>`;
-                } else {
-                    combatView.innerHTML = `<h3 class="section-title" style="color:var(--gold);">Batalha Encerrada</h3><p style="color:#94a3b8; text-align:center;">Não há mais recompensas para coletar.</p><button class="btn-action" style="background:var(--border);" onclick="sairDoCombate()">Sair da Cena</button>`;
-                }
-            } else {
-                activeCombatId = null; currentCombatData = null;
-                if (menuCombat) menuCombat.classList.add('hidden');
-                if (document.getElementById('tab-combat').classList.contains('active')) mudarAba('tab-status');
-            }
-        });
-
-        function updateParallax(el) { const max = el.scrollWidth - el.clientWidth; if (max <= 0) return; document.getElementById('combat-bg').style.backgroundPosition = `${(el.scrollLeft / max) * 100}% center`; }
-
-        function renderSummonBar() {
-            const bar = document.getElementById('summon-bar');
-            if (!bar) return;
-            if (!pData) { bar.innerHTML = ''; return; }
-            if (!activeCombatId || !currentCombatData) { bar.innerHTML = '<p style="color:#64748b; font-size:0.8em; text-align:center; grid-column:1/-1;">Sem combate ativo.</p>'; return; }
-            const summons = [];
-            Object.entries(pData.inventario || {}).forEach(([key, invItem]) => {
-                const idb = itemsDB[invItem.item_id];
-                if (idb && idb.categoria === 'Pet') summons.push({ key, id: invItem.item_id, data: idb });
-            });
-            if (summons.length === 0) {
-                bar.innerHTML = '<p style="color:#64748b; font-size:0.8em; text-align:center; grid-column:1/-1;">Nenhuma Pet na bolsa.</p>';
-                return;
-            }
-            bar.innerHTML = '';
-            summons.forEach(s => {
-                bar.innerHTML += `<div class="summon-card"><img src="${s.data.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'" alt="${s.data.nome}"><h4>${s.data.nome}</h4><button onclick="invocarCriatura('${s.key}', '${s.id}')">Invocar</button></div>`;
-            });
-        }
-
-        function invocarCriatura(itemKey, itemId) {
-            if (!activeCombatId || !currentCombatData) return alert('Sem combate ativo.');
-            const item = itemsDB[itemId]; if (!item) return;
-            const myTeam = (currentCombatData.tokens || {})[session]?.team || 'A';
-            const summon = {
-                nome: item.nome || 'Pet',
-                imagem: item.imagem || 'https://via.placeholder.com/150',
-                team: myTeam,
-                owner: session,
-                status: 'alive',
-                hp: (item.summon && item.summon.hp) ? item.summon.hp : 10,
-                hp_max: (item.summon && item.summon.hp_max) ? item.summon.hp_max : 10,
-                atributos_base: (item.summon && item.summon.atributos_base) ? item.summon.atributos_base : { for: 0, res: 0, agi: 0 }
-            };
-            const summonKey = db.ref(`combat/sessions/${activeCombatId}/summons`).push().key;
-            db.ref(`combat/sessions/${activeCombatId}/summons/${summonKey}`).set(summon);
-            db.ref(`characters/${session}/inventario/${itemKey}`).remove();
-        }
-
-        function coletarLoot(tId) {
-            if (!activeCombatId) return;
-            const lootRef = db.ref(`combat/sessions/${activeCombatId}/loots/${tId}`);
-            lootRef.transaction(loot => {
-                if (loot && !loot.collected_by) { loot.collected_by = session; return loot; } return undefined;
-            }, (error, committed, snapshot) => {
-                if (committed && snapshot.val() && snapshot.val().collected_by === session) {
-                    const lData = snapshot.val(); let updates = {};
-                    Object.entries(lData.items).forEach(([itemId, qtd]) => {
-                        for (let i = 0; i < qtd; i++) { updates[db.ref().push().key] = { item_id: itemId, equipado: false }; }
-                    });
-                    db.ref(`characters/${session}/inventario`).update(updates); alert("Loot coletado! Olhe sua bolsa.");
-                } else { alert("Alguém foi mais rápido ou o loot não existe mais!"); }
-            });
-        }
-
-        function pegarRecompensas() {
-            if (!activeCombatId || !currentCombatData) return;
-            const loots = currentCombatData.loots || {};
+function coletarLootIA() {
+    if (!activeCombatId || !iaCombat.enemyId) return;
+    const lootRef = db.ref(`combat/sessions/${activeCombatId}/loots/${iaCombat.enemyId}`);
+    lootRef.transaction(loot => {
+        if (loot && !loot.collected_by) { loot.collected_by = session; return loot; }
+        return undefined;
+    }, (error, committed, snapshot) => {
+        if (committed && snapshot.val() && snapshot.val().collected_by === session) {
+            const lData = snapshot.val();
             let updates = {};
-            Object.values(loots).forEach(loot => {
-                if (!loot.collected_by) {
-                    Object.entries(loot.items).forEach(([itemId, qtd]) => {
-                        for (let i = 0; i < qtd; i++) { updates[db.ref().push().key] = { item_id: itemId, equipado: false }; }
-                    });
-                }
+            Object.entries(lData.items).forEach(([itemId, qtd]) => {
+                for (let i = 0; i < qtd; i++) { updates[db.ref().push().key] = { item_id: itemId, equipado: false }; }
             });
             db.ref(`characters/${session}/inventario`).update(updates);
-            db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove();
-            alert("Recompensas coletadas!");
+            adicionarMensagem('sistema', '🎒 Loot coletado! Verifique sua bolsa.', '🎒 Sistema');
+            iaCombat.lootItems = null;
+            renderIACombatUI();
+        } else {
+            adicionarMensagem('sistema', '❌ Alguém foi mais rápido ou o loot já foi coletado.', '⚠️ Sistema');
         }
+    });
+}
 
-        function sairDoCombate() { db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove(); }
-
-        function verStatsCombate(charId, isPublic) {
-            if (!isPublic && charId !== session) return alert("O mestre ocultou os atributos nesta batalha.");
-            const c = charsDB[charId]; if (!c) return;
-            document.getElementById('cc-img').src = c.imagem;
-            document.getElementById('cc-nome').innerText = c.nome;
-            document.getElementById('cc-classe').innerText = c.classe;
-            document.getElementById('cc-desc').innerText = c.description || "";
-
-            let vitalsHtml = '';
-            if (c.hp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--red), #b91c1c); width:${(c.hp / c.hp_max) * 100}%"></div><div class="status-bar-text">HP ${c.hp}/${c.hp_max}</div></div>`;
-            if (c.mp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--blue), #1d4ed8); width:${(c.mp / c.mp_max) * 100}%"></div><div class="status-bar-text">MP ${c.mp}/${c.mp_max}</div></div>`;
-            if (c.sp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--gold), #b45309); width:${(c.sp / c.sp_max) * 100}%"></div><div class="status-bar-text">SP ${c.sp}/${c.sp_max}</div></div>`;
-            document.getElementById('cc-vitals').innerHTML = vitalsHtml;
-
-            let eqSlots = { arma1: null, arma2: null, cabeca: null, peitoral: null, pernas: null, acessorio: null };
-            let bonus = { for: 0, res: 0, vel: 0, agi: 0, per: 0, resm: 0, esp: 0, alm: 0 };
-            if (c.inventario) Object.values(c.inventario).forEach(item => {
-                if (item.equipado) {
-                    const idb = itemsDB[item.item_id]; if (!idb) return;
-                    if (idb.categoria === 'Arma') { if (!eqSlots.arma1) eqSlots.arma1 = idb; else if (!eqSlots.arma2) eqSlots.arma2 = idb; }
-                    else if (idb.categoria === 'Armadura') { if (idb.slot_type === 'Cabeça' && !eqSlots.cabeca) eqSlots.cabeca = idb; else if (idb.slot_type === 'Peitoral' && !eqSlots.peitoral) eqSlots.peitoral = idb; else if (idb.slot_type === 'Pernas' && !eqSlots.pernas) eqSlots.pernas = idb; }
-                    else if (idb.categoria === 'Acessorio' && !eqSlots.acessorio) eqSlots.acessorio = idb;
-                    if (idb.mods) Object.keys(bonus).forEach(k => bonus[k] += (idb.mods[k] || 0));
-                }
-            });
-            if (c.skills) Object.keys(c.skills).forEach(sId => { const skill = skillsDB[sId]; if (skill && skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0)); });
-
-            const equipsGrid = document.getElementById('cc-equips');
-            if (c.tipo === 'Criatura') {
-                equipsGrid.innerHTML = `<p style="color:#64748b; font-size:0.8em; grid-column: 1/-1;">Criaturas não usam equipamentos.</p>`;
-            } else {
-                const renderEq = (idb, icon, type) => idb ? `<div class="equip-slot filled slot-${type}" title="${idb.nome}"><img src="${idb.imagem}"></div>` : `<div class="equip-slot slot-${type}"><i class="fas ${icon}" style="color:var(--border);"></i></div>`;
-                equipsGrid.innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'acessorio');
+// ─── ATRIBUTOS CALCULADOS ────────────────────────────────────────────
+function getPlayerStats() {
+    let bonus = { for: 0, res: 0, vel: 0, agi: 0, per: 0, resm: 0, esp: 0, alm: 0 };
+    if (pData && pData.inventario) {
+        Object.values(pData.inventario).forEach(inv => {
+            if (inv.equipado && itemsDB[inv.item_id] && itemsDB[inv.item_id].mods) {
+                Object.keys(bonus).forEach(k => bonus[k] += (itemsDB[inv.item_id].mods[k] || 0));
             }
+        });
+    }
+    if (pData && pData.skills) {
+        Object.keys(pData.skills).forEach(sId => {
+            const skill = skillsDB[sId];
+            if (skill && skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0));
+        });
+    }
+    const base = (pData && pData.atributos_base) || {};
+    return Object.fromEntries(Object.keys(bonus).map(k => [k, (base[k] || 0) + bonus[k]]));
+}
 
-            let statsHtml = ''; const base = c.atributos_base || {};
-            Object.keys(attrNames).forEach(k => { const total = (base[k] || 0) + bonus[k]; let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : ''; statsHtml += `<div class="attr-card" style="padding:8px;"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`; });
-            document.getElementById('cc-stats').innerHTML = statsHtml;
-            document.getElementById('combat-char-modal').classList.add('active');
-        }
+function getEnemyStats(enemy) {
+    let bonus = { for: 0, res: 0, vel: 0, agi: 0, per: 0, resm: 0, esp: 0, alm: 0 };
+    if (enemy && enemy.inventario) {
+        Object.values(enemy.inventario).forEach(inv => {
+            if (inv.equipado && itemsDB[inv.item_id] && itemsDB[inv.item_id].mods) {
+                Object.keys(bonus).forEach(k => bonus[k] += (itemsDB[inv.item_id].mods[k] || 0));
+            }
+        });
+    }
+    const base = (enemy && enemy.atributos_base) || {};
+    return Object.fromEntries(Object.keys(bonus).map(k => [k, (base[k] || 0) + bonus[k]]));
+}
 
-        // ================= FUNÇÕES PADRÃO (Completas) =================
-        function checkRender() {
-            if (pData) {
-                renderStatusEInv();
-                inicializarCrafting();
-                renderGrimorio();
-                // Verifica se o app já está pronto para evitar múltiplas chamadas
-                if (!document.body.classList.contains('app-ready')) {
-                    hideLoadingScreen();
-                }
-            }
-        }
+// ─── PARALLAX & MISC COMBATE ─────────────────────────────────────────
+function updateParallax(el) {
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 0) return;
+    const bg = document.getElementById('combat-bg');
+    if (bg) bg.style.backgroundPosition = `${(el.scrollLeft / max) * 100}% center`;
+}
 
-        function renderStatusEInv() {
-            let bonus = { for: 0, res: 0, vel: 0, agi: 0, per: 0, resm: 0, esp: 0, alm: 0 };
-            let eqSlots = { arma1: null, arma2: null, cabeca: null, peitoral: null, pernas: null, acessorio: null };
-            let equippedItems = [];
-            if (pData.inventario) Object.entries(pData.inventario).forEach(([key, invItem]) => { if (invItem.equipado) equippedItems.push({ key, ...invItem }); });
-            equippedItems.forEach(item => {
-                const idb = itemsDB[item.item_id]; if (!idb) return; let placed = false;
-                if (idb.categoria === 'Arma') { if (!eqSlots.arma1) { eqSlots.arma1 = { item, idb }; placed = true; } else if (!eqSlots.arma2) { eqSlots.arma2 = { item, idb }; placed = true; } }
-                else if (idb.categoria === 'Armadura') { if (idb.slot_type === 'Cabeça' && !eqSlots.cabeca) { eqSlots.cabeca = { item, idb }; placed = true; } else if (idb.slot_type === 'Peitoral' && !eqSlots.peitoral) { eqSlots.peitoral = { item, idb }; placed = true; } else if (idb.slot_type === 'Pernas' && !eqSlots.pernas) { eqSlots.pernas = { item, idb }; placed = true; } }
-                else if (idb.categoria === 'Acessorio' && !eqSlots.acessorio) { eqSlots.acessorio = { item, idb }; placed = true; }
-                if (placed && idb.mods) Object.keys(bonus).forEach(k => bonus[k] += (idb.mods[k] || 0));
-            });
-            const renderEq = (slotData, emptyIcon, label, slotType) => { if (slotData) return `<div class="equip-slot filled slot-${slotType}" onclick="abrirItem('${slotData.item.key}', '${slotData.item.item_id}', true, 1)"><img src="${slotData.idb.imagem}"><div class="equip-slot-label">${label}</div></div>`; else return `<div class="equip-slot slot-${slotType}" onclick="abrirEquipPicker('${slotType}')"><i class="fas ${emptyIcon}" style="color:var(--border); font-size:1.8em;"></i><div class="equip-slot-label">${label}</div></div>`; };
-            document.getElementById('p-equipamentos').innerHTML = renderEq(eqSlots.cabeca, 'fa-helmet-battle', 'Cabeça', 'cabeca') + renderEq(eqSlots.peitoral, 'fa-tshirt', 'Peitoral', 'peitoral') + renderEq(eqSlots.pernas, 'fa-shoe-prints', 'Pernas', 'pernas') + renderEq(eqSlots.arma1, 'fa-hand-rock', 'Mão 1', 'arma1') + renderEq(eqSlots.arma2, 'fa-hand-rock', 'Mão 2', 'arma2') + renderEq(eqSlots.acessorio, 'fa-ring', 'Amuleto', 'acessorio');
-            const boxSkills = document.getElementById('p-skills'); boxSkills.innerHTML = '';
-            if (pData.skills) Object.keys(pData.skills).forEach(sId => { const skill = skillsDB[sId]; if (skill) { if (skill.buffs) Object.keys(bonus).forEach(k => bonus[k] += (skill.buffs[k] || 0)); boxSkills.innerHTML += `<div class="skill-card"><img class="skill-img" src="${skill.imagem}"><div class="skill-info"><h4>${skill.nome}</h4><p>${skill.descricao}</p></div></div>`; } });
-            const atributosBase = pData.atributos_base || {};
-            const boxAtrBase = document.getElementById('p-atributos-base'); boxAtrBase.innerHTML = '';
-            Object.keys(attrNames).forEach(k => {
-                const total = (atributosBase[k] || 0) + bonus[k]; let bStr = bonus[k] > 0 ? `<span class="val-bonus">+${bonus[k]}</span>` : '';
-                boxAtrBase.innerHTML += `<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;
-            });
-            ['hp', 'mp', 'sp'].forEach(type => { const bar = document.getElementById(`${type}-bar`); const max = pData[`${type}_max`] || 0; if (max > 0) { bar.classList.add('active'); const val = pData[type] || 0; bar.querySelector('.status-bar-inner').style.width = `${(val / max) * 100}%`; bar.querySelector('.status-bar-text').innerText = `${type.toUpperCase()} ${val}/${max}`; } else { bar.classList.remove('active'); } });
-            const boxInv = document.getElementById('p-inventario'); boxInv.innerHTML = ''; let qtdMap = {};
-            if (pData.inventario) {
-                Object.entries(pData.inventario).forEach(([key, invItem]) => {
-                    const idb = itemsDB[invItem.item_id];
-                    if (idb) { if (idb.categoria === 'Material' || idb.categoria === 'Consumivel' || idb.categoria === 'Pet') { if (!qtdMap[invItem.item_id]) qtdMap[invItem.item_id] = { count: 0, sampleKey: key }; qtdMap[invItem.item_id].count++; } else { boxInv.innerHTML += renderItemSlot(key, invItem.item_id, invItem.equipado, 1); } }
-                });
-                Object.keys(qtdMap).forEach(itemId => boxInv.innerHTML += renderItemSlot(qtdMap[itemId].sampleKey, itemId, false, qtdMap[itemId].count));
-            }
-            if (boxInv.innerHTML === '') boxInv.innerHTML = '<p style="grid-column:1/-1; color:#64748b; font-size:0.8em; text-align:center; padding: 20px;">Sua bolsa está vazia.</p>';
-            if (activeCombatId) renderSummonBar();
+function renderSummonBar() {
+    const bar = document.getElementById('summon-bar');
+    if (!bar || !pData) return;
+    if (!activeCombatId || !currentCombatData) { bar.innerHTML = '<p style="color:#64748b; font-size:.8em; text-align:center; grid-column:1/-1;">Sem combate ativo.</p>'; return; }
+    const summons = [];
+    Object.entries(pData.inventario || {}).forEach(([key, invItem]) => {
+        const idb = itemsDB[invItem.item_id];
+        if (idb && idb.categoria === 'Pet') summons.push({ key, id: invItem.item_id, data: idb });
+    });
+    if (!summons.length) { bar.innerHTML = '<p style="color:#64748b; font-size:.8em; text-align:center; grid-column:1/-1;">Nenhuma Pet na bolsa.</p>'; return; }
+    bar.innerHTML = '';
+    summons.forEach(s => bar.innerHTML += `<div class="summon-card"><img src="${s.data.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'" alt="${s.data.nome}"><h4>${s.data.nome}</h4><button onclick="invocarCriatura('${s.key}', '${s.id}')">Invocar</button></div>`);
+}
+
+function invocarCriatura(itemKey, itemId) {
+    if (!activeCombatId || !currentCombatData) return alert('Sem combate ativo.');
+    const item = itemsDB[itemId]; if (!item) return;
+    const myTeam = (currentCombatData.tokens || {})[session]?.team || 'A';
+    const summon = { nome: item.nome||'Pet', imagem: item.imagem||'https://via.placeholder.com/150', team: myTeam, owner: session, status: 'alive', hp: (item.summon?.hp)||10, hp_max: (item.summon?.hp_max)||10, atributos_base: (item.summon?.atributos_base)||{for:0,res:0,agi:0} };
+    const summonKey = db.ref(`combat/sessions/${activeCombatId}/summons`).push().key;
+    db.ref(`combat/sessions/${activeCombatId}/summons/${summonKey}`).set(summon);
+    db.ref(`characters/${session}/inventario/${itemKey}`).remove();
+}
+
+function coletarLoot(tId) {
+    if (!activeCombatId) return;
+    db.ref(`combat/sessions/${activeCombatId}/loots/${tId}`).transaction(loot => {
+        if (loot && !loot.collected_by) { loot.collected_by = session; return loot; } return undefined;
+    }, (error, committed, snapshot) => {
+        if (committed && snapshot.val() && snapshot.val().collected_by === session) {
+            const lData = snapshot.val(); let updates = {};
+            Object.entries(lData.items).forEach(([itemId, qtd]) => { for (let i=0;i<qtd;i++) updates[db.ref().push().key] = {item_id: itemId, equipado: false}; });
+            db.ref(`characters/${session}/inventario`).update(updates); alert("Loot coletado! Olhe sua bolsa.");
+        } else alert("Alguém foi mais rápido ou o loot não existe mais!");
+    });
+}
+
+function pegarRecompensas() {
+    if (!activeCombatId || !currentCombatData) return;
+    const loots = currentCombatData.loots || {}; let updates = {};
+    Object.values(loots).forEach(loot => { if (!loot.collected_by) Object.entries(loot.items).forEach(([itemId, qtd]) => { for (let i=0;i<qtd;i++) updates[db.ref().push().key] = {item_id: itemId, equipado: false}; }); });
+    db.ref(`characters/${session}/inventario`).update(updates);
+    db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove();
+    alert("Recompensas coletadas!");
+}
+
+function sairDoCombate() { db.ref(`combat/sessions/${activeCombatId}/tokens/${session}`).remove(); }
+
+function verStatsCombate(charId, isPublic) {
+    if (!isPublic && charId !== session) return alert("O mestre ocultou os atributos nesta batalha.");
+    const c = charsDB[charId]; if (!c) return;
+    document.getElementById('cc-img').src = c.imagem;
+    document.getElementById('cc-nome').innerText = c.nome;
+    document.getElementById('cc-classe').innerText = c.classe;
+    document.getElementById('cc-desc').innerText = c.description || "";
+    let vitalsHtml = '';
+    if (c.hp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--red), #b91c1c); width:${(c.hp/c.hp_max)*100}%"></div><div class="status-bar-text">HP ${c.hp}/${c.hp_max}</div></div>`;
+    if (c.mp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--blue), #1d4ed8); width:${(c.mp/c.mp_max)*100}%"></div><div class="status-bar-text">MP ${c.mp}/${c.mp_max}</div></div>`;
+    if (c.sp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--gold), #b45309); width:${(c.sp/c.sp_max)*100}%"></div><div class="status-bar-text">SP ${c.sp}/${c.sp_max}</div></div>`;
+    document.getElementById('cc-vitals').innerHTML = vitalsHtml;
+    let eqSlots = {arma1:null,arma2:null,cabeca:null,peitoral:null,pernas:null,acessorio:null};
+    let bonus = {for:0,res:0,vel:0,agi:0,per:0,resm:0,esp:0,alm:0};
+    if (c.inventario) Object.values(c.inventario).forEach(item => {
+        if (item.equipado) {
+            const idb = itemsDB[item.item_id]; if (!idb) return;
+            if (idb.categoria==='Arma') { if (!eqSlots.arma1) eqSlots.arma1=idb; else if (!eqSlots.arma2) eqSlots.arma2=idb; }
+            else if (idb.categoria==='Armadura') { if (idb.slot_type==='Cabeça'&&!eqSlots.cabeca) eqSlots.cabeca=idb; else if (idb.slot_type==='Peitoral'&&!eqSlots.peitoral) eqSlots.peitoral=idb; else if (idb.slot_type==='Pernas'&&!eqSlots.pernas) eqSlots.pernas=idb; }
+            else if (idb.categoria==='Acessorio'&&!eqSlots.acessorio) eqSlots.acessorio=idb;
+            if (idb.mods) Object.keys(bonus).forEach(k => bonus[k]+=(idb.mods[k]||0));
         }
-        function renderItemSlot(uniqKey, itemId, equipado, count) { const idb = itemsDB[itemId]; const eqClass = equipado ? ' equipped' : ''; const badge = count > 1 ? `<div class="item-badge">x${count}</div>` : ''; return `<div class="item-slot${eqClass}" onclick="abrirItem('${uniqKey}', '${itemId}', ${equipado}, ${count})">${badge}<img class="item-img" src="${idb.imagem}"></div>`; }
-        function upar(atr) { if ((pData.pontos || 0) <= 0) return alert("Sem pontos de atributo."); if (confirm(`Investir 1 ponto em ${attrNames[atr]}?`)) { const baseAtual = pData.atributos_base ? (pData.atributos_base[atr] || 0) : 0; db.ref(`characters/${session}/pontos`).set(pData.pontos - 1); db.ref(`characters/${session}/atributos_base/${atr}`).set(baseAtual + 1); } }
-        function abrirEquipPicker(slotType) {
-            const grid = document.getElementById('picker-grid'); grid.innerHTML = ''; let found = false;
-            Object.entries(pData.inventario || {}).forEach(([key, invItem]) => {
-                const idb = itemsDB[invItem.item_id];
-                if (idb && !invItem.equipado) {
-                    let match = false;
-                    if ((slotType === 'arma1' || slotType === 'arma2') && idb.categoria === 'Arma') match = true;
-                    if (slotType === 'acessorio' && idb.categoria === 'Acessorio') match = true;
-                    if (idb.categoria === 'Armadura') { if (slotType === 'cabeca' && idb.slot_type === 'Cabeça') match = true; if (slotType === 'peitoral' && idb.slot_type === 'Peitoral') match = true; if (slotType === 'pernas' && idb.slot_type === 'Pernas') match = true; }
-                    if (match) { found = true; grid.innerHTML += `<div class="picker-item" onclick="finalizarEquip('${key}')"><img src="${idb.imagem}"><span style="font-size:0.7em">${idb.nome}</span></div>`; }
-                }
-            });
-            if (!found) grid.innerHTML = `<p style="color:#64748b; font-size:0.8em;">Nenhum item compatível na bolsa.</p>`;
-            document.getElementById('picker-title').innerText = `Equipar`; document.getElementById('picker-modal').classList.add('active');
-        }
-        function finalizarEquip(itemKey) { db.ref(`characters/${session}/inventario/${itemKey}/equipado`).set(true); fecharModal('picker-modal'); }
-        function inicializarCrafting() {
-            inventarioCraftDisponivel = {};
-            if (pData.inventario) Object.values(pData.inventario).forEach(inv => {
-                const idb = itemsDB[inv.item_id];
-                // ALTERAÇÃO: Remove a verificação de 'Material' para incluir todos os itens não equipados
-                if (idb && !inv.equipado) {
-                    inventarioCraftDisponivel[inv.item_id] = (inventarioCraftDisponivel[inv.item_id] || 0) + 1;
-                }
-            });
-            craftMesa.forEach(slot => { if (slot && inventarioCraftDisponivel[slot.id]) inventarioCraftDisponivel[slot.id] -= slot.qtd; });
-            renderUIForja(); renderReceitasProntas();
-        }
-        function renderReceitasProntas() {
-            const box = document.getElementById('receitas-prontas'); box.innerHTML = ''; let count = 0;
-            Object.keys(recipesDB).forEach(rId => {
-                const r = recipesDB[rId]; if (!r.grid) return;
-                let podeCriar = true; let invTemp = { ...inventarioCraftDisponivel };
-                for (let i = 0; i < 9; i++) {
-                    let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 };
-                    if (rSlot && typeof rSlot === 'object') { if ((invTemp[rSlot.id] || 0) < rSlot.qtd) podeCriar = false; else invTemp[rSlot.id] -= rSlot.qtd; }
-                }
-                if (podeCriar) {
-                    count++;
-                    const addResult = (res) => { let resId = res.id || res; const resItem = itemsDB[resId]; if (resItem) box.innerHTML += `<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${resItem.imagem}"> <div><strong style="color:var(--gold); font-size:0.9em;">${resItem.nome}</strong><br><small style="color:#94a3b8">Clique para preparar</small></div></div>`; };
-                    if (r.resultados) r.resultados.forEach(addResult); else if (r.resultado) addResult(r.resultado);
-                }
-            });
-            if (count === 0) box.innerHTML = `<p style="color:#64748b; font-size:0.8em; text-align:center;">Nenhum material para receitas conhecidas.</p>`;
-        }
-        function autoPreencherCraft(rId) { const r = recipesDB[rId]; limparMesa(); for (let i = 0; i < 9; i++) { let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 }; if (rSlot && typeof rSlot === 'object') craftMesa[i] = { ...rSlot }; } inicializarCrafting(); }
-        function renderUIForja() {
-            const barra = document.getElementById('craft-inventory'); barra.innerHTML = '';
-            Object.keys(inventarioCraftDisponivel).forEach(itemId => { if (inventarioCraftDisponivel[itemId] > 0 && itemsDB[itemId]) { const selectedClass = itemCraftSelecionado === itemId ? ' selected' : ''; barra.innerHTML += `<div class="inv-craft-item${selectedClass}" onclick="selecionarItemCraft('${itemId}')"><span class="item-badge">x${inventarioCraftDisponivel[itemId]}</span><img src="${itemsDB[itemId].imagem}"></div>`; } });
-            if (barra.innerHTML === '') barra.innerHTML = '<div style="color:#64748b; font-size:0.8em; text-align:center; margin-top:20px;">Nenhum material na bolsa.</div>';
-            const mesa = document.getElementById('craft-table'); mesa.innerHTML = '';
-            for (let i = 0; i < 9; i++) { const slot = craftMesa[i]; let imgHtml = slot && itemsDB[slot.id] ? `<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">` : ''; mesa.innerHTML += `<div class="craft-slot" onclick="clicarSlotMesa(${i})">${imgHtml}</div>`; }
-            verificarReceitaEmTempoReal();
-        }
-        function selecionarItemCraft(itemId) { itemCraftSelecionado = itemCraftSelecionado === itemId ? null : itemId; renderUIForja(); }
-        function clicarSlotMesa(index) { if (itemCraftSelecionado && inventarioCraftDisponivel[itemCraftSelecionado] > 0) { if (!craftMesa[index]) craftMesa[index] = { id: itemCraftSelecionado, qtd: 1 }; else if (craftMesa[index].id === itemCraftSelecionado) craftMesa[index].qtd++; else { inventarioCraftDisponivel[craftMesa[index].id] += craftMesa[index].qtd; craftMesa[index] = { id: itemCraftSelecionado, qtd: 1 }; } inventarioCraftDisponivel[itemCraftSelecionado]--; if (inventarioCraftDisponivel[itemCraftSelecionado] === 0) itemCraftSelecionado = null; } else if (!itemCraftSelecionado && craftMesa[index]) { craftMesa[index].qtd--; inventarioCraftDisponivel[craftMesa[index].id] = (inventarioCraftDisponivel[craftMesa[index].id] || 0) + 1; if (craftMesa[index].qtd <= 0) craftMesa[index] = null; } renderUIForja(); }
-        function limparMesa() { craftMesa = [null, null, null, null, null, null, null, null, null]; itemCraftSelecionado = null; inicializarCrafting(); }
-        let receitaValidaId = null; let receitaMultipla = false;
-        function verificarReceitaEmTempoReal() { receitaValidaId = null; receitaMultipla = false; const resSlot = document.getElementById('craft-result'); Object.keys(recipesDB).forEach(rId => { const r = recipesDB[rId]; if (!r.grid) return; let match = true; for (let i = 0; i < 9; i++) { let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 }; const cSlot = craftMesa[i]; const rTem = rSlot && typeof rSlot === 'object'; const cTem = cSlot && cSlot !== null; if ((rTem && !cTem) || (!rTem && cTem) || (rTem && cTem && (rSlot.id !== cSlot.id || cSlot.qtd < rSlot.qtd))) match = false; } if (match) receitaValidaId = rId; }); if (receitaValidaId && (recipesDB[receitaValidaId].resultado || recipesDB[receitaValidaId].resultados)) { const r = recipesDB[receitaValidaId]; if (r.resultados) { receitaMultipla = true; resSlot.innerHTML = `<i class="fas fa-question" style="font-size:2em; color:var(--gold);"></i>`; resSlot.style.borderColor = 'var(--gold)'; } else { let resId = r.resultado.id || r.resultado; let resQtd = r.resultado.qtd || 1; if (itemsDB[resId]) { resSlot.innerHTML = `<div class="item-badge" style="top:2px; bottom:auto;">x${resQtd}</div><img src="${itemsDB[resId].imagem}">`; resSlot.style.borderColor = "#10b981"; } } } else { resSlot.innerHTML = ''; resSlot.style.borderColor = "#f59e0b"; } }
-        function tentarForjar() { if (!receitaValidaId) return alert("Receita inválida!"); const r = recipesDB[receitaValidaId]; if (receitaMultipla) { const pickerGrid = document.getElementById('picker-grid'); pickerGrid.innerHTML = ''; r.resultados.forEach((res, index) => { const item = itemsDB[res.id]; if (item) pickerGrid.innerHTML += `<div class="picker-item" onclick="finalizarCraftMultiplo(${index})"><img src="${item.imagem}"><span style="font-size:0.7em">${item.nome}</span><div class="item-badge">x${res.qtd}</div></div>`; }); document.getElementById('picker-title').innerText = 'Escolha o que criar:'; document.getElementById('picker-modal').classList.add('active'); } else { finalizarCraftUnico(); } }
-        function finalizarCraftMultiplo(resultadoIndex) { finalizarCraftUnico(resultadoIndex); fecharModal('picker-modal'); }
-        function finalizarCraftUnico(resultadoIndex = null) { const r = recipesDB[receitaValidaId]; let updates = {}; let tempInv = JSON.parse(JSON.stringify(pData.inventario || {})); for (let i = 0; i < 9; i++) { let rSlot = r.grid[i]; if (typeof rSlot === 'string' && rSlot !== "") rSlot = { id: rSlot, qtd: 1 }; if (rSlot && typeof rSlot === 'object') { const idNeeded = rSlot.id; let amountNeeded = rSlot.qtd || 1; let keys = Object.keys(tempInv); for (let k = 0; k < keys.length && amountNeeded > 0; k++) { const key = keys[k]; if (tempInv[key].item_id === idNeeded && !tempInv[key].equipado) { updates[`${key}`] = null; delete tempInv[key]; amountNeeded--; } } } } let finalResult = resultadoIndex !== null ? r.resultados[resultadoIndex] : (r.resultado.id ? r.resultado : { id: r.resultado, qtd: 1 }); for (let j = 0; j < finalResult.qtd; j++) { const newKey = db.ref(`characters/${session}/inventario`).push().key; updates[`${newKey}`] = { item_id: finalResult.id, equipado: false }; } db.ref(`characters/${session}/inventario`).update(updates).then(() => { alert("Forjado com sucesso!"); limparMesa(); }); }
-        function renderGrimorio() { const container = document.getElementById('recipe-book-container'); container.innerHTML = ''; let recipesByCategory = {}; Object.entries(recipesDB).forEach(([rId, r]) => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; if (resItem) { if (!recipesByCategory[resItem.categoria]) recipesByCategory[resItem.categoria] = []; recipesByCategory[resItem.categoria].push({ rId, ...r }); } }); Object.entries(recipesByCategory).forEach(([category, recipes]) => { container.innerHTML += `<h3 class="section-title">${category}</h3>`; let grid = document.createElement('div'); grid.className = 'recipe-book-grid'; recipes.forEach(r => { let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; const resItem = itemsDB[resId]; grid.innerHTML += `<div class="skill-card" onclick="verReceita('${r.rId}')"><img class="skill-img" src="${resItem.imagem}"><h4>${resItem.nome}</h4></div>`; }); container.appendChild(grid); }); if (container.innerHTML === '') container.innerHTML = '<p style="color:#64748b; text-align:center;">O grimório está vazio.</p>'; }
-        function verReceita(rId) { const r = recipesDB[rId]; let resId = (r.resultado || (r.resultados || [])[0] || {}).id || r.resultado; document.getElementById('recipe-modal-title').innerText = `Receita de ${itemsDB[resId].nome}`; const bench = document.getElementById('recipe-modal-bench'); let gridHtml = '<div class="craft-grid">'; for (let i = 0; i < 9; i++) { let slot = r.grid[i]; let imgHtml = ''; if (slot && typeof slot === 'object' && itemsDB[slot.id]) { imgHtml = `<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`; } gridHtml += `<div class="craft-slot">${imgHtml}</div>`; } gridHtml += '</div>'; bench.innerHTML = gridHtml; document.getElementById('recipe-modal').classList.add('active'); }
-        function abrirItem(uniqKey, itemId, equipado, count) { itemAtualKey = uniqKey; itemAtualId = itemId; itemAtualDBData = itemsDB[itemId]; if (!itemAtualDBData) return; document.getElementById('mod-img').src = itemAtualDBData.imagem; document.getElementById('mod-nome').innerText = itemAtualDBData.nome; document.getElementById('mod-cat').innerText = itemAtualDBData.categoria + (count > 1 ? ` (Possui ${count})` : ''); document.getElementById('mod-desc').innerText = itemAtualDBData.descricao; const sBox = document.getElementById('mod-stats-box'); sBox.innerHTML = ''; if (itemAtualDBData.mods) Object.keys(attrNames).forEach(k => { if (itemAtualDBData.mods[k] > 0) sBox.innerHTML += `<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`; }); if (itemAtualDBData.effects) Object.entries(itemAtualDBData.effects).forEach(([key, val]) => { if (val > 0) sBox.innerHTML += `<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>` }); const btn = document.getElementById('mod-btn'); btn.disabled = false; if (itemAtualDBData.categoria === 'Consumivel') { btn.style.display = 'block'; btn.style.background = 'var(--cyan)'; btn.innerText = 'Usar'; itemAtualAction = 'usar'; } else if (itemAtualDBData.categoria === 'Pet') { btn.style.display = 'block'; btn.style.background = 'var(--purple)'; btn.innerText = activeCombatId ? 'Invocar' : 'Sem combate'; itemAtualAction = 'invocar'; if (!activeCombatId) btn.disabled = true; else btn.disabled = false; } else if (['Arma', 'Armadura', 'Acessorio'].includes(itemAtualDBData.categoria)) { btn.style.display = 'block'; if (equipado) { btn.style.background = '#ef4444'; btn.innerText = 'Desequipar'; } else { btn.style.background = '#10b981'; btn.innerText = 'Equipar'; } itemAtualAction = 'equip'; } else { btn.style.display = 'none'; } document.getElementById('item-modal').classList.add('active'); }
-        function handleItemAction() { if (itemAtualAction === 'equip') db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado); else if (itemAtualAction === 'usar') { const effects = itemAtualDBData.effects; if (!effects) return; let updates = {}; if (effects.hp > 0 && pData.hp_max > 0) updates.hp = Math.min(pData.hp_max, (pData.hp || 0) + effects.hp); if (effects.mp > 0 && pData.mp_max > 0) updates.mp = Math.min(pData.mp_max, (pData.mp || 0) + effects.mp); if (effects.sp > 0 && pData.sp_max > 0) updates.sp = Math.min(pData.sp_max, (pData.sp || 0) + effects.sp); db.ref(`characters/${session}`).update(updates); db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove(); } else if (itemAtualAction === 'invocar') { invocarCriatura(itemAtualKey, itemAtualId); } fecharModal('item-modal'); }
-        async function exportarFicha() {
-            const card = document.getElementById('export-card-container'); const data = { nome: pData.nome, classe: pData.classe, imagem: pData.imagem, atributos: {}, equipamentos: [], habilidades: [] };
-            document.querySelectorAll('#p-atributos-base .attr-card').forEach(el => { data.atributos[el.querySelector('.attr-name').innerText] = el.querySelector('.attr-value').innerText; });
-            document.querySelectorAll('#p-equipamentos .equip-slot.filled').forEach(el => data.equipamentos.push(el.querySelector('img').src));
-            document.querySelectorAll('#p-skills .skill-card').forEach(el => data.habilidades.push({ img: el.querySelector('img').src, nome: el.querySelector('h4').innerText }));
-            const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold'); const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--blue');
-            let atrHtml = Object.entries(data.atributos).map(([k, v]) => `<div style="flex:1; min-width:80px; text-align:center; background:rgba(0,0,0,0.3); padding:5px; border-radius:5px;"><strong style="color:${goldColor}; display:block;">${k}</strong> ${v}</div>`).join('');
-            let eqHtml = data.equipamentos.map(src => `<img src="${src}" style="width:50px; height:50px; border-radius:5px; border:1px solid #334155; object-fit:cover;">`).join('');
-            let skHtml = data.habilidades.map(s => `<div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;"><img src="${s.img}" style="width:30px; height:30px; border-radius:5px;"><span>${s.nome}</span></div>`).join('');
-            card.innerHTML = `<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos</h4><div style="display:flex; gap:8px; font-size:0.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Equipamentos</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml || 'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:0.8em;">${skHtml || 'Nenhuma.'}</div>`;
-            const canvas = await html2canvas(card, { backgroundColor: '#1e293b', useCORS: true });
-            const link = document.createElement('a'); link.download = `ficha_${session}.png`; link.href = canvas.toDataURL("image/png"); link.click();
-        }
-        document.getElementById('diario').addEventListener('input', () => { diaryDirty = true; });
-        function salvarDiario() { db.ref(`characters/${session}/anotacoes`).set(document.getElementById('diario').value); diaryDirty = false; }
-        function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
-        function openMenu() { document.getElementById('menu-overlay').classList.add('active'); }
-        function closeMenu() { document.getElementById('menu-overlay').classList.remove('active'); }
-        function openMenuTab(id) { closeMenu(); mudarAba(id); }
-        function mudarAba(id, el) {
-            document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            if (el) { el.classList.add('active'); }
-            else {
-                const target = document.querySelector(`.nav-item[data-tab="${id}"]`);
-                if (target) target.classList.add('active');
-            }
-            document.getElementById(id).classList.add('active');
-        }
-    </script>
+    });
+    if (c.skills) Object.keys(c.skills).forEach(sId => { const skill=skillsDB[sId]; if (skill&&skill.buffs) Object.keys(bonus).forEach(k=>bonus[k]+=(skill.buffs[k]||0)); });
+    const eq = document.getElementById('cc-equips');
+    if (c.tipo==='Criatura') { eq.innerHTML=`<p style="color:#64748b; font-size:.8em; grid-column:1/-1;">Criaturas não usam equipamentos.</p>`; }
+    else { const rEq=(idb,icon,type)=>idb?`<div class="equip-slot filled slot-${type}" title="${idb.nome}"><img src="${idb.imagem}"></div>`:`<div class="equip-slot slot-${type}"><i class="fas ${icon}" style="color:var(--border);"></i></div>`; eq.innerHTML=rEq(eqSlots.cabeca,'fa-helmet-battle','cabeca')+rEq(eqSlots.peitoral,'fa-tshirt','peitoral')+rEq(eqSlots.pernas,'fa-shoe-prints','pernas')+rEq(eqSlots.arma1,'fa-hand-rock','arma1')+rEq(eqSlots.arma2,'fa-hand-rock','arma2')+rEq(eqSlots.acessorio,'fa-ring','acessorio'); }
+    let statsHtml=''; const base=c.atributos_base||{};
+    Object.keys(attrNames).forEach(k=>{const total=(base[k]||0)+bonus[k]; let bStr=bonus[k]>0?`<span class="val-bonus">+${bonus[k]}</span>`:''; statsHtml+=`<div class="attr-card" style="padding:8px;"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`;});
+    document.getElementById('cc-stats').innerHTML=statsHtml;
+    document.getElementById('combat-char-modal').classList.add('active');
+}
+
+// ─── STATUS & INVENTÁRIO ─────────────────────────────────────────────
+function renderStatusEInv() {
+    let bonus={for:0,res:0,vel:0,agi:0,per:0,resm:0,esp:0,alm:0};
+    let eqSlots={arma1:null,arma2:null,cabeca:null,peitoral:null,pernas:null,acessorio:null};
+    let equippedItems=[];
+    if (pData.inventario) Object.entries(pData.inventario).forEach(([key,invItem])=>{if(invItem.equipado) equippedItems.push({key,...invItem});});
+    equippedItems.forEach(item=>{
+        const idb=itemsDB[item.item_id]; if(!idb) return; let placed=false;
+        if(idb.categoria==='Arma'){if(!eqSlots.arma1){eqSlots.arma1={item,idb};placed=true;}else if(!eqSlots.arma2){eqSlots.arma2={item,idb};placed=true;}}
+        else if(idb.categoria==='Armadura'){if(idb.slot_type==='Cabeça'&&!eqSlots.cabeca){eqSlots.cabeca={item,idb};placed=true;}else if(idb.slot_type==='Peitoral'&&!eqSlots.peitoral){eqSlots.peitoral={item,idb};placed=true;}else if(idb.slot_type==='Pernas'&&!eqSlots.pernas){eqSlots.pernas={item,idb};placed=true;}}
+        else if(idb.categoria==='Acessorio'&&!eqSlots.acessorio){eqSlots.acessorio={item,idb};placed=true;}
+        if(placed&&idb.mods) Object.keys(bonus).forEach(k=>bonus[k]+=(idb.mods[k]||0));
+    });
+    if(pData.skills) Object.keys(pData.skills).forEach(sId=>{const skill=skillsDB[sId]; if(skill&&skill.buffs) Object.keys(bonus).forEach(k=>bonus[k]+=(skill.buffs[k]||0));});
+    const renderEq=(slotData,emptyIcon,label,slotType)=>{if(slotData) return `<div class="equip-slot filled slot-${slotType}" onclick="abrirItem('${slotData.item.key}','${slotData.item.item_id}',true,1)"><img src="${slotData.idb.imagem}"><div class="equip-slot-label">${label}</div></div>`; else return `<div class="equip-slot slot-${slotType}" onclick="abrirEquipPicker('${slotType}')"><i class="fas ${emptyIcon}" style="color:var(--border); font-size:1.8em;"></i><div class="equip-slot-label">${label}</div></div>`;};
+    document.getElementById('p-equipamentos').innerHTML=renderEq(eqSlots.cabeca,'fa-helmet-battle','Cabeça','cabeca')+renderEq(eqSlots.peitoral,'fa-tshirt','Peitoral','peitoral')+renderEq(eqSlots.pernas,'fa-shoe-prints','Pernas','pernas')+renderEq(eqSlots.arma1,'fa-hand-rock','Mão 1','arma1')+renderEq(eqSlots.arma2,'fa-hand-rock','Mão 2','arma2')+renderEq(eqSlots.acessorio,'fa-ring','Amuleto','acessorio');
+    const boxSkills=document.getElementById('p-skills'); boxSkills.innerHTML='';
+    if(pData.skills) Object.keys(pData.skills).forEach(sId=>{const skill=skillsDB[sId]; if(skill) boxSkills.innerHTML+=`<div class="skill-card"><img class="skill-img" src="${skill.imagem}"><div class="skill-info"><h4>${skill.nome}</h4><p>${skill.descricao}</p></div></div>`;});
+    const atributosBase=pData.atributos_base||{};
+    const boxAtrBase=document.getElementById('p-atributos-base'); boxAtrBase.innerHTML='';
+    Object.keys(attrNames).forEach(k=>{const total=(atributosBase[k]||0)+bonus[k]; let bStr=bonus[k]>0?`<span class="val-bonus">+${bonus[k]}</span>`:''; boxAtrBase.innerHTML+=`<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;});
+    ['hp','mp','sp'].forEach(type=>{const bar=document.getElementById(`${type}-bar`); const max=pData[`${type}_max`]||0; if(max>0){bar.classList.add('active'); const val=pData[type]||0; bar.querySelector('.status-bar-inner').style.width=`${(val/max)*100}%`; bar.querySelector('.status-bar-text').innerText=`${type.toUpperCase()} ${val}/${max}`;} else bar.classList.remove('active');});
+    const boxInv=document.getElementById('p-inventario'); boxInv.innerHTML=''; let qtdMap={};
+    if(pData.inventario){
+        Object.entries(pData.inventario).forEach(([key,invItem])=>{
+            const idb=itemsDB[invItem.item_id];
+            if(idb){if(idb.categoria==='Material'||idb.categoria==='Consumivel'||idb.categoria==='Pet'){if(!qtdMap[invItem.item_id]) qtdMap[invItem.item_id]={count:0,sampleKey:key}; qtdMap[invItem.item_id].count++;}else{boxInv.innerHTML+=renderItemSlot(key,invItem.item_id,invItem.equipado,1);}}
+        });
+        Object.keys(qtdMap).forEach(itemId=>boxInv.innerHTML+=renderItemSlot(qtdMap[itemId].sampleKey,itemId,false,qtdMap[itemId].count));
+    }
+    if(boxInv.innerHTML==='') boxInv.innerHTML='<p style="grid-column:1/-1; color:#64748b; font-size:.8em; text-align:center; padding:20px;">Sua bolsa está vazia.</p>';
+    if(activeCombatId) renderSummonBar();
+}
+
+function renderItemSlot(uniqKey,itemId,equipado,count){const idb=itemsDB[itemId]; const eqClass=equipado?' equipped':''; const badge=count>1?`<div class="item-badge">x${count}</div>`:''; return `<div class="item-slot${eqClass}" onclick="abrirItem('${uniqKey}','${itemId}',${equipado},${count})">${badge}<img class="item-img" src="${idb.imagem}"></div>`;}
+function upar(atr){if((pData.pontos||0)<=0) return alert("Sem pontos de atributo."); if(confirm(`Investir 1 ponto em ${attrNames[atr]}?`)){const baseAtual=pData.atributos_base?(pData.atributos_base[atr]||0):0; db.ref(`characters/${session}/pontos`).set(pData.pontos-1); db.ref(`characters/${session}/atributos_base/${atr}`).set(baseAtual+1);}}
+function abrirEquipPicker(slotType){const grid=document.getElementById('picker-grid'); grid.innerHTML=''; let found=false; Object.entries(pData.inventario||{}).forEach(([key,invItem])=>{const idb=itemsDB[invItem.item_id]; if(idb&&!invItem.equipado){let match=false; if((slotType==='arma1'||slotType==='arma2')&&idb.categoria==='Arma') match=true; if(slotType==='acessorio'&&idb.categoria==='Acessorio') match=true; if(idb.categoria==='Armadura'){if(slotType==='cabeca'&&idb.slot_type==='Cabeça') match=true; if(slotType==='peitoral'&&idb.slot_type==='Peitoral') match=true; if(slotType==='pernas'&&idb.slot_type==='Pernas') match=true;} if(match){found=true; grid.innerHTML+=`<div class="picker-item" onclick="finalizarEquip('${key}')"><img src="${idb.imagem}"><span style="font-size:.7em">${idb.nome}</span></div>`;}}});
+if(!found) grid.innerHTML=`<p style="color:#64748b; font-size:.8em;">Nenhum item compatível na bolsa.</p>`; document.getElementById('picker-title').innerText=`Equipar`; document.getElementById('picker-modal').classList.add('active');}
+function finalizarEquip(itemKey){db.ref(`characters/${session}/inventario/${itemKey}/equipado`).set(true); fecharModal('picker-modal');}
+
+// ─── CRAFTING ────────────────────────────────────────────────────────
+function inicializarCrafting(){inventarioCraftDisponivel={}; if(pData.inventario) Object.values(pData.inventario).forEach(inv=>{const idb=itemsDB[inv.item_id]; if(idb&&!inv.equipado) inventarioCraftDisponivel[inv.item_id]=(inventarioCraftDisponivel[inv.item_id]||0)+1;}); craftMesa.forEach(slot=>{if(slot&&inventarioCraftDisponivel[slot.id]) inventarioCraftDisponivel[slot.id]-=slot.qtd;}); renderUIForja(); renderReceitasProntas();}
+function renderReceitasProntas(){const box=document.getElementById('receitas-prontas'); box.innerHTML=''; let count=0; Object.keys(recipesDB).forEach(rId=>{const r=recipesDB[rId]; if(!r.grid) return; let podeCriar=true; let invTemp={...inventarioCraftDisponivel}; for(let i=0;i<9;i++){let rSlot=r.grid[i]; if(typeof rSlot==='string'&&rSlot!=="") rSlot={id:rSlot,qtd:1}; if(rSlot&&typeof rSlot==='object'){if((invTemp[rSlot.id]||0)<rSlot.qtd) podeCriar=false; else invTemp[rSlot.id]-=rSlot.qtd;}} if(podeCriar){count++; const addResult=(res)=>{let resId=res.id||res; const resItem=itemsDB[resId]; if(resItem) box.innerHTML+=`<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${resItem.imagem}"> <div><strong style="color:var(--gold); font-size:.9em;">${resItem.nome}</strong><br><small style="color:#94a3b8">Clique para preparar</small></div></div>`;}; if(r.resultados) r.resultados.forEach(addResult); else if(r.resultado) addResult(r.resultado);}}); if(count===0) box.innerHTML=`<p style="color:#64748b; font-size:.8em; text-align:center;">Nenhum material para receitas conhecidas.</p>`;}
+function autoPreencherCraft(rId){const r=recipesDB[rId]; limparMesa(); for(let i=0;i<9;i++){let rSlot=r.grid[i]; if(typeof rSlot==='string'&&rSlot!=="") rSlot={id:rSlot,qtd:1}; if(rSlot&&typeof rSlot==='object') craftMesa[i]={...rSlot};} inicializarCrafting();}
+function renderUIForja(){const barra=document.getElementById('craft-inventory'); barra.innerHTML=''; Object.keys(inventarioCraftDisponivel).forEach(itemId=>{if(inventarioCraftDisponivel[itemId]>0&&itemsDB[itemId]){const selectedClass=itemCraftSelecionado===itemId?' selected':''; barra.innerHTML+=`<div class="inv-craft-item${selectedClass}" onclick="selecionarItemCraft('${itemId}')"><span class="item-badge">x${inventarioCraftDisponivel[itemId]}</span><img src="${itemsDB[itemId].imagem}"></div>`;}}); if(barra.innerHTML==='') barra.innerHTML='<div style="color:#64748b; font-size:.8em; text-align:center; margin-top:20px;">Nenhum material na bolsa.</div>'; const mesa=document.getElementById('craft-table'); mesa.innerHTML=''; for(let i=0;i<9;i++){const slot=craftMesa[i]; let imgHtml=slot&&itemsDB[slot.id]?`<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`:''; mesa.innerHTML+=`<div class="craft-slot" onclick="clicarSlotMesa(${i})">${imgHtml}</div>`;} verificarReceitaEmTempoReal();}
+function selecionarItemCraft(itemId){itemCraftSelecionado=itemCraftSelecionado===itemId?null:itemId; renderUIForja();}
+function clicarSlotMesa(index){if(itemCraftSelecionado&&inventarioCraftDisponivel[itemCraftSelecionado]>0){if(!craftMesa[index]) craftMesa[index]={id:itemCraftSelecionado,qtd:1}; else if(craftMesa[index].id===itemCraftSelecionado) craftMesa[index].qtd++; else{inventarioCraftDisponivel[craftMesa[index].id]+=craftMesa[index].qtd; craftMesa[index]={id:itemCraftSelecionado,qtd:1};} inventarioCraftDisponivel[itemCraftSelecionado]--; if(inventarioCraftDisponivel[itemCraftSelecionado]===0) itemCraftSelecionado=null;}else if(!itemCraftSelecionado&&craftMesa[index]){craftMesa[index].qtd--; inventarioCraftDisponivel[craftMesa[index].id]=(inventarioCraftDisponivel[craftMesa[index].id]||0)+1; if(craftMesa[index].qtd<=0) craftMesa[index]=null;} renderUIForja();}
+function limparMesa(){craftMesa=[null,null,null,null,null,null,null,null,null]; itemCraftSelecionado=null; inicializarCrafting();}
+let receitaValidaId=null, receitaMultipla=false;
+function verificarReceitaEmTempoReal(){receitaValidaId=null; receitaMultipla=false; const resSlot=document.getElementById('craft-result'); Object.keys(recipesDB).forEach(rId=>{const r=recipesDB[rId]; if(!r.grid) return; let match=true; for(let i=0;i<9;i++){let rSlot=r.grid[i]; if(typeof rSlot==='string'&&rSlot!=="") rSlot={id:rSlot,qtd:1}; const cSlot=craftMesa[i]; const rTem=rSlot&&typeof rSlot==='object'; const cTem=cSlot&&cSlot!==null; if((rTem&&!cTem)||(!rTem&&cTem)||(rTem&&cTem&&(rSlot.id!==cSlot.id||cSlot.qtd<rSlot.qtd))) match=false;} if(match) receitaValidaId=rId;}); if(receitaValidaId&&(recipesDB[receitaValidaId].resultado||recipesDB[receitaValidaId].resultados)){const r=recipesDB[receitaValidaId]; if(r.resultados){receitaMultipla=true; resSlot.innerHTML=`<i class="fas fa-question" style="font-size:2em; color:var(--gold);"></i>`; resSlot.style.borderColor='var(--gold)';}else{let resId=r.resultado.id||r.resultado; let resQtd=r.resultado.qtd||1; if(itemsDB[resId]){resSlot.innerHTML=`<div class="item-badge" style="top:2px; bottom:auto;">x${resQtd}</div><img src="${itemsDB[resId].imagem}">`; resSlot.style.borderColor="#10b981";}}}else{resSlot.innerHTML=''; resSlot.style.borderColor="#f59e0b";}}
+function tentarForjar(){if(!receitaValidaId) return alert("Receita inválida!"); const r=recipesDB[receitaValidaId]; if(receitaMultipla){const pickerGrid=document.getElementById('picker-grid'); pickerGrid.innerHTML=''; r.resultados.forEach((res,index)=>{const item=itemsDB[res.id]; if(item) pickerGrid.innerHTML+=`<div class="picker-item" onclick="finalizarCraftMultiplo(${index})"><img src="${item.imagem}"><span style="font-size:.7em">${item.nome}</span><div class="item-badge">x${res.qtd}</div></div>`;}); document.getElementById('picker-title').innerText='Escolha o que criar:'; document.getElementById('picker-modal').classList.add('active');}else{finalizarCraftUnico();}}
+function finalizarCraftMultiplo(resultadoIndex){finalizarCraftUnico(resultadoIndex); fecharModal('picker-modal');}
+function finalizarCraftUnico(resultadoIndex=null){const r=recipesDB[receitaValidaId]; let updates={}; let tempInv=JSON.parse(JSON.stringify(pData.inventario||{})); for(let i=0;i<9;i++){let rSlot=r.grid[i]; if(typeof rSlot==='string'&&rSlot!=="") rSlot={id:rSlot,qtd:1}; if(rSlot&&typeof rSlot==='object'){const idNeeded=rSlot.id; let amountNeeded=rSlot.qtd||1; let keys=Object.keys(tempInv); for(let k=0;k<keys.length&&amountNeeded>0;k++){const key=keys[k]; if(tempInv[key].item_id===idNeeded&&!tempInv[key].equipado){updates[`${key}`]=null; delete tempInv[key]; amountNeeded--;}}}} let finalResult=resultadoIndex!==null?r.resultados[resultadoIndex]:(r.resultado.id?r.resultado:{id:r.resultado,qtd:1}); for(let j=0;j<finalResult.qtd;j++){const newKey=db.ref(`characters/${session}/inventario`).push().key; updates[`${newKey}`]={item_id:finalResult.id,equipado:false};} db.ref(`characters/${session}/inventario`).update(updates).then(()=>{alert("Forjado com sucesso!"); limparMesa();});}
+
+// ─── GRIMÓRIO ────────────────────────────────────────────────────────
+function renderGrimorio(){const container=document.getElementById('recipe-book-container'); container.innerHTML=''; let recipesByCategory={}; Object.entries(recipesDB).forEach(([rId,r])=>{let resId=(r.resultado||(r.resultados||[])[0]||{}).id||r.resultado; const resItem=itemsDB[resId]; if(resItem){if(!recipesByCategory[resItem.categoria]) recipesByCategory[resItem.categoria]=[]; recipesByCategory[resItem.categoria].push({rId,...r});}}); Object.entries(recipesByCategory).forEach(([category,recipes])=>{container.innerHTML+=`<h3 class="section-title">${category}</h3>`; let grid=document.createElement('div'); grid.className='recipe-book-grid'; recipes.forEach(r=>{let resId=(r.resultado||(r.resultados||[])[0]||{}).id||r.resultado; const resItem=itemsDB[resId]; grid.innerHTML+=`<div class="skill-card" onclick="verReceita('${r.rId}')"><img class="skill-img" src="${resItem.imagem}"><h4>${resItem.nome}</h4></div>`;}); container.appendChild(grid);}); if(container.innerHTML==='') container.innerHTML='<p style="color:#64748b; text-align:center;">O grimório está vazio.</p>';}
+function verReceita(rId){const r=recipesDB[rId]; let resId=(r.resultado||(r.resultados||[])[0]||{}).id||r.resultado; document.getElementById('recipe-modal-title').innerText=`Receita de ${itemsDB[resId].nome}`; const bench=document.getElementById('recipe-modal-bench'); let gridHtml='<div class="craft-grid">'; for(let i=0;i<9;i++){let slot=r.grid[i]; let imgHtml=''; if(slot&&typeof slot==='object'&&itemsDB[slot.id]) imgHtml=`<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`; gridHtml+=`<div class="craft-slot">${imgHtml}</div>`;} gridHtml+='</div>'; bench.innerHTML=gridHtml; document.getElementById('recipe-modal').classList.add('active');}
+
+// ─── ITENS ───────────────────────────────────────────────────────────
+function abrirItem(uniqKey,itemId,equipado,count){itemAtualKey=uniqKey; itemAtualId=itemId; itemAtualDBData=itemsDB[itemId]; if(!itemAtualDBData) return; document.getElementById('mod-img').src=itemAtualDBData.imagem; document.getElementById('mod-nome').innerText=itemAtualDBData.nome; document.getElementById('mod-cat').innerText=itemAtualDBData.categoria+(count>1?` (Possui ${count})`:''); document.getElementById('mod-desc').innerText=itemAtualDBData.descricao; const sBox=document.getElementById('mod-stats-box'); sBox.innerHTML=''; if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k=>{if(itemAtualDBData.mods[k]>0) sBox.innerHTML+=`<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`;}); if(itemAtualDBData.effects) Object.entries(itemAtualDBData.effects).forEach(([key,val])=>{if(val>0) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>`}); const btn=document.getElementById('mod-btn'); btn.disabled=false; if(itemAtualDBData.categoria==='Consumivel'){btn.style.display='block'; btn.style.background='var(--cyan)'; btn.innerText='Usar'; itemAtualAction='usar';}else if(itemAtualDBData.categoria==='Pet'){btn.style.display='block'; btn.style.background='var(--purple)'; btn.innerText=activeCombatId?'Invocar':'Sem combate'; itemAtualAction='invocar'; if(!activeCombatId) btn.disabled=true; else btn.disabled=false;}else if(['Arma','Armadura','Acessorio'].includes(itemAtualDBData.categoria)){btn.style.display='block'; if(equipado){btn.style.background='#ef4444'; btn.innerText='Desequipar';}else{btn.style.background='#10b981'; btn.innerText='Equipar';} itemAtualAction='equip';}else{btn.style.display='none';} document.getElementById('item-modal').classList.add('active');}
+function handleItemAction(){if(itemAtualAction==='equip') db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado); else if(itemAtualAction==='usar'){const effects=itemAtualDBData.effects; if(!effects) return; let updates={}; if(effects.hp>0&&pData.hp_max>0) updates.hp=Math.min(pData.hp_max,(pData.hp||0)+effects.hp); if(effects.mp>0&&pData.mp_max>0) updates.mp=Math.min(pData.mp_max,(pData.mp||0)+effects.mp); if(effects.sp>0&&pData.sp_max>0) updates.sp=Math.min(pData.sp_max,(pData.sp||0)+effects.sp); db.ref(`characters/${session}`).update(updates); db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove();}else if(itemAtualAction==='invocar'){invocarCriatura(itemAtualKey,itemAtualId);} fecharModal('item-modal');}
+
+// ─── EXPORTAR ────────────────────────────────────────────────────────
+async function exportarFicha(){const card=document.getElementById('export-card-container'); const data={nome:pData.nome,classe:pData.classe,imagem:pData.imagem,atributos:{},equipamentos:[],habilidades:[]}; document.querySelectorAll('#p-atributos-base .attr-card').forEach(el=>{data.atributos[el.querySelector('.attr-name').innerText]=el.querySelector('.attr-value').innerText;}); document.querySelectorAll('#p-equipamentos .equip-slot.filled').forEach(el=>data.equipamentos.push(el.querySelector('img').src)); document.querySelectorAll('#p-skills .skill-card').forEach(el=>data.habilidades.push({img:el.querySelector('img').src,nome:el.querySelector('h4').innerText})); const goldColor=getComputedStyle(document.documentElement).getPropertyValue('--gold'); const blueColor=getComputedStyle(document.documentElement).getPropertyValue('--blue'); let atrHtml=Object.entries(data.atributos).map(([k,v])=>`<div style="flex:1; min-width:80px; text-align:center; background:rgba(0,0,0,.3); padding:5px; border-radius:5px;"><strong style="color:${goldColor}; display:block;">${k}</strong> ${v}</div>`).join(''); let eqHtml=data.equipamentos.map(src=>`<img src="${src}" style="width:50px; height:50px; border-radius:5px; border:1px solid #334155; object-fit:cover;">`).join(''); let skHtml=data.habilidades.map(s=>`<div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;"><img src="${s.img}" style="width:30px; height:30px; border-radius:5px;"><span>${s.nome}</span></div>`).join(''); card.innerHTML=`<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos</h4><div style="display:flex; gap:8px; font-size:.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Equipamentos</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml||'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:.8em;">${skHtml||'Nenhuma.'}</div>`; const canvas=await html2canvas(card,{backgroundColor:'#1e293b',useCORS:true}); const link=document.createElement('a'); link.download=`ficha_${session}.png`; link.href=canvas.toDataURL("image/png"); link.click();}
+
+// ─── DIÁRIO & MISC ───────────────────────────────────────────────────
+document.getElementById('diario').addEventListener('input', () => { diaryDirty = true; });
+function salvarDiario(){db.ref(`characters/${session}/anotacoes`).set(document.getElementById('diario').value); diaryDirty=false;}
+function fecharModal(id){document.getElementById(id).classList.remove('active');}
+function openMenu(){document.getElementById('menu-overlay').classList.add('active');}
+function closeMenu(){document.getElementById('menu-overlay').classList.remove('active');}
+function openMenuTab(id){closeMenu(); mudarAba(id);}
+function mudarAba(id,el){
+    document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    if(el) el.classList.add('active');
+    else{const target=document.querySelector(`.nav-item[data-tab="${id}"]`); if(target) target.classList.add('active');}
+    document.getElementById(id).classList.add('active');
+}
+</script>
 </body>
-
 </html>
