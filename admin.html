@@ -455,6 +455,9 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
       <div class="menu-btn forge-btn" onclick="nav('sec-create-item', this)">
         <div class="icon"><i class="fas fa-fire"></i></div>Forja de Itens
       </div>
+      <div class="menu-btn" onclick="nav('sec-chests', this)">
+        <div class="icon"><i class="fas fa-box-open"></i></div>Baús & Recompensas
+      </div>
       <div class="menu-btn" onclick="nav('sec-lib-items', this)">
         <div class="icon"><i class="fas fa-scroll"></i></div>Biblioteca de Itens
       </div>
@@ -613,6 +616,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
             <option value="Arma">Arma (Equipável)</option>
             <option value="Armadura">Armadura (Equipável)</option>
             <option value="Acessorio">Acessório (Equipável)</option>
+            <option value="Bau">Baú (Abrível)</option>
           </select>
           <div id="i-subcat-wrapper">
             <label class="field-label">Slot de Armadura</label>
@@ -674,10 +678,69 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <option value="Arma">Arma</option>
         <option value="Armadura">Armadura</option>
         <option value="Acessorio">Acessório</option>
+        <option value="Bau">Baú</option>
       </select>
       <span class="pill-count" id="count-items">0</span>
     </div>
     <div class="visual-grid" id="grid-items"></div>
+  </div>
+
+  <!-- ── Baús & Recompensas ─────────────────────────────────────────── -->
+  <div id="sec-chests" class="section">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Baús & <span>Recompensas</span></div>
+        <div class="page-sub">Monte baús com itens garantidos e chances variadas. Salve modelos para repetir.</div>
+      </div>
+    </div>
+    <div class="glass two-col">
+      <div>
+        <label class="field-label">ID do Baú</label>
+        <input type="text" id="ch-id" placeholder="ex: bau_arca_mistica">
+        <label class="field-label">Nome do Baú</label>
+        <input type="text" id="ch-nome" placeholder="Arca Mística">
+        <label class="field-label">Imagem</label>
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <input type="text" id="ch-img" placeholder="URL ou clique para enviar" style="flex:1;">
+          <input type="file" id="ch-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'ch-img')">
+          <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('ch-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <label class="field-label">Itens Garantidos</label>
+        <div class="three-col" style="margin-bottom:8px;">
+          <input type="number" id="ch-g-min" placeholder="Qtd min" value="1">
+          <input type="number" id="ch-g-max" placeholder="Qtd max" value="1">
+          <button class="btn btn-green" type="button" onclick="abrirPicker('chest_guaranteed')"><i class="fas fa-plus"></i> Add</button>
+        </div>
+        <div id="ch-guaranteed-list" class="inv-grid" style="grid-template-columns:repeat(auto-fill, minmax(80px,1fr));"></div>
+
+        <div class="section-divider"></div>
+
+        <label class="field-label">Itens com Chance (%)</label>
+        <div class="four-col" style="margin-bottom:8px;">
+          <input type="number" id="ch-c-chance" placeholder="Chance %" value="30">
+          <input type="number" id="ch-c-min" placeholder="Qtd min" value="1">
+          <input type="number" id="ch-c-max" placeholder="Qtd max" value="1">
+          <button class="btn btn-cyan" type="button" onclick="abrirPicker('chest_chance')"><i class="fas fa-dice"></i> Add</button>
+        </div>
+        <div id="ch-chance-list" class="inv-grid" style="grid-template-columns:repeat(auto-fill, minmax(80px,1fr));"></div>
+
+        <div class="section-divider"></div>
+
+        <button class="btn btn-gold" onclick="salvarBau()"><i class="fas fa-save"></i> Salvar Baú</button>
+        <button class="btn btn-ghost" onclick="salvarModeloBau()"><i class="fas fa-clone"></i> Salvar como Modelo</button>
+        <button class="btn btn-red" onclick="limparBauForm()"><i class="fas fa-eraser"></i> Limpar</button>
+      </div>
+      <div>
+        <label class="field-label">Modelos Salvos</label>
+        <div id="ch-template-list" class="visual-grid" style="grid-template-columns:repeat(auto-fill, minmax(180px,1fr));"></div>
+        <div class="section-divider"></div>
+        <label class="field-label">Baús Existentes</label>
+        <div id="ch-existing-list" class="visual-grid" style="grid-template-columns:repeat(auto-fill, minmax(180px,1fr));"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ── Habilidades ────────────────────────────────────────────────── -->
@@ -956,6 +1019,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
             <option value="Arma">Arma</option>
             <option value="Armadura">Armadura</option>
             <option value="Acessorio">Acessório</option>
+            <option value="Bau">Baú</option>
           </select>
           <div id="e-i-subcat-wrapper">
             <label class="field-label">Slot de Armadura</label>
@@ -1106,7 +1170,7 @@ const firebaseConfig = { databaseURL:"https://rpg-roleplay-on-default-rtdb.fireb
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let DB_CHARS={}, DB_ITEMS={}, DB_SKILLS={}, DB_RECIPES={}, DB_COMBATS={};
+let DB_CHARS={}, DB_ITEMS={}, DB_SKILLS={}, DB_RECIPES={}, DB_COMBATS={}, DB_CHEST_TEMPLATES={};
 const attrNames = { for:'FOR', res:'RES', vel:'VEL', agi:'AGI', per:'PER', resm:'RSM', esp:'ESP', alm:'ALM' };
 const PLACEHOLDER_IMG = 'https://via.placeholder.com/150/10141f/4a6080?text=?';
 let searchChars='', filterCharType='all', searchItems='', filterItemCat='all', searchSkills='';
@@ -1155,14 +1219,135 @@ db.ref('characters').on('value', snap=>{
   if(activeCombatId) renderCombatSetup();
   if(document.getElementById('char-modal').classList.contains('active') && activeCharId) abrirPerfilChar(activeCharId);
 });
-db.ref('items').on('value', snap=>{ DB_ITEMS=snap.val()||{}; renderItems(); renderAdminCraftTable(); });
+db.ref('items').on('value', snap=>{ DB_ITEMS=snap.val()||{}; renderItems(); renderAdminCraftTable(); renderChestExisting(); renderChestLists(); });
 db.ref('skills').on('value', snap=>{ DB_SKILLS=snap.val()||{}; renderSkills(); });
 db.ref('recipes').on('value', snap=>{ DB_RECIPES=snap.val()||{}; renderReceitasGrid(); });
+db.ref('chest_templates').on('value', snap=>{ DB_CHEST_TEMPLATES=snap.val()||{}; renderChestTemplates(); });
 db.ref('combat/sessions').on('value', snap=>{
   DB_COMBATS=snap.val()||{}; renderCombatList();
   if(activeCombatId && DB_COMBATS[activeCombatId]) updateActiveCombatView();
   else hideCombatEditor();
 });
+
+let chestGuaranteed=[], chestChances=[];
+
+function limparBauForm(){
+  ['ch-id','ch-nome','ch-img'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  chestGuaranteed=[]; chestChances=[];
+  renderChestLists();
+}
+
+function renderChestLists(){
+  const gList=document.getElementById('ch-guaranteed-list');
+  const cList=document.getElementById('ch-chance-list');
+  if(gList){
+    gList.innerHTML = chestGuaranteed.map((e,idx)=>{
+      const item=DB_ITEMS[e.item_id];
+      return `
+        <div class="inv-item" title="${item?.nome||'Item'}" style="position:relative;">
+          <img src="${item?.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'">
+          <span class="qty">x${e.qty_min||1}${(e.qty_max&&e.qty_max!==e.qty_min)?'-'+e.qty_max:''}</span>
+          <span class="remove" onclick="removerChestEntry('g',${idx})" style="position:absolute;top:4px;right:4px;cursor:pointer;color:var(--red2);">✕</span>
+        </div>`;
+    }).join('') || '<span class="hint">Nenhum item garantido.</span>';
+  }
+  if(cList){
+    cList.innerHTML = chestChances.map((e,idx)=>{
+      const item=DB_ITEMS[e.item_id];
+      return `
+        <div class="inv-item" title="${item?.nome||'Item'}" style="position:relative;">
+          <img src="${item?.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'">
+          <span class="qty">${e.chance||0}% · x${e.qty_min||1}${(e.qty_max&&e.qty_max!==e.qty_min)?'-'+e.qty_max:''}</span>
+          <span class="remove" onclick="removerChestEntry('c',${idx})" style="position:absolute;top:4px;right:4px;cursor:pointer;color:var(--red2);">✕</span>
+        </div>`;
+    }).join('') || '<span class="hint">Nenhum item com chance.</span>';
+  }
+}
+
+function removerChestEntry(type, idx){
+  if(type==='g') chestGuaranteed.splice(idx,1);
+  else chestChances.splice(idx,1);
+  renderChestLists();
+}
+
+function salvarBau(){
+  const id=ensureId(document.getElementById('ch-id').value,'ID do Baú'); if(!id) return;
+  const nome=ensureRequired(document.getElementById('ch-nome').value,'Nome do Baú'); if(!nome) return;
+  const imagem=document.getElementById('ch-img').value||PLACEHOLDER_IMG;
+  const chest={
+    guaranteed: chestGuaranteed,
+    chances: chestChances
+  };
+  const data={ nome, imagem, categoria:'Bau', rarity:'Comum', valor:0, descricao:'', chest };
+  db.ref('items/'+id).set(data).then(()=>{
+    showToast('Baú salvo!');
+    renderChestExisting();
+  });
+}
+
+function salvarModeloBau(){
+  const nome=ensureRequired(document.getElementById('ch-nome').value,'Nome do Modelo'); if(!nome) return;
+  const imagem=document.getElementById('ch-img').value||PLACEHOLDER_IMG;
+  const id=(document.getElementById('ch-id').value||`modelo_${Date.now()}`).trim();
+  db.ref('chest_templates/'+id).set({ id, nome, imagem, guaranteed: chestGuaranteed, chances: chestChances })
+    .then(()=>showToast('Modelo salvo!'));
+}
+
+function carregarModeloBau(id){
+  const tpl=DB_CHEST_TEMPLATES[id]; if(!tpl) return;
+  document.getElementById('ch-id').value=tpl.id||'';
+  document.getElementById('ch-nome').value=tpl.nome||'';
+  document.getElementById('ch-img').value=tpl.imagem||'';
+  chestGuaranteed=[...(tpl.guaranteed||[])];
+  chestChances=[...(tpl.chances||[])];
+  renderChestLists();
+}
+
+function renderChestTemplates(){
+  const box=document.getElementById('ch-template-list');
+  if(!box) return;
+  const ids=Object.keys(DB_CHEST_TEMPLATES);
+  if(!ids.length){ box.innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fas fa-box"></i><p>Nenhum modelo criado.</p></div>'; return; }
+  box.innerHTML=ids.map(id=>{
+    const t=DB_CHEST_TEMPLATES[id];
+    return `
+      <div class="card" onclick="carregarModeloBau('${id}')">
+        <div class="card-img-wrap"><img src="${t.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'"></div>
+        <div class="card-body">
+          <div class="card-name">${t.nome||'Modelo'}</div>
+          <div class="card-sub">${id}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderChestExisting(){
+  const box=document.getElementById('ch-existing-list');
+  if(!box) return;
+  const ids=Object.keys(DB_ITEMS).filter(id=>DB_ITEMS[id]?.categoria==='Bau');
+  if(!ids.length){ box.innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fas fa-box-open"></i><p>Nenhum baú criado.</p></div>'; return; }
+  box.innerHTML=ids.map(id=>{
+    const b=DB_ITEMS[id];
+    return `
+      <div class="card" onclick="carregarBauExistente('${id}')">
+        <div class="card-img-wrap"><img src="${b.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'"></div>
+        <div class="card-body">
+          <div class="card-name">${b.nome||'Baú'}</div>
+          <div class="card-sub">${id}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function carregarBauExistente(id){
+  const b=DB_ITEMS[id]; if(!b) return;
+  document.getElementById('ch-id').value=id;
+  document.getElementById('ch-nome').value=b.nome||'';
+  document.getElementById('ch-img').value=b.imagem||'';
+  chestGuaranteed=[...(b.chest?.guaranteed||[])];
+  chestChances=[...(b.chest?.chances||[])];
+  renderChestLists();
+}
 
 /* ── SEARCH / FILTER ─────────────────────────────────────────────────────── */
 document.getElementById('search-chars').addEventListener('input', e=>{ searchChars=e.target.value.toLowerCase(); renderChars(); });
@@ -1466,7 +1651,7 @@ function abrirPicker(type,targetId=null,slotIndex=null){
   const modal=document.getElementById('picker-modal');
   if(!titleEl||!modal||!qtdInput) return;
   qtdInput.value=1;
-  if(type==='give_item'||type==='craft_ing'||type==='resultado_craft'||type==='give_loot'){
+  if(type==='give_item'||type==='craft_ing'||type==='resultado_craft'||type==='give_loot'||type==='chest_guaranteed'||type==='chest_chance'){
     titleEl.textContent='Selecionar Item';
     if(qtdBox) qtdBox.style.display='flex';
     if(type==='craft_ing') pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker(null)" style="border-color:rgba(224,80,80,.3);"><div style="width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--red2);font-family:var(--font-head);font-size:.68rem;"><i class="fas fa-times"></i></div></div>`;
@@ -1508,6 +1693,21 @@ function selecionarPicker(id){
   else if(pickerCtx.type==='give_loot'){
     if(!pickerCtx.targetId||!id) return showToast('Dados inválidos','error');
     db.ref(`characters/${pickerCtx.targetId}/loots/${id}`).set(Math.max(1,qtd));
+  }
+  else if(pickerCtx.type==='chest_guaranteed'){
+    if(!id) return showToast('Item inválido','error');
+    const min=toNumber(document.getElementById('ch-g-min').value)||1;
+    const max=toNumber(document.getElementById('ch-g-max').value)||min;
+    chestGuaranteed.push({ item_id:id, qty_min:min, qty_max:Math.max(min,max) });
+    renderChestLists();
+  }
+  else if(pickerCtx.type==='chest_chance'){
+    if(!id) return showToast('Item inválido','error');
+    const chance=Math.min(100,Math.max(1,toNumber(document.getElementById('ch-c-chance').value)||1));
+    const min=toNumber(document.getElementById('ch-c-min').value)||1;
+    const max=toNumber(document.getElementById('ch-c-max').value)||min;
+    chestChances.push({ item_id:id, chance, qty_min:min, qty_max:Math.max(min,max) });
+    renderChestLists();
   }
   closeModal('picker-modal');
 }

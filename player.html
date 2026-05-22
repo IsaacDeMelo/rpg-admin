@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sua Ficha - RPG</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2040/2040523.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Manrope:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -15,62 +15,61 @@
         #loading-icon { width: 80px; height: 80px; animation: pulse 1.5s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
         ::-webkit-scrollbar { width: 7px; height: 7px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #1e3a8a, #2563eb); border-radius: 999px; border: 1px solid #0f172a; }
-        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #2563eb, #3b82f6); }
-        * { scrollbar-width: thin; scrollbar-color: #2563eb #0f172a; }
-        :root { --bg: #0f172a; --panel: #1e293b; --border: #334155; --text: #f8fafc; --gold: #f59e0b; --blue: #3b82f6; --green: #10b981; --red: #ef4444; --purple: #a855f7; --cyan: #0891b2; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,.15), transparent 60%), radial-gradient(900px 500px at 90% 0%, rgba(16,185,129,.12), transparent 60%), var(--bg); color: var(--text); padding-bottom: 100px; overflow-x: hidden; opacity: 0; transform: translateY(4px); transition: opacity .3s ease, transform .3s ease; min-height: 100vh; }
+        ::-webkit-scrollbar-track { background: #0b111f; }
+        ::-webkit-scrollbar-thumb { background: #36507a; border-radius: 999px; border: 1px solid #0b111f; }
+        ::-webkit-scrollbar-thumb:hover { background: #456796; }
+        * { scrollbar-width: thin; scrollbar-color: #3a78a4 #0b111f; }
+        :root { --bg: #0b111f; --panel: #121a2b; --panel-2: #172338; --border: #22324d; --text: #edf2f7; --gold: #d6b67e; --blue: #4aa3ff; --green: #3ac7a1; --red: #ef6b6b; --purple: #7c5cff; --cyan: #31c5d9; --accent: #f3c969; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 0; overflow-x: hidden; opacity: 0; transform: translateY(6px); transition: opacity .4s ease, transform .4s ease; min-height: 100vh; }
         body.app-ready { opacity: 1; transform: none; }
-        .header-bg { height: 140px; background: url('https://i.pinimg.com/736x/13/d4/60/13d46035503be60634544331c962dbb5.jpg') center/cover; position: relative; }
-        .header-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 5%, transparent); }
+        .header-bg { height: 150px; background: url('https://i1-e.pinimg.com/1200x/6d/9a/b4/6d9ab4835bdaa43a028a51e478ca9b9c.jpg') center/cover; position: relative; }
+        .header-overlay { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; position: absolute; inset: 0; background: rgba(11,17,31,.6); backdrop-filter: blur(1px); text-align: center; }
+        .header-title { font-size: 24px; font-weight: 700; color: #e7f0ff; letter-spacing: .6px; }
+        .header-subtitle { font-size: 12px; font-weight: 600; color: #9aa3b2; letter-spacing: 1px; text-transform: uppercase; }
         .char-info { position: relative; margin-top: -70px; padding: 0 20px; display: flex; align-items: flex-end; gap: 15px; }
-        .char-avatar { width: 90px; height: 90px; min-width: 90px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; box-shadow: 0 0 20px rgba(245,158,11,.3); z-index: 2; background: #000; cursor: pointer; transition: transform .15s; }
-        .char-avatar:active { transform: scale(.95); }
+        .char-avatar { width: 92px; height: 92px; min-width: 92px; border-radius: 22px; border: 2px solid rgba(214,182,126,.8); object-fit: cover; box-shadow: 0 12px 30px rgba(0,0,0,.4); z-index: 2; background: #000; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+        .char-avatar:active { transform: scale(.96); box-shadow: 0 8px 20px rgba(0,0,0,.45); }
         .char-texts { z-index: 2; margin-bottom: 5px; flex: 1; }
-        .char-name { font-family: 'Cinzel', serif; font-size: 1.5em; color: var(--gold); text-shadow: 2px 2px 4px #000; }
-        .char-class { font-weight: 600; color: var(--blue); text-transform: uppercase; font-size: .8em; letter-spacing: 1px; }
-        .pts-pill { display: inline-block; background: var(--purple); padding: 3px 10px; border-radius: 20px; font-size: .75em; font-weight: bold; margin-top: 5px; }
+        .char-name { font-family: 'Fraunces', serif; font-size: 1.6em; color: var(--accent); text-shadow: 0 8px 18px rgba(0,0,0,.5); letter-spacing: .3px; }
+        .char-class { font-weight: 700; color: #8ec7ff; text-transform: uppercase; font-size: .75em; letter-spacing: 1.4px; }
+        .pts-pill { display: inline-block; background: #2d2a4d; padding: 4px 12px; border-radius: 999px; font-size: .75em; font-weight: 700; letter-spacing: .4px; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
         .vitals-section { padding: 0 20px 10px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .status-bar { width: 100%; height: 28px; background: rgba(0,0,0,.5); border-radius: 8px; border: 1px solid var(--border); position: relative; overflow: hidden; opacity: .6; transition: opacity .3s, height .3s; }
-        .status-bar.active { opacity: 1; }
-        .status-bar-inner { height: 100%; transition: width .5s; border-radius: 5px; }
-        .status-bar-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: .75em; font-weight: bold; color: white; text-shadow: 1px 1px 2px #000; pointer-events: none; letter-spacing: .5px; }
-        #hp-bar .status-bar-inner { background: linear-gradient(to right, var(--red), #b91c1c); }
-        #mp-bar .status-bar-inner { background: linear-gradient(to right, var(--blue), #1d4ed8); }
-        #sp-bar .status-bar-inner { background: linear-gradient(to right, var(--gold), #b45309); }
+        .hp-chip { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: rgba(12,18,32,.8); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: .85em; font-weight: 700; letter-spacing: .4px; box-shadow: inset 0 1px 0 rgba(255,255,255,.03); }
+        .hp-chip .label { color: #9fb2ce; text-transform: uppercase; font-size: .7em; letter-spacing: .8px; }
+        .hp-chip .value { color: var(--text); font-size: .95em; }
+        .hp-chip.low { border-color: rgba(239,107,107,.6); color: var(--red); }
         .attr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-        .attr-card { background: rgba(0,0,0,.3); border-radius: 10px; padding: 10px; border-left: 3px solid var(--blue); position: relative; }
-        .attr-name { font-size: .75em; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
-        .attr-value { font-size: 1.3em; font-weight: 800; }
+        .attr-card { background: #121a2b; border-radius: 12px; padding: 12px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.03); position: relative; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+        .attr-card:hover { transform: translateY(-2px); border-color: rgba(74,163,255,.45); box-shadow: 0 10px 24px rgba(0,0,0,.25); }
+        .attr-name { font-size: .7em; color: #9fb2ce; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
+        .attr-value { font-size: 1.2em; font-weight: 800; }
         .val-bonus { font-size: .6em; color: var(--green); vertical-align: super; }
         .btn-add { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: var(--border); color: white; width: 36px; height: 36px; border-radius: 8px; font-weight: bold; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .15s, background .15s; }
         .btn-add:active { transform: translateY(-50%) scale(.92); background: var(--blue); }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(30,41,59,.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 50; padding-bottom: env(safe-area-inset-bottom, 10px); }
-        .nav-item { color: #64748b; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: .7em; font-weight: 600; cursor: pointer; transition: color .2s, transform .2s; flex: 1; padding: 8px 4px; border-radius: 8px; }
-        .nav-item:active { transform: scale(.9); }
-        .nav-item i { font-size: 1.6em; }
-        .nav-item.active { color: var(--gold); transform: translateY(-3px); }
+        .menu-trigger { position: fixed; top: 16px; right: 16px; z-index: 70; width: 46px; height: 46px; border-radius: 14px; border: 1px solid rgba(74,163,255,.35); background: rgba(11,17,31,.8); color: var(--accent); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 24px rgba(0,0,0,.35); backdrop-filter: blur(8px); transition: transform .2s ease, border-color .2s ease; }
+        .menu-trigger:active { transform: scale(.96); border-color: rgba(243,201,105,.6); }
+        .nav-item { color: #dbe7f6; display: flex; align-items: center; gap: 12px; font-size: .85em; font-weight: 600; cursor: pointer; transition: background .2s, color .2s, transform .2s; padding: 12px 14px; border-radius: 12px; }
+        .nav-item i { font-size: 1.05em; width: 20px; text-align: center; }
+        .nav-item:hover { background: rgba(74,163,255,.08); }
+        .nav-item.active { color: var(--accent); background: rgba(243,201,105,.1); border: 1px solid rgba(243,201,105,.2); }
         .nav-item.hidden { display: none !important; }
         .hidden { display: none !important; }
-        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: flex-end; z-index: 60; }
-        .menu-overlay.active { display: flex; }
-        .menu-sheet { width: 100%; max-width: 540px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); border-radius: 16px 16px 0 0; padding: 16px; box-shadow: 0 -10px 30px rgba(0,0,0,.35); }
-        .menu-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        .menu-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.1em; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 12px; border-radius: 10px; background: rgba(0,0,0,.25); border: 1px solid transparent; cursor: pointer; margin-bottom: 8px; transition: background .15s, border-color .15s; }
-        .menu-item:hover, .menu-item:active { border-color: var(--blue); background: rgba(59,130,246,.1); }
-        .menu-item i { width: 24px; text-align: center; color: var(--blue); }
-        .menu-item .hint { color: #94a3b8; font-size: .75em; }
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: stretch; justify-content: flex-start; z-index: 60; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+        .menu-overlay.active { opacity: 1; pointer-events: auto; }
+        .side-menu { width: 280px; max-width: 85vw; height: 100%; background: #121a2b; border-right: 1px solid var(--border); padding: 16px; box-shadow: 10px 0 30px rgba(0,0,0,.35); transform: translateX(-110%); opacity: 0; transition: transform .3s ease, opacity .3s ease; display: flex; flex-direction: column; gap: 12px; }
+        .menu-overlay.active .side-menu { transform: translateX(0); opacity: 1; }
+        .menu-header { display: flex; align-items: center; justify-content: space-between; }
+        .menu-title { font-family: 'Fraunces', serif; color: var(--accent); font-size: 1.1em; }
+        .menu-section { font-size: .7em; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-top: 6px; }
         .tab-content { display: none; padding: 16px; padding-bottom: 30px; max-width: 980px; margin: 0 auto; }
-        .tab-content.active { display: block; animation: fade .3s; }
-        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .section-title { font-family: 'Cinzel', serif; color: var(--blue); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 1.1em; display: flex; align-items: center; gap: 8px; }
-        .equip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; justify-items: center; margin-bottom: 25px; }
-        .equip-slot { width: 70px; height: 70px; background: rgba(0,0,0,.4); border: 2px dashed var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; position: relative; cursor: pointer; transition: transform .15s, border-color .15s, box-shadow .15s; }
+        .tab-content.active { display: block; animation: fadeUp .4s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title { font-family: 'Fraunces', serif; color: #9fd1ff; margin-bottom: 15px; border-bottom: 1px solid rgba(74,163,255,.2); padding-bottom: 6px; font-size: 1.1em; display: flex; align-items: center; gap: 8px; letter-spacing: .3px; }
+        .equip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center; margin-bottom: 25px; }
+        .equip-slot { width: 70px; height: 70px; background: rgba(7,12,22,.5); border: 2px dashed var(--border); border-radius: 14px; display: flex; justify-content: center; align-items: center; position: relative; cursor: pointer; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
         .equip-slot:active { transform: scale(.95); }
-        .equip-slot.filled { border: 2px solid var(--gold); box-shadow: 0 0 10px rgba(245,158,11,.3); background: #000; }
+        .equip-slot.filled { border: 2px solid rgba(243,201,105,.7); box-shadow: 0 8px 22px rgba(0,0,0,.35); background: #000; }
         .equip-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
         .equip-slot-label { position: absolute; bottom: -20px; font-size: .6em; color: #94a3b8; font-weight: 600; text-transform: uppercase; white-space: nowrap; }
         .slot-cabeca { grid-column: 2; } .slot-peitoral { grid-column: 2; } .slot-pernas { grid-column: 2; }
@@ -78,33 +77,71 @@
         .slot-arma2 { grid-column: 3; grid-row: 2; justify-self: start; margin-left: -10px; }
         .slot-acessorio { grid-column: 1; grid-row: 1; justify-self: end; margin-right: -10px; }
         .skills-grid, .recipe-book-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .skill-card { display: flex; align-items: center; gap: 15px; background: var(--panel); border: 1px solid var(--border); padding: 10px; border-radius: 10px; }
-        .skill-img { width: 45px; height: 45px; border-radius: 8px; border: 1px solid var(--gold); object-fit: cover; background: #000; }
+        .skill-card { display: flex; align-items: center; gap: 15px; background: #172338; border: 1px solid var(--border); padding: 12px; border-radius: 12px; transition: transform .2s ease, border-color .2s ease; }
+        .skill-card:hover { transform: translateY(-2px); border-color: rgba(74,163,255,.4); }
+        .skill-img { width: 45px; height: 45px; border-radius: 10px; border: 1px solid rgba(243,201,105,.5); object-fit: cover; background: #000; }
         .inv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .item-slot { background: var(--panel); border-radius: 10px; overflow: hidden; position: relative; border: 1px solid var(--border); aspect-ratio: 1; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform .15s, border-color .15s; }
+        .item-slot { background: var(--panel-2); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border); aspect-ratio: 1; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
         .item-slot:active { transform: scale(.95); }
-        .item-slot.equipped { border-color: var(--green); box-shadow: 0 0 10px rgba(16,185,129,.3); opacity: .6; }
+        .item-slot.equipped { border-color: var(--green); box-shadow: 0 0 14px rgba(58,199,161,.35); opacity: .7; }
         .item-badge { position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,.8); color: white; font-size: .65em; font-weight: bold; padding: 1px 5px; border-radius: 6px; z-index: 5; }
         .item-img { width: 100%; height: 100%; object-fit: cover; }
-        .crafting-bench { display: flex; align-items: center; justify-content: center; gap: 15px; background: var(--panel); padding: 20px 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .crafting-bench { display: flex; align-items: center; justify-content: center; gap: 15px; background: var(--panel-2); padding: 20px 15px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 15px; }
         .craft-grid { display: grid; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); gap: 5px; }
         .craft-slot { width: 50px; height: 50px; background: rgba(0,0,0,.4); border: 2px dashed #475569; border-radius: 8px; position: relative; cursor: pointer; display: flex; justify-content: center; align-items: center; }
         .craft-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 4px; }
         .craft-result-slot { width: 60px; height: 60px; background: rgba(0,0,0,.4); border: 2px solid var(--gold); border-radius: 10px; position: relative; display: flex; justify-content: center; align-items: center; }
         .craft-result-slot img { width: 90%; height: 90%; object-fit: cover; border-radius: 6px; }
-        .inv-craft-selector { width: 100%; overflow-x: auto; white-space: nowrap; padding: 10px; background: var(--panel); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; min-height: 70px; }
+        .inv-craft-selector { width: 100%; overflow-x: auto; white-space: nowrap; padding: 10px; background: var(--panel-2); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; min-height: 70px; }
         .inv-craft-item { display: inline-block; width: 45px; height: 45px; margin-right: 8px; position: relative; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; }
         .inv-craft-item.selected { border-color: var(--blue); box-shadow: 0 0 10px rgba(56,189,248,.5); }
         .inv-craft-item img { width: 100%; height: 100%; object-fit: cover; }
-        .btn-action { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; margin-bottom: 12px; color: white; cursor: pointer; transition: transform .1s, filter .1s; font-size: 1em; }
+        .btn-action { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700; margin-bottom: 12px; color: white; cursor: pointer; transition: transform .15s ease, filter .15s ease, box-shadow .2s ease; font-size: 1em; }
         .btn-action:active { transform: scale(.97); filter: brightness(.9); }
-        .btn-forge { background: var(--gold); color: #000; }
-        .recipe-ready-card { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--green); border-radius: 10px; padding: 10px; margin-bottom: 10px; cursor: pointer; }
+        .btn-action:hover { box-shadow: 0 10px 20px rgba(0,0,0,.25); }
+        .btn-forge { background: #d6b67e; color: #1b1208; }
+        .recipe-ready-card { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border: 1px solid rgba(58,199,161,.35); border-radius: 12px; padding: 10px; margin-bottom: 10px; cursor: pointer; transition: transform .2s ease, border-color .2s ease; }
+        .recipe-ready-card:hover { transform: translateY(-2px); border-color: rgba(58,199,161,.6); }
         .recipe-ready-card img { width: 40px; height: 40px; border-radius: 6px; background: #000; }
-        textarea#diario { width: 100%; height: 350px; background: var(--panel); border: 1px solid var(--border); color: #cbd5e1; padding: 15px; border-radius: 12px; resize: none; font-size: 1em; outline: none; line-height: 1.5; }
-        textarea#diario:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(59,130,246,.2); }
+        textarea#diario { width: 100%; height: 350px; background: var(--panel-2); border: 1px solid var(--border); color: #dbe7f6; padding: 15px; border-radius: 14px; resize: none; font-size: 1em; outline: none; line-height: 1.6; }
+        textarea#diario:focus { border-color: rgba(74,163,255,.6); box-shadow: 0 0 0 2px rgba(74,163,255,.15); }
+        .grimorio-book { position: relative; max-width: 880px; margin: 8px auto 0; min-height: 520px; perspective: 1400px; }
+        .grimorio-book::before { content: ''; position: absolute; inset: -6px; border-radius: 22px; background-image: url(https://i1-e.pinimg.com/736x/30/84/c9/3084c9846583f3b4ca028f21f812cf76.jpg); z-index: 0; filter: blur(0.2px); }
+        .book-cover { position: absolute; left: 0; top: 0; bottom: 0; width: 46%; background: linear-gradient(135deg, #3b2b1d 0%, #4c3523 45%, #2c1e14 100%); border-radius: 18px 6px 6px 18px; transform-origin: left center; transform: rotateY(0deg); box-shadow: 0 25px 60px rgba(0,0,0,.45), inset 0 0 30px rgba(0,0,0,.35); z-index: 3; backface-visibility: hidden; }
+        .book-cover::before { content: ''; position: absolute; left: 12px; top: 16px; bottom: 16px; width: 10px; border-radius: 10px; background: linear-gradient(180deg, rgba(214,182,126,.6), rgba(214,182,126,.1)); box-shadow: inset 0 0 8px rgba(0,0,0,.4); }
+        .book-cover-inner { position: absolute; inset: 22px 18px 22px 32px; border: 1px solid rgba(214,182,126,.4); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; background: rgba(11,17,31,.35); }
+        .book-title { font-family: 'Fraunces', serif; color: #f2e2b6; font-size: 1.4em; letter-spacing: 1px; text-transform: uppercase; }
+        .book-subtitle { font-size: .7em; color: rgba(242,226,182,.7); letter-spacing: 1.4px; text-transform: uppercase; }
+        .book-pages { position: relative; margin-left: 40%; min-height: 520px; padding: 22px; background: linear-gradient(180deg, #f3e9d3 0%, #e9dcc1 100%); border-radius: 6px 18px 18px 6px; box-shadow: inset 0 0 30px rgba(0,0,0,.1), 0 18px 50px rgba(0,0,0,.35); z-index: 2; }
+        .book-pages::before { content: ''; position: absolute; left: -16px; top: 10px; bottom: 10px; width: 18px; border-radius: 4px 0 0 4px; background: repeating-linear-gradient(180deg, #d9c9a7, #d9c9a7 6px, #e5d7b6 6px, #e5d7b6 12px); box-shadow: inset 0 0 8px rgba(0,0,0,.2); }
+        .book-page { position: relative; z-index: 2; color: #2b2115; }
+        .grimorio-book .section-title { color: #3d2b12; border-bottom: 1px solid rgba(120,87,45,.35); margin-top: 18px; padding-top: 12px; }
+        .grimorio-book .section-title:first-child { margin-top: 0; padding-top: 0; }
+        .grimorio-book .recipe-book-grid { gap: 12px; }
+        .grimorio-book .skill-card { background: rgba(255,255,255,.7); border: 1px solid rgba(120,87,45,.25); color: #2b2115; box-shadow: 0 10px 20px rgba(70,45,20,.08); }
+        .grimorio-book .skill-card:hover { border-color: rgba(120,87,45,.5); transform: translateY(-2px); }
+        .grimorio-book .skill-card h4 { color: #2b1c0b; }
+        .grimorio-book .skill-img { border-color: rgba(120,87,45,.45); }
+        .tab-content.active .book-cover { animation: coverOpen 1.2s ease forwards; }
+        @keyframes coverOpen { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(-115deg); } }
+        .build-summary { background: #172338; border: 1px solid rgba(74,163,255,.25); border-radius: 18px; padding: 16px; margin-bottom: 18px; display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; box-shadow: 0 18px 30px rgba(0,0,0,.25); animation: floatSoft 6s ease-in-out infinite; position: relative; overflow: hidden; }
+        .build-summary::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: url('https://i.pinimg.com/736x/13/d4/60/13d46035503be60634544331c962dbb5.jpg') center/cover; filter: brightness(.6); opacity: .75; z-index: 0; }
+        .build-summary::after { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,.35); z-index: 0; }
+        .build-summary > * { position: relative; z-index: 1; }
+        .build-summary img { width: 64px; height: 64px; border-radius: 14px; border: 2px solid rgba(243,201,105,.7); object-fit: cover; background: #000; }
+        .build-summary h3 { font-family: 'Fraunces', serif; color: var(--accent); font-size: 1.15em; margin-bottom: 2px; }
+        .build-summary .summary-class { color: #9fd1ff; font-size: .75em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .summary-chart { grid-column: 1 / -1; margin-top: 12px; background: #101a2c; border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
+        .summary-chart svg { width: 100%; height: 220px; display: block; }
+        .chart-grid { stroke: #22324d; stroke-width: 1; fill: none; }
+        .chart-axis { stroke: #1d2a42; stroke-width: 1; }
+        .chart-shape { fill: rgba(74,163,255,.25); stroke: #4aa3ff; stroke-width: 2; }
+        .chart-label { fill: #9fb2ce; font-size: 10px; font-weight: 600; letter-spacing: .4px; }
+        .chart-label.n2 { fill: #f3c969; }
+        .chart-edge { stroke-width: 2.5; fill: none; }
         .summon-bar { margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-        .summon-card { background: rgba(0,0,0,.35); border: 1px solid var(--border); border-radius: 10px; padding: 8px; text-align: center; }
+        .summon-card { background: rgba(10,16,28,.6); border: 1px solid var(--border); border-radius: 12px; padding: 8px; text-align: center; transition: transform .2s ease, border-color .2s ease; }
+        .summon-card:hover { transform: translateY(-2px); border-color: rgba(124,92,255,.5); }
         .summon-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 6px; background: #000; }
         .summon-card h4 { font-size: .8em; color: var(--gold); margin-bottom: 6px; }
         .summon-card button { width: 100%; border: none; border-radius: 8px; padding: 8px; background: var(--purple); color: #fff; font-weight: bold; cursor: pointer; }
@@ -130,17 +167,17 @@
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 100; display: none; justify-content: center; align-items: center; padding: 10px; }
         .modal.active { display: flex; animation: fade .2s; }
-        .modal-card { background: var(--panel); width: 90vw; max-width: 380px; border-radius: 16px; padding: 20px; text-align: center; border: 1px solid var(--blue); position: relative; max-height: 85vh; overflow-y: auto; margin: 10px; }
+        .modal-card { background: #121a2b; width: 90vw; max-width: 380px; border-radius: 18px; padding: 20px; text-align: center; border: 1px solid rgba(74,163,255,.4); position: relative; max-height: 85vh; overflow-y: auto; margin: 10px; }
         .close-btn { position: absolute; top: 10px; right: 15px; color: #94a3b8; font-size: 1.5em; cursor: pointer; z-index: 10; }
         .mod-img { width: 90px; height: 90px; border-radius: 12px; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: cover; }
-        .mod-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.2em; margin-bottom: 5px; }
-        .mod-cat { font-size: .7em; color: var(--blue); margin-bottom: 10px; text-transform: uppercase; font-weight: bold; }
+        .mod-title { font-family: 'Fraunces', serif; color: var(--accent); font-size: 1.2em; margin-bottom: 5px; }
+        .mod-cat { font-size: .7em; color: #9fd1ff; margin-bottom: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: .6px; }
         .mod-desc { color: #cbd5e1; font-size: .8em; margin-bottom: 15px; }
         .mod-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 15px; }
-        .mod-tag { background: rgba(16,185,129,.2); border: 1px solid var(--green); color: var(--green); padding: 3px 8px; border-radius: 10px; font-size: .7em; font-weight: bold; }
-        .btn-equip { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; background: var(--green); color: white; }
+        .mod-tag { background: rgba(58,199,161,.2); border: 1px solid rgba(58,199,161,.5); color: var(--green); padding: 3px 8px; border-radius: 10px; font-size: .7em; font-weight: 700; }
+        .btn-equip { width: 100%; padding: 12px; border-radius: 10px; font-weight: 700; border: none; background: var(--green); color: white; }
         .picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 10px; max-height: 50vh; overflow-y: auto; padding-right: 10px; }
-        .picker-item { text-align: center; cursor: pointer; background: rgba(0,0,0,.3); border-radius: 10px; padding: 6px; position: relative; transition: transform .15s; }
+        .picker-item { text-align: center; cursor: pointer; background: rgba(10,16,28,.6); border-radius: 12px; padding: 6px; position: relative; transition: transform .2s ease, border-color .2s ease; }
         .picker-item:active { transform: scale(.92); }
         .picker-item img { width: 100%; aspect-ratio: 1; object-fit: cover; border: 2px solid transparent; border-radius: 8px; }
         .picker-item:hover img, .picker-item.selected img { border-color: var(--blue); }
@@ -155,9 +192,10 @@
             background: rgba(0, 0, 0, 0.4);
             box-shadow: 0 0 30px rgba(168, 85, 247, 0.1), inset 0 1px 0 rgba(255,255,255,0.05);
         }
+        @keyframes floatSoft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
         .ia-combat-header {
-            background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(59,130,246,0.15));
+            background: rgba(18,26,43,.9);
             padding: 14px 16px;
             border-bottom: 1px solid rgba(168,85,247,0.3);
             display: flex;
@@ -210,8 +248,8 @@
 
         .ia-comb-hp-track { height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
         .ia-comb-hp-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
-        .ia-comb-hp-fill.blue { background: linear-gradient(to right, #3b82f6, #60a5fa); }
-        .ia-comb-hp-fill.red { background: linear-gradient(to right, #ef4444, #f87171); }
+        .ia-comb-hp-fill.blue { background: #4aa3ff; }
+        .ia-comb-hp-fill.red { background: #ef6b6b; }
 
         .ia-comb-stats { font-size: 0.65em; color: #94a3b8; display: flex; gap: 8px; flex-wrap: wrap; }
 
@@ -258,7 +296,7 @@
         .ia-msg.narrador {
             align-self: center;
             text-align: center;
-            background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(59,130,246,0.08));
+            background: rgba(20,28,44,.8);
             border: 1px solid rgba(168,85,247,0.3);
             color: #e2d9f3;
             max-width: 100%;
@@ -350,7 +388,7 @@
         .ia-textarea:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .ia-send-btn {
-            background: linear-gradient(135deg, var(--purple), #7c3aed);
+            background: var(--purple);
             color: white;
             border: none;
             border-radius: 10px;
@@ -409,8 +447,8 @@
             border-top: 1px solid rgba(255,255,255,0.07);
         }
 
-        .ia-end-banner.vitoria { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(245,158,11,0.08)); }
-        .ia-end-banner.derrota { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(168,85,247,0.08)); }
+        .ia-end-banner.vitoria { background: rgba(16,185,129,0.08); }
+        .ia-end-banner.derrota { background: rgba(239,68,68,0.08); }
 
         .ia-end-title { font-family: 'Cinzel', serif; font-size: 1.1em; margin-bottom: 6px; }
         .ia-end-title.vitoria { color: var(--green); }
@@ -466,7 +504,7 @@
         .ia-loot-item { background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; padding: 6px; text-align: center; }
         .ia-loot-item img { width: 36px; height: 36px; object-fit: cover; border-radius: 5px; display: block; margin: 0 auto 3px; }
         .ia-loot-item span { font-size: 0.65em; color: #94a3b8; display: block; }
-        .ia-collect-btn { width: 100%; margin-top: 10px; padding: 10px; border-radius: 8px; border: none; background: linear-gradient(135deg, var(--gold), #d97706); color: #000; font-weight: 700; cursor: pointer; font-size: 0.85em; transition: transform 0.1s; }
+        .ia-collect-btn { width: 100%; margin-top: 10px; padding: 10px; border-radius: 8px; border: none; background: var(--gold); color: #000; font-weight: 700; cursor: pointer; font-size: 0.85em; transition: transform 0.1s; }
         .ia-collect-btn:active { transform: scale(0.97); }
     </style>
 </head>
@@ -476,26 +514,26 @@
     <img id="loading-icon" src="" alt="Carregando...">
 </div>
 
-<div class="header-bg"><div class="header-overlay"></div></div>
-<div class="char-info">
-    <img id="p-img" class="char-avatar" src="https://via.placeholder.com/150">
-    <div class="char-texts">
-        <div class="char-name" id="p-nome">Carregando...</div>
-        <div class="char-class" id="p-classe">Classe</div>
-    </div>
-</div>
-<div class="vitals-section">
-    <div id="hp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">HP</div></div>
-    <div id="mp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">MP</div></div>
-    <div id="sp-bar" class="status-bar"><div class="status-bar-inner"></div><div class="status-bar-text">SP</div></div>
-</div>
+<button class="menu-trigger" onclick="openMenu()" aria-label="Abrir menu">
+    <i class="fas fa-bars"></i>
+</button>
 
 <!-- TABS -->
 <div id="tab-status" class="tab-content active">
+    <div class="build-summary">
+        <img id="summary-img" src="https://via.placeholder.com/150" alt="Perfil">
+        <div>
+            <h3 id="summary-name">Carregando...</h3>
+            <div class="summary-class" id="summary-class">Classe</div>
+        </div>
+        <div class="summary-chart">
+            <svg id="attr-chart" viewBox="0 0 220 220" aria-label="Grafico de atributos" role="img"></svg>
+        </div>
+    </div>
     <div class="pts-pill" style="margin-bottom:20px; text-align:center; display:block;"><i class="fas fa-star"></i> <span id="p-pontos">0</span> Pts de Atributo</div>
     <h3 class="section-title"><i class="fas fa-heartbeat"></i> Atributos Base</h3>
     <div id="p-atributos-base" class="attr-grid"></div>
-    <h3 class="section-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3>
+    <h3 class="section-title" id="skills-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3>
     <div id="p-skills" class="skills-grid"></div>
 </div>
 <div id="tab-equip" class="tab-content">
@@ -504,6 +542,7 @@
     <div class="equip-grid" id="p-equipamentos"></div>
 </div>
 <div id="tab-bolsa" class="tab-content">
+    <h3 class="section-title"><i class="fas fa-sack"></i> Bolsa</h3>
     <div class="inv-grid" id="p-inventario"></div>
 </div>
 <div id="tab-forja" class="tab-content">
@@ -519,39 +558,40 @@
     <button class="btn-action" style="background:var(--border);" onclick="limparMesa()">Limpar Mesa</button>
 </div>
 <div id="tab-grimorio" class="tab-content">
-    <div id="recipe-book-container"></div>
+    <div class="grimorio-book">
+        <div class="book-cover">
+            <div class="book-cover-inner">
+                <div class="book-title">Grimorio</div>
+                <div class="book-subtitle">Receitas e registros</div>
+            </div>
+        </div>
+        <div class="book-pages">
+            <div id="recipe-book-container" class="book-page"></div>
+        </div>
+    </div>
 </div>
 <div id="tab-combat" class="tab-content">
     <div id="combat-view"></div>
 </div>
 <div id="tab-diario" class="tab-content">
-    <textarea id="diario" placeholder="Anotações..." onchange="salvarDiario()"></textarea>
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-    <div class="nav-item active" data-tab="tab-status" onclick="mudarAba('tab-status', this)"><i class="fas fa-user-shield"></i>Status</div>
-    <div class="nav-item" data-tab="tab-equip" onclick="mudarAba('tab-equip', this)"><i class="fas fa-tshirt"></i>Equip</div>
-    <div class="nav-item" data-tab="tab-bolsa" onclick="mudarAba('tab-bolsa', this)"><i class="fas fa-shopping-bag"></i>Bolsa</div>
-    <div class="nav-item" data-tab="tab-forja" onclick="mudarAba('tab-forja', this)"><i class="fas fa-hammer"></i>Forja</div>
-    <div class="nav-item" onclick="openMenu()"><i class="fas fa-ellipsis-h"></i>Mais</div>
+    <h3 class="section-title"><i class="fas fa-feather"></i> Diario</h3>
+    <textarea id="diario" placeholder="Escreva sua cena aqui..." onchange="salvarDiario()"></textarea>
 </div>
 
 <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()">
-    <div class="menu-sheet" onclick="event.stopPropagation()">
+    <div class="side-menu" onclick="event.stopPropagation()">
         <div class="menu-header">
             <div class="menu-title">Menu</div>
             <i class="fas fa-times" style="cursor:pointer; color:#94a3b8;" onclick="closeMenu()"></i>
         </div>
-        <div class="menu-item" onclick="openMenuTab('tab-grimorio')"><i class="fas fa-book-open"></i>
-            <div><div>Grimório</div><div class="hint">Receitas e registros</div></div>
-        </div>
-        <div class="menu-item hidden" id="menu-combat" onclick="openMenuTab('tab-combat')"><i class="fas fa-fire" style="color:var(--red);"></i>
-            <div><div>Combate</div><div class="hint">Cena e táticas</div></div>
-        </div>
-        <div class="menu-item" onclick="openMenuTab('tab-diario')"><i class="fas fa-feather"></i>
-            <div><div>Diário</div><div class="hint">Notas pessoais</div></div>
-        </div>
+        <div class="menu-section">Navegacao</div>
+        <div class="nav-item active" data-tab="tab-status" onclick="openMenuTab('tab-status', this)"><i class="fas fa-user-shield"></i>Status</div>
+        <div class="nav-item" data-tab="tab-equip" onclick="openMenuTab('tab-equip', this)"><i class="fas fa-tshirt"></i>Equip</div>
+        <div class="nav-item" data-tab="tab-bolsa" onclick="openMenuTab('tab-bolsa', this)"><i class="fas fa-shopping-bag"></i>Bolsa</div>
+        <div class="nav-item" data-tab="tab-forja" onclick="openMenuTab('tab-forja', this)"><i class="fas fa-hammer"></i>Forja</div>
+        <div class="nav-item" data-tab="tab-grimorio" onclick="openMenuTab('tab-grimorio', this)"><i class="fas fa-book-open"></i>Grimorio</div>
+        <div class="nav-item hidden" id="menu-combat" data-tab="tab-combat" onclick="openMenuTab('tab-combat', this)"><i class="fas fa-fire" style="color:var(--red);"></i>Combate</div>
+        <div class="nav-item" data-tab="tab-diario" onclick="openMenuTab('tab-diario', this)"><i class="fas fa-feather"></i>Diario</div>
     </div>
 </div>
 
@@ -658,10 +698,14 @@ db.ref('characters').on('value', s => { charsDB = s.val() || {}; });
 db.ref('characters/' + session).on('value', snap => {
     if (!snap.exists()) return (window.location.href = 'index.html');
     pData = snap.val();
-    document.getElementById('p-nome').innerText = pData.nome;
-    document.getElementById('p-classe').innerText = pData.classe || "Aventureiro";
-    document.getElementById('p-pontos').innerText = pData.pontos || 0;
-    if (pData.imagem) document.getElementById('p-img').src = pData.imagem;
+    const nomeEl = document.getElementById('p-nome');
+    const classeEl = document.getElementById('p-classe');
+    const pontosEl = document.getElementById('p-pontos');
+    const imgEl = document.getElementById('p-img');
+    if (nomeEl) nomeEl.innerText = pData.nome;
+    if (classeEl) classeEl.innerText = pData.classe || "Aventureiro";
+    if (pontosEl) pontosEl.innerText = pData.pontos || 0;
+    if (pData.imagem && imgEl) imgEl.src = pData.imagem;
     const diaryEl = document.getElementById('diario');
     if (diaryEl && !diaryDirty) diaryEl.value = pData.anotacoes || '';
     checkRender();
@@ -1363,12 +1407,123 @@ function renderStatusEInv() {
     if(pData.skills) Object.keys(pData.skills).forEach(sId=>{const skill=skillsDB[sId]; if(skill&&skill.buffs) Object.keys(bonus).forEach(k=>bonus[k]+=(skill.buffs[k]||0));});
     const renderEq=(slotData,emptyIcon,label,slotType)=>{if(slotData) return `<div class="equip-slot filled slot-${slotType}" onclick="abrirItem('${slotData.item.key}','${slotData.item.item_id}',true,1)"><img src="${slotData.idb.imagem}"><div class="equip-slot-label">${label}</div></div>`; else return `<div class="equip-slot slot-${slotType}" onclick="abrirEquipPicker('${slotType}')"><i class="fas ${emptyIcon}" style="color:var(--border); font-size:1.8em;"></i><div class="equip-slot-label">${label}</div></div>`;};
     document.getElementById('p-equipamentos').innerHTML=renderEq(eqSlots.cabeca,'fa-helmet-battle','Cabeça','cabeca')+renderEq(eqSlots.peitoral,'fa-tshirt','Peitoral','peitoral')+renderEq(eqSlots.pernas,'fa-shoe-prints','Pernas','pernas')+renderEq(eqSlots.arma1,'fa-hand-rock','Mão 1','arma1')+renderEq(eqSlots.arma2,'fa-hand-rock','Mão 2','arma2')+renderEq(eqSlots.acessorio,'fa-ring','Amuleto','acessorio');
-    const boxSkills=document.getElementById('p-skills'); boxSkills.innerHTML='';
-    if(pData.skills) Object.keys(pData.skills).forEach(sId=>{const skill=skillsDB[sId]; if(skill) boxSkills.innerHTML+=`<div class="skill-card"><img class="skill-img" src="${skill.imagem}"><div class="skill-info"><h4>${skill.nome}</h4><p>${skill.descricao}</p></div></div>`;});
+    const boxSkills=document.getElementById('p-skills');
+    const skillsTitle=document.getElementById('skills-title');
+    boxSkills.innerHTML='';
+    const skillIds=pData.skills?Object.keys(pData.skills):[];
+    if(skillIds.length){
+        skillIds.forEach(sId=>{const skill=skillsDB[sId]; if(skill) boxSkills.innerHTML+=`<div class="skill-card"><img class="skill-img" src="${skill.imagem}"><div class="skill-info"><h4>${skill.nome}</h4><p>${skill.descricao}</p></div></div>`;});
+        if (skillsTitle) skillsTitle.classList.remove('hidden');
+        boxSkills.classList.remove('hidden');
+    } else {
+        if (skillsTitle) skillsTitle.classList.add('hidden');
+        boxSkills.classList.add('hidden');
+    }
     const atributosBase=pData.atributos_base||{};
     const boxAtrBase=document.getElementById('p-atributos-base'); boxAtrBase.innerHTML='';
-    Object.keys(attrNames).forEach(k=>{const total=(atributosBase[k]||0)+bonus[k]; let bStr=bonus[k]>0?`<span class="val-bonus">+${bonus[k]}</span>`:''; boxAtrBase.innerHTML+=`<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;});
-    ['hp','mp','sp'].forEach(type=>{const bar=document.getElementById(`${type}-bar`); const max=pData[`${type}_max`]||0; if(max>0){bar.classList.add('active'); const val=pData[type]||0; bar.querySelector('.status-bar-inner').style.width=`${(val/max)*100}%`; bar.querySelector('.status-bar-text').innerText=`${type.toUpperCase()} ${val}/${max}`;} else bar.classList.remove('active');});
+    let totalPower=0;
+    Object.keys(attrNames).forEach(k=>{const total=(atributosBase[k]||0)+bonus[k]; totalPower+=total; let bStr=bonus[k]>0?`<span class="val-bonus">+${bonus[k]}</span>`:''; boxAtrBase.innerHTML+=`<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;});
+    const summaryImg=document.getElementById('summary-img');
+    const summaryName=document.getElementById('summary-name');
+    const summaryClass=document.getElementById('summary-class');
+    if (summaryImg && pData.imagem) summaryImg.src = pData.imagem;
+    if (summaryName) summaryName.innerText = pData.nome || 'Aventureiro';
+    if (summaryClass) summaryClass.innerText = pData.classe || 'Classe';
+
+    const chart=document.getElementById('attr-chart');
+    if (chart) {
+        const keys = Object.keys(attrNames);
+        const values = keys.map(k => (atributosBase[k] || 0) + bonus[k]);
+        const colors = {
+            for: '#ef6b6b',
+            res: '#f3c969',
+            vel: '#4aa3ff',
+            agi: '#31c5d9',
+            per: '#7c5cff',
+            resm: '#3ac7a1',
+            esp: '#f59e7a',
+            alm: '#d68cff'
+        };
+        const hasLevel2 = values.some(v => v > 25);
+        const max = hasLevel2 ? 50 : 25;
+        const size = 220;
+        const cx = size / 2;
+        const cy = size / 2;
+        const radius = 70;
+        const rings = 4;
+        const angleStep = (Math.PI * 2) / keys.length;
+
+        const ringPts = (r) => keys.map((_, i) => {
+            const a = -Math.PI / 2 + i * angleStep;
+            return `${(cx + Math.cos(a) * r).toFixed(1)},${(cy + Math.sin(a) * r).toFixed(1)}`;
+        }).join(' ');
+
+        const polyPts = values.map((v, i) => {
+            const a = -Math.PI / 2 + i * angleStep;
+            const rr = (Math.min(v, max) / max) * radius;
+            return `${(cx + Math.cos(a) * rr).toFixed(1)},${(cy + Math.sin(a) * rr).toFixed(1)}`;
+        }).join(' ');
+
+        const points = values.map((v, i) => {
+            const a = -Math.PI / 2 + i * angleStep;
+            const rr = (Math.min(v, max) / max) * radius;
+            return {
+                x: (cx + Math.cos(a) * rr),
+                y: (cy + Math.sin(a) * rr)
+            };
+        });
+
+        const axes = keys.map((_, i) => {
+            const a = -Math.PI / 2 + i * angleStep;
+            const x = cx + Math.cos(a) * radius;
+            const y = cy + Math.sin(a) * radius;
+            return `<line class="chart-axis" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" />`;
+        }).join('');
+
+        const labels = keys.map((k, i) => {
+            const a = -Math.PI / 2 + i * angleStep;
+            const labelR = radius + 18;
+            const x = cx + Math.cos(a) * labelR;
+            const y = cy + Math.sin(a) * labelR;
+            const isN2 = values[i] > 25;
+            const suffix = isN2 ? ' N2' : '';
+            const color = colors[k] || '#9fb2ce';
+            return `<text class="chart-label${isN2 ? ' n2' : ''}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" fill="${color}">${attrNames[k]}${suffix}</text>`;
+        }).join('');
+
+        const edgeDefs = points.map((p, i) => {
+            const next = points[(i + 1) % points.length];
+            return `<linearGradient id="edge-${i}" gradientUnits="userSpaceOnUse" x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${next.x.toFixed(1)}" y2="${next.y.toFixed(1)}"><stop offset="0%" stop-color="${colors[keys[i]] || '#9fb2ce'}" /><stop offset="100%" stop-color="${colors[keys[(i + 1) % keys.length]] || '#9fb2ce'}" /></linearGradient>`;
+        }).join('');
+
+        const edges = points.map((p, i) => {
+            const next = points[(i + 1) % points.length];
+            return `<line class="chart-edge" x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${next.x.toFixed(1)}" y2="${next.y.toFixed(1)}" stroke="url(#edge-${i})" />`;
+        }).join('');
+
+        const ringsHtml = Array.from({length: rings}, (_, i) => {
+            const r = (radius / rings) * (i + 1);
+            return `<polygon class="chart-grid" points="${ringPts(r)}" />`;
+        }).join('');
+
+        chart.innerHTML = `
+            <defs>${edgeDefs}</defs>
+            ${ringsHtml}
+            ${axes}
+            <polygon class="chart-shape" points="${polyPts}" />
+            ${edges}
+            ${labels}
+        `;
+    }
+    const hpChip=document.getElementById('hp-chip');
+    const hpValue=document.getElementById('hp-value');
+    const hpMax=pData.hp_max||0;
+    const hpCur=pData.hp||0;
+    if (hpValue) hpValue.innerText = `${hpCur}/${hpMax}`;
+    if (hpChip) {
+        const pct = hpMax > 0 ? (hpCur / hpMax) : 0;
+        hpChip.classList.toggle('low', pct > 0 && pct <= 0.3);
+    }
     const boxInv=document.getElementById('p-inventario'); boxInv.innerHTML=''; let qtdMap={};
     if(pData.inventario){
         Object.entries(pData.inventario).forEach(([key,invItem])=>{
@@ -1389,9 +1544,9 @@ function finalizarEquip(itemKey){db.ref(`characters/${session}/inventario/${item
 
 // ─── CRAFTING ────────────────────────────────────────────────────────
 function inicializarCrafting(){inventarioCraftDisponivel={}; if(pData.inventario) Object.values(pData.inventario).forEach(inv=>{const idb=itemsDB[inv.item_id]; if(idb&&!inv.equipado) inventarioCraftDisponivel[inv.item_id]=(inventarioCraftDisponivel[inv.item_id]||0)+1;}); craftMesa.forEach(slot=>{if(slot&&inventarioCraftDisponivel[slot.id]) inventarioCraftDisponivel[slot.id]-=slot.qtd;}); renderUIForja(); renderReceitasProntas();}
-function renderReceitasProntas(){const box=document.getElementById('receitas-prontas'); box.innerHTML=''; let count=0; Object.keys(recipesDB).forEach(rId=>{const r=recipesDB[rId]; if(!r.grid) return; let podeCriar=true; let invTemp={...inventarioCraftDisponivel}; for(let i=0;i<9;i++){let rSlot=r.grid[i]; if(typeof rSlot==='string'&&rSlot!=="") rSlot={id:rSlot,qtd:1}; if(rSlot&&typeof rSlot==='object'){if((invTemp[rSlot.id]||0)<rSlot.qtd) podeCriar=false; else invTemp[rSlot.id]-=rSlot.qtd;}} if(podeCriar){count++; const addResult=(res)=>{let resId=res.id||res; const resItem=itemsDB[resId]; if(resItem) box.innerHTML+=`<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${resItem.imagem}"> <div><strong style="color:var(--gold); font-size:.9em;">${resItem.nome}</strong><br><small style="color:#94a3b8">Clique para preparar</small></div></div>`;}; if(r.resultados) r.resultados.forEach(addResult); else if(r.resultado) addResult(r.resultado);}}); if(count===0) box.innerHTML=`<p style="color:#64748b; font-size:.8em; text-align:center;">Nenhum material para receitas conhecidas.</p>`;}
+function renderReceitasProntas(){const box=document.getElementById('receitas-prontas'); box.innerHTML=''; let count=0; Object.keys(recipesDB).forEach(rId=>{const r=recipesDB[rId]; if(!r.grid) return; let podeCriar=true; let invTemp={...inventarioCraftDisponivel}; for(let i=0;i<9;i++){let rSlot=r.grid[i]; if(typeof rSlot==='string'&&rSlot!=="") rSlot={id:rSlot,qtd:1}; if(rSlot&&typeof rSlot==='object'){if((invTemp[rSlot.id]||0)<rSlot.qtd) podeCriar=false; else invTemp[rSlot.id]-=rSlot.qtd;}} if(podeCriar){count++; const addResult=(res)=>{let resId=res.id||res; const resItem=itemsDB[resId]; if(resItem) box.innerHTML+=`<div class="recipe-ready-card" onclick="autoPreencherCraft('${rId}')"><img src="${resItem.imagem}"> <div><strong style="color:var(--gold); font-size:.9em;">${resItem.nome}</strong><br><small style="color:#94a3b8">Clique para preparar</small></div></div>`;}; if(r.resultados) r.resultados.forEach(addResult); else if(r.resultado) addResult(r.resultado);}}); if(count===0) box.innerHTML=`<p style="color:#64748b; font-size:.8em; text-align:center;">Nenhum item disponivel para receitas conhecidas.</p>`;}
 function autoPreencherCraft(rId){const r=recipesDB[rId]; limparMesa(); for(let i=0;i<9;i++){let rSlot=r.grid[i]; if(typeof rSlot==='string'&&rSlot!=="") rSlot={id:rSlot,qtd:1}; if(rSlot&&typeof rSlot==='object') craftMesa[i]={...rSlot};} inicializarCrafting();}
-function renderUIForja(){const barra=document.getElementById('craft-inventory'); barra.innerHTML=''; Object.keys(inventarioCraftDisponivel).forEach(itemId=>{if(inventarioCraftDisponivel[itemId]>0&&itemsDB[itemId]){const selectedClass=itemCraftSelecionado===itemId?' selected':''; barra.innerHTML+=`<div class="inv-craft-item${selectedClass}" onclick="selecionarItemCraft('${itemId}')"><span class="item-badge">x${inventarioCraftDisponivel[itemId]}</span><img src="${itemsDB[itemId].imagem}"></div>`;}}); if(barra.innerHTML==='') barra.innerHTML='<div style="color:#64748b; font-size:.8em; text-align:center; margin-top:20px;">Nenhum material na bolsa.</div>'; const mesa=document.getElementById('craft-table'); mesa.innerHTML=''; for(let i=0;i<9;i++){const slot=craftMesa[i]; let imgHtml=slot&&itemsDB[slot.id]?`<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`:''; mesa.innerHTML+=`<div class="craft-slot" onclick="clicarSlotMesa(${i})">${imgHtml}</div>`;} verificarReceitaEmTempoReal();}
+function renderUIForja(){const barra=document.getElementById('craft-inventory'); barra.innerHTML=''; Object.keys(inventarioCraftDisponivel).forEach(itemId=>{if(inventarioCraftDisponivel[itemId]>0&&itemsDB[itemId]){const selectedClass=itemCraftSelecionado===itemId?' selected':''; barra.innerHTML+=`<div class="inv-craft-item${selectedClass}" onclick="selecionarItemCraft('${itemId}')"><span class="item-badge">x${inventarioCraftDisponivel[itemId]}</span><img src="${itemsDB[itemId].imagem}"></div>`;}}); if(barra.innerHTML==='') barra.innerHTML='<div style="color:#64748b; font-size:.8em; text-align:center; margin-top:20px;">Nenhum item na bolsa.</div>'; const mesa=document.getElementById('craft-table'); mesa.innerHTML=''; for(let i=0;i<9;i++){const slot=craftMesa[i]; let imgHtml=slot&&itemsDB[slot.id]?`<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`:''; mesa.innerHTML+=`<div class="craft-slot" onclick="clicarSlotMesa(${i})">${imgHtml}</div>`;} verificarReceitaEmTempoReal();}
 function selecionarItemCraft(itemId){itemCraftSelecionado=itemCraftSelecionado===itemId?null:itemId; renderUIForja();}
 function clicarSlotMesa(index){if(itemCraftSelecionado&&inventarioCraftDisponivel[itemCraftSelecionado]>0){if(!craftMesa[index]) craftMesa[index]={id:itemCraftSelecionado,qtd:1}; else if(craftMesa[index].id===itemCraftSelecionado) craftMesa[index].qtd++; else{inventarioCraftDisponivel[craftMesa[index].id]+=craftMesa[index].qtd; craftMesa[index]={id:itemCraftSelecionado,qtd:1};} inventarioCraftDisponivel[itemCraftSelecionado]--; if(inventarioCraftDisponivel[itemCraftSelecionado]===0) itemCraftSelecionado=null;}else if(!itemCraftSelecionado&&craftMesa[index]){craftMesa[index].qtd--; inventarioCraftDisponivel[craftMesa[index].id]=(inventarioCraftDisponivel[craftMesa[index].id]||0)+1; if(craftMesa[index].qtd<=0) craftMesa[index]=null;} renderUIForja();}
 function limparMesa(){craftMesa=[null,null,null,null,null,null,null,null,null]; itemCraftSelecionado=null; inicializarCrafting();}
@@ -1418,7 +1573,7 @@ function salvarDiario(){db.ref(`characters/${session}/anotacoes`).set(document.g
 function fecharModal(id){document.getElementById(id).classList.remove('active');}
 function openMenu(){document.getElementById('menu-overlay').classList.add('active');}
 function closeMenu(){document.getElementById('menu-overlay').classList.remove('active');}
-function openMenuTab(id){closeMenu(); mudarAba(id);}
+function openMenuTab(id,el){closeMenu(); mudarAba(id,el);}
 function mudarAba(id,el){
     document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
