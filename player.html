@@ -105,6 +105,18 @@
         .recipe-ready-card img { width: 40px; height: 40px; border-radius: 6px; background: #000; }
         textarea#diario { width: 100%; height: 350px; background: var(--panel-2); border: 1px solid var(--border); color: #dbe7f6; padding: 15px; border-radius: 14px; resize: none; font-size: 1em; outline: none; line-height: 1.6; }
         textarea#diario:focus { border-color: rgba(74,163,255,.6); box-shadow: 0 0 0 2px rgba(74,163,255,.15); }
+        .dice-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:10px; margin-bottom:16px; }
+        .die-btn { background: var(--panel-2); border:1px solid var(--border); border-radius:12px; padding:14px 8px; text-align:center; cursor:pointer; transition:all .2s; font-family:'Fraunces',serif; }
+        .die-btn:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+        .die-btn .die-icon { font-size:1.4rem; margin-bottom:4px; }
+        .die-btn .die-label { font-size:.65rem; font-weight:800; color:#94a3b8; letter-spacing:.08em; }
+        .dice-result-area { background: var(--panel-2); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center; min-height:110px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin-bottom:12px; }
+        .dice-result-big { font-family:'Fraunces',serif; font-size:3rem; font-weight:900; color:var(--gold); line-height:1; text-shadow:0 0 24px rgba(214,182,126,.35); animation:dicePop .3s ease-out; }
+        .dice-result-sub { font-size:.78rem; color:#94a3b8; margin-top:4px; font-weight:600; }
+        @keyframes dicePop { 0%{transform:scale(1.6);opacity:0} 100%{transform:scale(1);opacity:1} }
+        .dice-qty, .dice-mod { display:flex; align-items:center; gap:10px; }
+        .dice-qty label, .dice-mod label { font-size:.65rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.1em; }
+        .dice-qty input, .dice-mod input { width:70px; text-align:center; margin:0; background:rgba(0,0,0,.25); border:1px solid var(--border); border-radius:8px; color:var(--text); padding:6px; }
         .grimorio-book { position: relative; max-width: 880px; margin: 8px auto 0; min-height: 520px; perspective: 1400px; }
         .grimorio-book::before { content: ''; position: absolute; inset: -6px; border-radius: 22px; background-image: url(https://i1-e.pinimg.com/736x/30/84/c9/3084c9846583f3b4ca028f21f812cf76.jpg); z-index: 0; filter: blur(0.2px); }
         .book-cover { position: absolute; left: 0; top: 0; bottom: 0; width: 46%; background: linear-gradient(135deg, #3b2b1d 0%, #4c3523 45%, #2c1e14 100%); border-radius: 18px 6px 6px 18px; transform-origin: left center; transform: rotateY(0deg); box-shadow: 0 25px 60px rgba(0,0,0,.45), inset 0 0 30px rgba(0,0,0,.35); z-index: 3; backface-visibility: hidden; }
@@ -182,6 +194,27 @@
         .picker-item img { width: 100%; aspect-ratio: 1; object-fit: cover; border: 2px solid transparent; border-radius: 8px; }
         .picker-item:hover img, .picker-item.selected img { border-color: var(--blue); }
         #export-card-container { position: fixed; left: -9999px; top: -9999px; width: 350px; background: var(--panel); border: 2px solid var(--gold); border-radius: 10px; padding: 15px; color: white; }
+        .chest-modal-card { background: #0f172a; border: 1px solid rgba(214,182,126,.5); max-width: 420px; width: 92vw; border-radius: 18px; padding: 20px; position: relative; overflow: hidden; }
+        .chest-modal-header { text-align: center; margin-bottom: 12px; }
+        .chest-modal-title { font-family: 'Fraunces', serif; color: var(--gold); font-size: 1.3em; }
+        .chest-modal-sub { color: #9fb2ce; font-size: .8em; }
+        .chest-qty-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; background: rgba(0,0,0,.35); padding: 10px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 12px; }
+        .chest-qty-row button { width: 40px; height: 40px; border-radius: 10px; border: none; background: var(--border); color: #fff; font-size: 1.1em; font-weight: 700; cursor: pointer; }
+        .chest-qty-val { text-align: center; font-size: 1.1em; font-weight: 700; color: #e7f0ff; }
+        .chest-open-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 800; background: var(--gold); color: #1b1208; cursor: pointer; transition: transform .15s ease, filter .15s ease; }
+        .chest-open-btn:active { transform: scale(.98); filter: brightness(.95); }
+        .chest-open-all { margin-top: 8px; width: 100%; padding: 10px; border-radius: 12px; border: 1px solid rgba(74,163,255,.4); background: transparent; color: #9fd1ff; font-weight: 700; cursor: pointer; }
+        .chest-results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 14px; }
+        .chest-result { background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 12px; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .chest-result img { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(214,182,126,.4); }
+        .chest-result span { font-size: .8em; color: #e7f0ff; }
+        .chest-fx { position: absolute; inset: 0; pointer-events: none; }
+        .confetti { position: absolute; width: 6px; height: 10px; opacity: 0; animation: confettiFall 1.2s ease-out forwards; }
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(260px) rotate(180deg); opacity: 0; }
+        }
 
         /* ===================== IA COMBAT SYSTEM ===================== */
         .ia-combat-wrapper {
@@ -573,6 +606,26 @@
 <div id="tab-combat" class="tab-content">
     <div id="combat-view"></div>
 </div>
+<div id="tab-dados" class="tab-content">
+    <h3 class="section-title"><i class="fas fa-dice"></i> Dados</h3>
+    <div class="dice-grid">
+        <div class="die-btn d4" onclick="rolarDadoPlayer(4)"><div class="die-icon">◈</div><div class="die-label">D4</div></div>
+        <div class="die-btn d6" onclick="rolarDadoPlayer(6)"><div class="die-icon">⬡</div><div class="die-label">D6</div></div>
+        <div class="die-btn d8" onclick="rolarDadoPlayer(8)"><div class="die-icon">◆</div><div class="die-label">D8</div></div>
+        <div class="die-btn d10" onclick="rolarDadoPlayer(10)"><div class="die-icon">⬟</div><div class="die-label">D10</div></div>
+        <div class="die-btn d12" onclick="rolarDadoPlayer(12)"><div class="die-icon">⬠</div><div class="die-label">D12</div></div>
+        <div class="die-btn d20" onclick="rolarDadoPlayer(20)"><div class="die-icon">⬡</div><div class="die-label">D20</div></div>
+    </div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+        <div class="dice-qty">
+            <label>Qtd de dados</label>
+            <input type="number" id="dice-qty" value="1" min="1" max="20">
+        </div>
+    </div>
+    <div class="dice-result-area" id="dice-result-area">
+        <div style="color:#94a3b8; font-size:.82rem;">Clique em um dado para rolar</div>
+    </div>
+</div>
 <div id="tab-diario" class="tab-content">
     <h3 class="section-title"><i class="fas fa-feather"></i> Diario</h3>
     <textarea id="diario" placeholder="Escreva sua cena aqui..." onchange="salvarDiario()"></textarea>
@@ -591,6 +644,7 @@
         <div class="nav-item" data-tab="tab-forja" onclick="openMenuTab('tab-forja', this)"><i class="fas fa-hammer"></i>Forja</div>
         <div class="nav-item" data-tab="tab-grimorio" onclick="openMenuTab('tab-grimorio', this)"><i class="fas fa-book-open"></i>Grimorio</div>
         <div class="nav-item hidden" id="menu-combat" data-tab="tab-combat" onclick="openMenuTab('tab-combat', this)"><i class="fas fa-fire" style="color:var(--red);"></i>Combate</div>
+        <div class="nav-item" data-tab="tab-dados" onclick="openMenuTab('tab-dados', this)"><i class="fas fa-dice"></i>Dados</div>
         <div class="nav-item" data-tab="tab-diario" onclick="openMenuTab('tab-diario', this)"><i class="fas fa-feather"></i>Diario</div>
     </div>
 </div>
@@ -636,6 +690,25 @@
     </div>
 </div>
 
+<div class="modal" id="chest-modal">
+    <div class="chest-modal-card">
+        <i class="fas fa-times close-btn" onclick="fecharModal('chest-modal')"></i>
+        <div class="chest-fx" id="chest-fx"></div>
+        <div class="chest-modal-header">
+            <div class="chest-modal-title" id="chest-title">Abrir Baú</div>
+            <div class="chest-modal-sub" id="chest-sub">Escolha quantos abrir</div>
+        </div>
+        <div class="chest-qty-row">
+            <button onclick="setChestQty(-1)">-</button>
+            <div class="chest-qty-val" id="chest-qty">1</div>
+            <button onclick="setChestQty(1)">+</button>
+        </div>
+        <button class="chest-open-btn" onclick="confirmarAbrirBau()"><i class="fas fa-box-open"></i> Abrir</button>
+        <button class="chest-open-all" id="chest-open-all" onclick="abrirTudoBau()">Abrir tudo</button>
+        <div class="chest-results-grid" id="chest-results"></div>
+    </div>
+</div>
+
 <div id="export-card-container"></div>
 
 <script>
@@ -650,7 +723,7 @@ let pData = null, itemsDB = {}, recipesDB = {}, skillsDB = {}, charsDB = {};
 const attrNames = { for: 'Força', res: 'Resistência', vel: 'Velocidade', agi: 'Agilidade', per: 'Percepção', resm: 'Res. Mágica', esp: 'Espírito', alm: 'Alma' };
 let craftMesa = [null,null,null,null,null,null,null,null,null];
 let itemCraftSelecionado = null, inventarioCraftDisponivel = {};
-let itemAtualKey = null, itemAtualId = null, itemAtualDBData = null, itemAtualAction = 'equip';
+let itemAtualKey = null, itemAtualId = null, itemAtualDBData = null, itemAtualAction = 'equip', itemAtualCount = 1;
 let activeCombatId = null, currentCombatData = null;
 let diaryDirty = false;
 
@@ -1561,8 +1634,208 @@ function renderGrimorio(){const container=document.getElementById('recipe-book-c
 function verReceita(rId){const r=recipesDB[rId]; let resId=(r.resultado||(r.resultados||[])[0]||{}).id||r.resultado; document.getElementById('recipe-modal-title').innerText=`Receita de ${itemsDB[resId].nome}`; const bench=document.getElementById('recipe-modal-bench'); let gridHtml='<div class="craft-grid">'; for(let i=0;i<9;i++){let slot=r.grid[i]; let imgHtml=''; if(slot&&typeof slot==='object'&&itemsDB[slot.id]) imgHtml=`<div class="item-badge" style="top:2px; bottom:auto;">x${slot.qtd}</div><img src="${itemsDB[slot.id].imagem}">`; gridHtml+=`<div class="craft-slot">${imgHtml}</div>`;} gridHtml+='</div>'; bench.innerHTML=gridHtml; document.getElementById('recipe-modal').classList.add('active');}
 
 // ─── ITENS ───────────────────────────────────────────────────────────
-function abrirItem(uniqKey,itemId,equipado,count){itemAtualKey=uniqKey; itemAtualId=itemId; itemAtualDBData=itemsDB[itemId]; if(!itemAtualDBData) return; document.getElementById('mod-img').src=itemAtualDBData.imagem; document.getElementById('mod-nome').innerText=itemAtualDBData.nome; document.getElementById('mod-cat').innerText=itemAtualDBData.categoria+(count>1?` (Possui ${count})`:''); document.getElementById('mod-desc').innerText=itemAtualDBData.descricao; const sBox=document.getElementById('mod-stats-box'); sBox.innerHTML=''; if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k=>{if(itemAtualDBData.mods[k]>0) sBox.innerHTML+=`<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`;}); if(itemAtualDBData.effects) Object.entries(itemAtualDBData.effects).forEach(([key,val])=>{if(val>0) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>`}); const btn=document.getElementById('mod-btn'); btn.disabled=false; if(itemAtualDBData.categoria==='Consumivel'){btn.style.display='block'; btn.style.background='var(--cyan)'; btn.innerText='Usar'; itemAtualAction='usar';}else if(itemAtualDBData.categoria==='Pet'){btn.style.display='block'; btn.style.background='var(--purple)'; btn.innerText=activeCombatId?'Invocar':'Sem combate'; itemAtualAction='invocar'; if(!activeCombatId) btn.disabled=true; else btn.disabled=false;}else if(['Arma','Armadura','Acessorio'].includes(itemAtualDBData.categoria)){btn.style.display='block'; if(equipado){btn.style.background='#ef4444'; btn.innerText='Desequipar';}else{btn.style.background='#10b981'; btn.innerText='Equipar';} itemAtualAction='equip';}else{btn.style.display='none';} document.getElementById('item-modal').classList.add('active');}
-function handleItemAction(){if(itemAtualAction==='equip') db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado); else if(itemAtualAction==='usar'){const effects=itemAtualDBData.effects; if(!effects) return; let updates={}; if(effects.hp>0&&pData.hp_max>0) updates.hp=Math.min(pData.hp_max,(pData.hp||0)+effects.hp); if(effects.mp>0&&pData.mp_max>0) updates.mp=Math.min(pData.mp_max,(pData.mp||0)+effects.mp); if(effects.sp>0&&pData.sp_max>0) updates.sp=Math.min(pData.sp_max,(pData.sp||0)+effects.sp); db.ref(`characters/${session}`).update(updates); db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove();}else if(itemAtualAction==='invocar'){invocarCriatura(itemAtualKey,itemAtualId);} fecharModal('item-modal');}
+function abrirItem(uniqKey,itemId,equipado,count){
+    itemAtualKey=uniqKey; itemAtualId=itemId; itemAtualCount=count||1; itemAtualDBData=itemsDB[itemId]; if(!itemAtualDBData) return;
+    document.getElementById('mod-img').src=itemAtualDBData.imagem;
+    document.getElementById('mod-nome').innerText=itemAtualDBData.nome;
+    document.getElementById('mod-cat').innerText=itemAtualDBData.categoria+(count>1?` (Possui ${count})`:'');
+    document.getElementById('mod-desc').innerText=itemAtualDBData.descricao;
+    const sBox=document.getElementById('mod-stats-box'); sBox.innerHTML='';
+    if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k=>{if(itemAtualDBData.mods[k]>0) sBox.innerHTML+=`<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`;});
+    if(itemAtualDBData.effects){
+        Object.entries(itemAtualDBData.effects).forEach(([key,val])=>{if(typeof val==='number'&&val>0) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>`});
+        if(itemAtualDBData.effects.hp_full) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Cura HP total</span>`;
+        if(itemAtualDBData.effects.mp_full) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Cura MP total</span>`;
+        if(itemAtualDBData.effects.sp_full) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Cura SP total</span>`;
+    }
+    const btn=document.getElementById('mod-btn'); btn.disabled=false;
+    if(itemAtualDBData.categoria==='Consumivel'){
+        btn.style.display='block'; btn.style.background='var(--cyan)'; btn.innerText='Usar'; itemAtualAction='usar';
+    }else if(itemAtualDBData.categoria==='Pet'){
+        btn.style.display='block'; btn.style.background='var(--purple)'; btn.innerText=activeCombatId?'Invocar':'Sem combate'; itemAtualAction='invocar'; if(!activeCombatId) btn.disabled=true; else btn.disabled=false;
+    }else if(['Arma','Armadura','Acessorio'].includes(itemAtualDBData.categoria)){
+        btn.style.display='block'; if(equipado){btn.style.background='#ef4444'; btn.innerText='Desequipar';}else{btn.style.background='#10b981'; btn.innerText='Equipar';} itemAtualAction='equip';
+    }else if(itemAtualDBData.categoria==='Bau'){
+        btn.style.display='block'; btn.style.background='var(--gold)'; btn.innerText='Abrir'; itemAtualAction='abrir';
+    }else{btn.style.display='none';}
+    document.getElementById('item-modal').classList.add('active');
+}
+function handleItemAction(){
+    if(itemAtualAction==='equip'){
+        db.ref(`characters/${session}/inventario/${itemAtualKey}/equipado`).set(!pData.inventario[itemAtualKey].equipado);
+    } else if(itemAtualAction==='usar'){
+        const effects=itemAtualDBData.effects; if(!effects) return; let updates={};
+        if(effects.hp_full&&pData.hp_max>0) updates.hp=pData.hp_max;
+        if(effects.mp_full&&pData.mp_max>0) updates.mp=pData.mp_max;
+        if(effects.sp_full&&pData.sp_max>0) updates.sp=pData.sp_max;
+        if(effects.hp>0&&pData.hp_max>0) updates.hp=Math.min(pData.hp_max,((updates.hp??pData.hp)||0)+effects.hp);
+        if(effects.mp>0&&pData.mp_max>0) updates.mp=Math.min(pData.mp_max,((updates.mp??pData.mp)||0)+effects.mp);
+        if(effects.sp>0&&pData.sp_max>0) updates.sp=Math.min(pData.sp_max,((updates.sp??pData.sp)||0)+effects.sp);
+        db.ref(`characters/${session}`).update(updates);
+        db.ref(`characters/${session}/inventario/${itemAtualKey}`).remove();
+    } else if(itemAtualAction==='invocar'){
+        invocarCriatura(itemAtualKey,itemAtualId);
+    } else if(itemAtualAction==='abrir'){
+        abrirModalBau();
+    }
+    fecharModal('item-modal');
+}
+
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function abrirModalBau(){
+    const modal=document.getElementById('chest-modal');
+    const title=document.getElementById('chest-title');
+    const sub=document.getElementById('chest-sub');
+    const qtyEl=document.getElementById('chest-qty');
+    const openAll=document.getElementById('chest-open-all');
+    const results=document.getElementById('chest-results');
+    if(!modal||!qtyEl||!results) return;
+    results.innerHTML='';
+    title.innerText=itemAtualDBData?.nome||'Abrir Baú';
+    sub.innerText=`Você possui ${itemAtualCount} unidade(s)`;
+    qtyEl.innerText='1';
+    if(openAll) openAll.style.display=itemAtualCount>1?'block':'none';
+    modal.classList.add('active');
+}
+
+function setChestQty(delta){
+    const qtyEl=document.getElementById('chest-qty');
+    if(!qtyEl) return;
+    let v=parseInt(qtyEl.innerText)||1;
+    v=Math.max(1,Math.min(itemAtualCount,v+delta));
+    qtyEl.innerText=String(v);
+}
+
+function abrirTudoBau(){
+    abrirBau(itemAtualId, itemAtualCount);
+}
+
+function confirmarAbrirBau(){
+    const qtyEl=document.getElementById('chest-qty');
+    const qtd=Math.max(1,Math.min(itemAtualCount,parseInt(qtyEl?.innerText)||1));
+    abrirBau(itemAtualId, qtd);
+}
+
+function abrirBau(itemId, quantidade){
+    const chest = (itemsDB[itemId] && itemsDB[itemId].chest) || null;
+    if(!chest) return;
+    const qty = Math.max(1, Math.min(itemAtualCount, quantidade));
+    const rewards = {};
+    for(let i=0;i<qty;i++){
+        (chest.guaranteed||[]).forEach(e=>{
+            const min = e.qty_min||1; const max = e.qty_max||min; const q = randInt(min,max);
+            if(q>0) rewards[e.item_id]=(rewards[e.item_id]||0)+q;
+        });
+        (chest.chances||[]).forEach(e=>{
+            const chance = Number(e.chance)||0; const roll = randInt(1,100);
+            if(roll<=chance){ const min = e.qty_min||1; const max = e.qty_max||min; const q = randInt(min,max); if(q>0) rewards[e.item_id]=(rewards[e.item_id]||0)+q; }
+        });
+    }
+    const inv = pData?.inventario||{};
+    const keysToRemove = Object.keys(inv).filter(k=>inv[k]?.item_id===itemId).slice(0,qty);
+    const updates = {};
+    keysToRemove.forEach(k=>{ updates[k]=null; });
+    Object.entries(rewards).forEach(([rid,amount])=>{
+        for(let i=0;i<amount;i++){ const newKey = db.ref(`characters/${session}/inventario`).push().key; updates[newKey] = { item_id: rid, equipado: false }; }
+    });
+    db.ref(`characters/${session}/inventario`).update(updates).then(()=>{
+        renderChestResults(rewards);
+        playChestSound();
+        spawnChestConfetti();
+    });
+}
+
+function renderChestResults(rewards){
+    const results=document.getElementById('chest-results');
+    if(!results) return;
+    results.innerHTML='';
+    const entries=Object.entries(rewards);
+    if(!entries.length){
+        results.innerHTML='<div style="grid-column:1/-1; color:#9fb2ce; text-align:center; font-size:.85em;">Nenhum item encontrado.</div>';
+        return;
+    }
+    entries.forEach(([rid,qty])=>{
+        const it = itemsDB[rid] || {};
+        results.innerHTML += `
+            <div class="chest-result">
+                <img src="${it.imagem||'https://via.placeholder.com/80'}" onerror="this.onerror=null;this.src='https://via.placeholder.com/80'">
+                <span>${it.nome||rid} x${qty}</span>
+            </div>`;
+    });
+}
+
+function playChestSound(){
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(520, ctx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.25);
+        g.gain.setValueAtTime(0.0001, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+    } catch (e) { /* ignore */ }
+}
+
+function spawnChestConfetti(){
+    const fx=document.getElementById('chest-fx');
+    if(!fx) return;
+    fx.innerHTML='';
+    const colors=['#f3c969','#4aa3ff','#3ac7a1','#ef6b6b','#7c5cff'];
+    for(let i=0;i<28;i++){
+        const el=document.createElement('div');
+        el.className='confetti';
+        el.style.left=`${Math.random()*100}%`;
+        el.style.top='0%';
+        el.style.background=colors[i%colors.length];
+        el.style.transform=`rotate(${Math.random()*180}deg)`;
+        el.style.animationDelay=`${Math.random()*0.2}s`;
+        fx.appendChild(el);
+    }
+    setTimeout(()=>{ fx.innerHTML=''; }, 1400);
+}
+
+// ─── DADOS ────────────────────────────────────────────────────────────
+function rollDie(faces){
+    if(window.crypto && window.crypto.getRandomValues){
+        const max = 0xFFFFFFFF;
+        const limit = Math.floor(max / faces) * faces;
+        const buf = new Uint32Array(1);
+        let n = max;
+        while(n >= limit){
+            window.crypto.getRandomValues(buf);
+            n = buf[0];
+        }
+        return (n % faces) + 1;
+    }
+    return Math.floor(Math.random()*faces) + 1;
+}
+
+function rolarDadoPlayer(faces){
+    const qtd=Math.max(1,Math.min(20,parseInt(document.getElementById('dice-qty')?.value)||1));
+    let rolls=[]; let total=0;
+    for(let i=0;i<qtd;i++){ const r=rollDie(faces); rolls.push(r); total+=r; }
+    const grand=total;
+    const isCrit=faces===20&&rolls.some(r=>r===20);
+    const isFumble=faces===20&&rolls.every(r=>r===1);
+    const color=isCrit?'#22c55e':isFumble?'#ef4444':'var(--gold)';
+    const label=isCrit?'CRÍTICO!':(isFumble?'FALHA!':`(${rolls.join('+')})`);
+    const area=document.getElementById('dice-result-area');
+    if(area){
+        area.innerHTML=`<div class="dice-result-big" style="color:${color};">${grand}</div><div class="dice-result-sub">${qtd}d${faces} ${label}</div>`;
+    }
+    const payload={
+        playerId: session,
+        playerName: (pData && pData.nome) ? pData.nome : session,
+        faces, qtd, rolls, mod: 0, grand, isCrit, isFumble,
+        ts: firebase.database.ServerValue.TIMESTAMP
+    };
+    db.ref('dice/history').push(payload);
+}
 
 // ─── EXPORTAR ────────────────────────────────────────────────────────
 async function exportarFicha(){const card=document.getElementById('export-card-container'); const data={nome:pData.nome,classe:pData.classe,imagem:pData.imagem,atributos:{},equipamentos:[],habilidades:[]}; document.querySelectorAll('#p-atributos-base .attr-card').forEach(el=>{data.atributos[el.querySelector('.attr-name').innerText]=el.querySelector('.attr-value').innerText;}); document.querySelectorAll('#p-equipamentos .equip-slot.filled').forEach(el=>data.equipamentos.push(el.querySelector('img').src)); document.querySelectorAll('#p-skills .skill-card').forEach(el=>data.habilidades.push({img:el.querySelector('img').src,nome:el.querySelector('h4').innerText})); const goldColor=getComputedStyle(document.documentElement).getPropertyValue('--gold'); const blueColor=getComputedStyle(document.documentElement).getPropertyValue('--blue'); let atrHtml=Object.entries(data.atributos).map(([k,v])=>`<div style="flex:1; min-width:80px; text-align:center; background:rgba(0,0,0,.3); padding:5px; border-radius:5px;"><strong style="color:${goldColor}; display:block;">${k}</strong> ${v}</div>`).join(''); let eqHtml=data.equipamentos.map(src=>`<img src="${src}" style="width:50px; height:50px; border-radius:5px; border:1px solid #334155; object-fit:cover;">`).join(''); let skHtml=data.habilidades.map(s=>`<div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;"><img src="${s.img}" style="width:30px; height:30px; border-radius:5px;"><span>${s.nome}</span></div>`).join(''); card.innerHTML=`<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos</h4><div style="display:flex; gap:8px; font-size:.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Equipamentos</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml||'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:.8em;">${skHtml||'Nenhuma.'}</div>`; const canvas=await html2canvas(card,{backgroundColor:'#1e293b',useCORS:true}); const link=document.createElement('a'); link.download=`ficha_${session}.png`; link.href=canvas.toDataURL("image/png"); link.click();}

@@ -245,6 +245,13 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
 .stat-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
 .stat-cell { background:rgba(0,0,0,.3); border:1px solid var(--border); border-radius:8px; padding:7px 9px; font-size:.7rem; color:var(--muted); font-weight:500; }
 .stat-cell strong { display:block; font-size:.95rem; color:var(--gold2); font-weight:700; line-height:1.2; font-family:var(--font-head); }
+.check-line { display:flex; align-items:center; gap:6px; font-size:.72rem; color:var(--muted); background:rgba(0,0,0,.2); border:1px solid var(--border); border-radius:8px; padding:6px 8px; }
+.check-line input { accent-color: var(--gold2); }
+.hp-quick { display:grid; grid-template-columns:1fr auto auto; gap:8px; margin:12px 0; }
+.hp-quick input { padding:7px 8px; border-radius:8px; border:1px solid var(--border); background:rgba(0,0,0,.25); color:var(--text); }
+.hp-quick button { border:none; border-radius:8px; padding:7px 10px; font-weight:700; cursor:pointer; }
+.hp-quick .btn-dmg { background:rgba(224,80,80,.2); color:var(--red2); border:1px solid rgba(224,80,80,.4); }
+.hp-quick .btn-heal { background:rgba(48,192,128,.2); color:var(--green2); border:1px solid rgba(48,192,128,.4); }
 
 .profile-section-title { font-family:var(--font-head); font-size:.68rem; font-weight:800; color:var(--blue3); letter-spacing:.1em; text-transform:uppercase; border-bottom:1px solid var(--border); padding-bottom:7px; margin-bottom:12px; margin-top:18px; display:flex; justify-content:space-between; align-items:center; }
 .profile-section-title:first-child { margin-top:0; }
@@ -632,6 +639,11 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
               <input type="number" id="i-eff-hp" value="0" placeholder="❤️ HP">
               <input type="number" id="i-eff-mp" value="0" placeholder="💧 MP">
               <input type="number" id="i-eff-sp" value="0" placeholder="⚡ SP">
+            </div>
+            <div class="three-col" style="margin-top:8px;">
+              <label class="check-line"><input type="checkbox" id="i-eff-hp-full"> Cura total HP</label>
+              <label class="check-line"><input type="checkbox" id="i-eff-mp-full"> Cura total MP</label>
+              <label class="check-line"><input type="checkbox" id="i-eff-sp-full"> Cura total SP</label>
             </div>
           </div>
           <label class="field-label">Descrição</label>
@@ -1036,6 +1048,11 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
               <input type="number" id="e-i-eff-mp" placeholder="💧 MP">
               <input type="number" id="e-i-eff-sp" placeholder="⚡ SP">
             </div>
+            <div class="three-col" style="margin-top:8px;">
+              <label class="check-line"><input type="checkbox" id="e-i-eff-hp-full"> Cura total HP</label>
+              <label class="check-line"><input type="checkbox" id="e-i-eff-mp-full"> Cura total MP</label>
+              <label class="check-line"><input type="checkbox" id="e-i-eff-sp-full"> Cura total SP</label>
+            </div>
           </div>
           <label class="field-label">Valor em Ouro</label>
           <input type="number" id="e-i-valor">
@@ -1223,6 +1240,11 @@ db.ref('items').on('value', snap=>{ DB_ITEMS=snap.val()||{}; renderItems(); rend
 db.ref('skills').on('value', snap=>{ DB_SKILLS=snap.val()||{}; renderSkills(); });
 db.ref('recipes').on('value', snap=>{ DB_RECIPES=snap.val()||{}; renderReceitasGrid(); });
 db.ref('chest_templates').on('value', snap=>{ DB_CHEST_TEMPLATES=snap.val()||{}; renderChestTemplates(); });
+db.ref('dice/history').limitToLast(100).on('value', snap=>{
+  const data=snap.val()||{};
+  diceHistory=Object.values(data).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  renderDiceHistory();
+});
 db.ref('combat/sessions').on('value', snap=>{
   DB_COMBATS=snap.val()||{}; renderCombatList();
   if(activeCombatId && DB_COMBATS[activeCombatId]) updateActiveCombatView();
@@ -1436,7 +1458,7 @@ function abrirPerfilChar(charId){
       <button class="inline-btn green" onclick="salvarNotas('${charId}')"><i class="fas fa-save"></i> Salvar Notas</button>`;
   } else {
     let invMap={}, equipableInv={};
-    if(c.inventario) Object.entries(c.inventario).forEach(([key,item])=>{ const idb=DB_ITEMS[item.item_id]; if(idb&&(idb.categoria==='Material'||idb.categoria==='Consumivel')) invMap[item.item_id]=(invMap[item.item_id]||0)+1; else equipableInv[key]=item; });
+    if(c.inventario) Object.entries(c.inventario).forEach(([key,item])=>{ const idb=DB_ITEMS[item.item_id]; if(idb&&(idb.categoria==='Material'||idb.categoria==='Consumivel'||idb.categoria==='Bau')) invMap[item.item_id]=(invMap[item.item_id]||0)+1; else equipableInv[key]=item; });
     let invHtml='';
     Object.entries(invMap).forEach(([itemId,qtd])=>{ const idb=DB_ITEMS[itemId]; if(idb) invHtml+=`<div class="inv-item" onclick="abrirGerenciadorItem('${charId}','${itemId}',${qtd})"><img src="${idb.imagem}" title="${idb.nome}"><span class="qty">x${qtd}</span></div>`; });
     Object.entries(equipableInv).forEach(([key,item])=>{ const idb=DB_ITEMS[item.item_id]; if(idb) invHtml+=`<div class="inv-item ${item.equipado?'equipped':''}"><img src="${idb.imagem}" title="${idb.nome}"></div>`; });
@@ -1460,6 +1482,12 @@ function abrirPerfilChar(charId){
       <div class="profile-class">${c.classe||'—'} · ${c.pontos||0} pts livres</div>
       <div class="vitals-row" style="justify-content:center;">${vitals}</div>
       <button class="btn btn-ghost" style="margin-bottom:12px;" onclick="abrirEditChar('${charId}')"><i class="fas fa-edit"></i> Editar</button>
+      <div class="profile-section-title" style="margin-top:0;">Ajuste Rapido de HP</div>
+      <div class="hp-quick">
+        <input type="number" id="hp-quick-${charId}" value="1" min="1" placeholder="Qtd">
+        <button class="btn-dmg" onclick="ajustarHp('${charId}', -1)">-Dano</button>
+        <button class="btn-heal" onclick="ajustarHp('${charId}', 1)">+Cura</button>
+      </div>
       <div class="stat-grid-2">${statsHtml}</div>
       ${c.description?`<p style="margin-top:14px; font-size:.78rem; color:var(--muted); line-height:1.5; font-style:italic;">${c.description}</p>`:''}
       <button class="btn btn-red" style="margin-top:18px;" onclick="deletarChar('${charId}')"><i class="fas fa-trash"></i> Excluir Entidade</button>
@@ -1474,6 +1502,19 @@ function abrirPerfilChar(charId){
 function salvarNotas(charId){
   const notes=document.getElementById(`notes-${charId}`)?.value||'';
   db.ref(`characters/${charId}/notes`).set(notes).then(()=>showToast('Notas salvas!'));
+}
+
+function ajustarHp(charId, direction){
+  const input=document.getElementById(`hp-quick-${charId}`);
+  const amount=Math.max(1, parseInt(input?.value)||1);
+  const c=DB_CHARS[charId]; if(!c) return;
+  const max=Number(c.hp_max)||0;
+  const cur=Number(c.hp)||0;
+  const delta=amount * (direction<0?-1:1);
+  let next=cur+delta;
+  if(max>0) next=Math.min(max, next);
+  next=Math.max(0, next);
+  db.ref(`characters/${charId}/hp`).set(next).then(()=>showToast('HP atualizado!'));
 }
 
 function abrirEditChar(charId){
@@ -1562,7 +1603,7 @@ function criarItem(){
   let d={nome, imagem:document.getElementById('i-img').value||PLACEHOLDER_IMG, categoria:document.getElementById('i-cat').value, rarity:document.getElementById('i-rarity').value, valor:toNumber(document.getElementById('i-valor').value), descricao:document.getElementById('i-desc').value,
     mods:{for:toNumber(document.getElementById('m-for').value),res:toNumber(document.getElementById('m-res').value),vel:toNumber(document.getElementById('m-vel').value),agi:toNumber(document.getElementById('m-agi').value),per:toNumber(document.getElementById('m-per').value),resm:toNumber(document.getElementById('m-resm').value),esp:toNumber(document.getElementById('m-esp').value),alm:toNumber(document.getElementById('m-alm').value)}};
   if(d.categoria==='Armadura') d.slot_type=document.getElementById('i-subcat').value;
-  if(d.categoria==='Consumivel') d.effects={hp:toNumber(document.getElementById('i-eff-hp').value),mp:toNumber(document.getElementById('i-eff-mp').value),sp:toNumber(document.getElementById('i-eff-sp').value)};
+  if(d.categoria==='Consumivel') d.effects={hp:toNumber(document.getElementById('i-eff-hp').value),mp:toNumber(document.getElementById('i-eff-mp').value),sp:toNumber(document.getElementById('i-eff-sp').value),hp_full:!!document.getElementById('i-eff-hp-full')?.checked,mp_full:!!document.getElementById('i-eff-mp-full')?.checked,sp_full:!!document.getElementById('i-eff-sp-full')?.checked};
   db.ref('items/'+id).set(d).then(()=>{ showToast('Item forjado!'); nav('sec-lib-items'); });
 }
 function renderItems(){
@@ -1587,7 +1628,7 @@ function abrirPerfilItem(itemId){
   document.getElementById('e-i-desc').value=item.descricao||'';
   toggleSubcat('e-i-cat','e-i-subcat-wrapper','e-i-consumable-wrapper');
   if(item.categoria==='Armadura') document.getElementById('e-i-subcat').value=item.slot_type;
-  if(item.categoria==='Consumivel'){ const ef=item.effects||{}; document.getElementById('e-i-eff-hp').value=ef.hp||0; document.getElementById('e-i-eff-mp').value=ef.mp||0; document.getElementById('e-i-eff-sp').value=ef.sp||0; }
+  if(item.categoria==='Consumivel'){ const ef=item.effects||{}; document.getElementById('e-i-eff-hp').value=ef.hp||0; document.getElementById('e-i-eff-mp').value=ef.mp||0; document.getElementById('e-i-eff-sp').value=ef.sp||0; document.getElementById('e-i-eff-hp-full').checked=!!ef.hp_full; document.getElementById('e-i-eff-mp-full').checked=!!ef.mp_full; document.getElementById('e-i-eff-sp-full').checked=!!ef.sp_full; }
   const m=item.mods||{}; ['for','res','vel','agi','per','resm','esp','alm'].forEach(k=>document.getElementById('e-m-'+k).value=m[k]||0);
   document.getElementById('edit-item-modal').classList.add('active');
 }
@@ -1596,7 +1637,7 @@ function salvarEdicaoItem(){
   let d={nome:document.getElementById('e-i-nome').value, imagem:document.getElementById('e-i-img').value||PLACEHOLDER_IMG, categoria:document.getElementById('e-i-cat').value, rarity:document.getElementById('e-i-rarity').value, valor:toNumber(document.getElementById('e-i-valor').value), descricao:document.getElementById('e-i-desc').value,
     mods:{for:toNumber(document.getElementById('e-m-for').value),res:toNumber(document.getElementById('e-m-res').value),vel:toNumber(document.getElementById('e-m-vel').value),agi:toNumber(document.getElementById('e-m-agi').value),per:toNumber(document.getElementById('e-m-per').value),resm:toNumber(document.getElementById('e-m-resm').value),esp:toNumber(document.getElementById('e-m-esp').value),alm:toNumber(document.getElementById('e-m-alm').value)}};
   if(d.categoria==='Armadura') d.slot_type=document.getElementById('e-i-subcat').value;
-  if(d.categoria==='Consumivel') d.effects={hp:toNumber(document.getElementById('e-i-eff-hp').value),mp:toNumber(document.getElementById('e-i-eff-mp').value),sp:toNumber(document.getElementById('e-i-eff-sp').value)};
+  if(d.categoria==='Consumivel') d.effects={hp:toNumber(document.getElementById('e-i-eff-hp').value),mp:toNumber(document.getElementById('e-i-eff-mp').value),sp:toNumber(document.getElementById('e-i-eff-sp').value),hp_full:!!document.getElementById('e-i-eff-hp-full')?.checked,mp_full:!!document.getElementById('e-i-eff-mp-full')?.checked,sp_full:!!document.getElementById('e-i-eff-sp-full')?.checked};
   else d.effects=null;
   db.ref('items/'+id).set(d).then(()=>{ showToast('Relíquia atualizada!'); closeModal('edit-item-modal'); });
 }
@@ -1941,21 +1982,25 @@ function rolarDado(faces){
   document.getElementById('dice-result-area').innerHTML=`
     <div class="dice-result-big" style="color:${color};">${grand}</div>
     <div class="dice-result-sub">${qtd}d${faces} ${label}</div>`;
-
-  // Add to history
-  diceHistory.unshift({faces,qtd,rolls,mod,grand,isCrit,isFumble,time:new Date().toLocaleTimeString('pt-BR')});
-  if(diceHistory.length>20) diceHistory.pop();
-  renderDiceHistory();
+  const payload={
+    playerId:'admin',
+    playerName:'Admin',
+    faces,qtd,rolls,mod,grand,isCrit,isFumble,
+    ts: firebase.database.ServerValue.TIMESTAMP
+  };
+  db.ref('dice/history').push(payload);
 }
 function renderDiceHistory(){
   const el=document.getElementById('dice-history');
   if(!diceHistory.length){ el.innerHTML='<div class="hint" style="text-align:center;padding:20px;">Nenhuma rolagem ainda.</div>'; return; }
   el.innerHTML=diceHistory.map(h=>{
     const cls=h.isCrit?'crit':h.isFumble?'fail':'';
-    return `<div class="dice-log-item"><span class="dice-log-die">${h.qtd}d${h.faces}${h.mod!==0?(h.mod>0?'+'+h.mod:h.mod):''}</span><span style="color:var(--muted);font-size:.7rem;">${h.time}</span><span class="dice-log-val ${cls}">${h.grand}</span></div>`;
+    const time=h.ts?new Date(h.ts).toLocaleString('pt-BR'):'—';
+    const who=h.playerName||h.playerId||'—';
+    return `<div class="dice-log-item"><span class="dice-log-die">${who} · ${h.qtd}d${h.faces}${h.mod!==0?(h.mod>0?'+'+h.mod:h.mod):''}</span><span style="color:var(--muted);font-size:.7rem;">${time}</span><span class="dice-log-val ${cls}">${h.grand}</span></div>`;
   }).join('');
 }
-function limparHistoricoDados(){ diceHistory=[]; renderDiceHistory(); document.getElementById('dice-result-area').innerHTML='<div style="color:var(--muted);font-size:.82rem;">Clique em um dado para rolar</div>'; }
+function limparHistoricoDados(){ document.getElementById('dice-result-area').innerHTML='<div style="color:var(--muted);font-size:.82rem;">Clique em um dado para rolar</div>'; }
 
 /* ══ EXPORTAR FICHAS ══════════════════════════════════════════════════════ */
 function exportarFicha(){
