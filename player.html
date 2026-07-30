@@ -15,57 +15,57 @@
         #loading-icon { width: 80px; height: 80px; animation: pulse 1.5s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
         ::-webkit-scrollbar { width: 7px; height: 7px; }
-        ::-webkit-scrollbar-track { background: #0b111f; }
-        ::-webkit-scrollbar-thumb { background: #36507a; border-radius: 999px; border: 1px solid #0b111f; }
-        ::-webkit-scrollbar-thumb:hover { background: #456796; }
-        * { scrollbar-width: thin; scrollbar-color: #3a78a4 #0b111f; }
-        :root { --bg: #0b111f; --panel: #121a2b; --panel-2: #172338; --border: #22324d; --text: #edf2f7; --gold: #d6b67e; --blue: #4aa3ff; --green: #3ac7a1; --red: #ef6b6b; --purple: #7c5cff; --cyan: #31c5d9; --accent: #f3c969; }
+        ::-webkit-scrollbar-track { background: #0a0714; }
+        ::-webkit-scrollbar-thumb { background: #3a2940; border-radius: 999px; border: 1px solid #0a0714; }
+        ::-webkit-scrollbar-thumb:hover { background: #5a4070; }
+        * { scrollbar-width: thin; scrollbar-color: #3a2940 #0a0714; }
+        :root { --bg: #0a0714; --panel: #170f23; --panel-2: #22162f; --border: #3a2940; --text: #ede4f0; --gold: #e8c878; --gold2: #d4a55a; --crimson: #a02020; --crimson2: #d44040; --emerald: #2d8a5e; --teal: #1a5c62; --teal2: #2a9d8f; --green: #3ac7a1; --red: #ef6b6b; --purple: #8b5cf6; --muted: #887a94; --accent: #e8c878; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); padding-bottom: 0; overflow-x: hidden; opacity: 0; transform: translateY(6px); transition: opacity .4s ease, transform .4s ease; min-height: 100vh; }
         body.app-ready { opacity: 1; transform: none; }
-        .header-bg { height: 150px; background: url('https://i1-e.pinimg.com/1200x/6d/9a/b4/6d9ab4835bdaa43a028a51e478ca9b9c.jpg') center/cover; position: relative; }
-        .header-overlay { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; position: absolute; inset: 0; background: rgba(11,17,31,.6); backdrop-filter: blur(1px); text-align: center; }
-        .header-title { font-size: 24px; font-weight: 700; color: #e7f0ff; letter-spacing: .6px; }
-        .header-subtitle { font-size: 12px; font-weight: 600; color: #9aa3b2; letter-spacing: 1px; text-transform: uppercase; }
+        .header-bg { height: 150px; background: url('https://i.pinimg.com/736x/13/d4/60/13d46035503be60634544331c962dbb5.jpg') center/cover; position: relative; }
+        .header-overlay { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; position: absolute; inset: 0; background: rgba(10,7,20,.7); backdrop-filter: blur(1px); text-align: center; }
+        .header-title { font-size: 24px; font-weight: 700; color: #e8d0f0; letter-spacing: .6px; }
+        .header-subtitle { font-size: 12px; font-weight: 600; color: #b8a4c0; letter-spacing: 1px; text-transform: uppercase; }
         .char-info { position: relative; margin-top: -70px; padding: 0 20px; display: flex; align-items: flex-end; gap: 15px; }
-        .char-avatar { width: 92px; height: 92px; min-width: 92px; border-radius: 22px; border: 2px solid rgba(214,182,126,.8); object-fit: cover; box-shadow: 0 12px 30px rgba(0,0,0,.4); z-index: 2; background: #000; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+        .char-avatar { width: 92px; height: 92px; min-width: 92px; border-radius: 22px; border: 2px solid rgba(232,200,120,.8); object-fit: cover; box-shadow: 0 12px 30px rgba(0,0,0,.4); z-index: 2; background: #000; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
         .char-avatar:active { transform: scale(.96); box-shadow: 0 8px 20px rgba(0,0,0,.45); }
         .char-texts { z-index: 2; margin-bottom: 5px; flex: 1; }
         .char-name { font-family: 'Fraunces', serif; font-size: 1.6em; color: var(--accent); text-shadow: 0 8px 18px rgba(0,0,0,.5); letter-spacing: .3px; }
-        .char-class { font-weight: 700; color: #8ec7ff; text-transform: uppercase; font-size: .75em; letter-spacing: 1.4px; }
-        .pts-pill { display: inline-block; background: #2d2a4d; padding: 4px 12px; border-radius: 999px; font-size: .75em; font-weight: 700; letter-spacing: .4px; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+        .char-class { font-weight: 700; color: #c4a0d0; text-transform: uppercase; font-size: .75em; letter-spacing: 1.4px; }
+        .pts-pill { display: inline-block; background: #2d1a40; padding: 4px 12px; border-radius: 999px; font-size: .75em; font-weight: 700; letter-spacing: .4px; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
         .vitals-section { padding: 0 20px 10px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px; }
         .hp-chip { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: rgba(12,18,32,.8); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: .85em; font-weight: 700; letter-spacing: .4px; box-shadow: inset 0 1px 0 rgba(255,255,255,.03); }
         .hp-chip .label { color: #9fb2ce; text-transform: uppercase; font-size: .7em; letter-spacing: .8px; }
         .hp-chip .value { color: var(--text); font-size: .95em; }
         .hp-chip.low { border-color: rgba(239,107,107,.6); color: var(--red); }
         .attr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-        .attr-card { background: #121a2b; border-radius: 12px; padding: 12px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.03); position: relative; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
-        .attr-card:hover { transform: translateY(-2px); border-color: rgba(74,163,255,.45); box-shadow: 0 10px 24px rgba(0,0,0,.25); }
+        .attr-card { background: #170f23; border-radius: 12px; padding: 12px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.03); position: relative; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+        .attr-card:hover { transform: translateY(-2px); border-color: rgba(232,200,120,.35); box-shadow: 0 10px 24px rgba(0,0,0,.25); }
         .attr-name { font-size: .7em; color: #9fb2ce; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
         .attr-value { font-size: 1.2em; font-weight: 800; }
         .val-bonus { font-size: .6em; color: var(--green); vertical-align: super; }
         .btn-add { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: var(--border); color: white; width: 36px; height: 36px; border-radius: 8px; font-weight: bold; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .15s, background .15s; }
         .btn-add:active { transform: translateY(-50%) scale(.92); background: var(--blue); }
-        .menu-trigger { position: fixed; top: 16px; right: 16px; z-index: 70; width: 46px; height: 46px; border-radius: 14px; border: 1px solid rgba(74,163,255,.35); background: rgba(11,17,31,.8); color: var(--accent); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 24px rgba(0,0,0,.35); backdrop-filter: blur(8px); transition: transform .2s ease, border-color .2s ease; }
-        .menu-trigger:active { transform: scale(.96); border-color: rgba(243,201,105,.6); }
-        .nav-item { color: #dbe7f6; display: flex; align-items: center; gap: 12px; font-size: .85em; font-weight: 600; cursor: pointer; transition: background .2s, color .2s, transform .2s; padding: 12px 14px; border-radius: 12px; }
+        .menu-trigger { position: fixed; top: 16px; right: 16px; z-index: 70; width: 46px; height: 46px; border-radius: 14px; border: 1px solid rgba(160,32,32,.35); background: rgba(10,7,20,.8); color: var(--accent); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 24px rgba(0,0,0,.35); backdrop-filter: blur(8px); transition: transform .2s ease, border-color .2s ease; }
+        .menu-trigger:active { transform: scale(.96); border-color: rgba(232,200,120,.6); }
+        .nav-item { color: #d0c4d8; display: flex; align-items: center; gap: 12px; font-size: .85em; font-weight: 600; cursor: pointer; transition: background .2s, color .2s, transform .2s; padding: 12px 14px; border-radius: 12px; }
         .nav-item i { font-size: 1.05em; width: 20px; text-align: center; }
-        .nav-item:hover { background: rgba(74,163,255,.08); }
-        .nav-item.active { color: var(--accent); background: rgba(243,201,105,.1); border: 1px solid rgba(243,201,105,.2); }
+        .nav-item:hover { background: rgba(160,32,32,.1); }
+        .nav-item.active { color: var(--accent); background: rgba(232,200,120,.1); border: 1px solid rgba(232,200,120,.2); }
         .nav-item.hidden { display: none !important; }
         .hidden { display: none !important; }
         .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: stretch; justify-content: flex-start; z-index: 60; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
         .menu-overlay.active { opacity: 1; pointer-events: auto; }
-        .side-menu { width: 280px; max-width: 85vw; height: 100%; background: #121a2b; border-right: 1px solid var(--border); padding: 16px; box-shadow: 10px 0 30px rgba(0,0,0,.35); transform: translateX(-110%); opacity: 0; transition: transform .3s ease, opacity .3s ease; display: flex; flex-direction: column; gap: 12px; }
+        .side-menu { width: 280px; max-width: 85vw; height: 100%; background: #170f23; border-right: 1px solid var(--border); padding: 16px; box-shadow: 10px 0 30px rgba(0,0,0,.35); transform: translateX(-110%); opacity: 0; transition: transform .3s ease, opacity .3s ease; display: flex; flex-direction: column; gap: 12px; }
         .menu-overlay.active .side-menu { transform: translateX(0); opacity: 1; }
         .menu-header { display: flex; align-items: center; justify-content: space-between; }
         .menu-title { font-family: 'Fraunces', serif; color: var(--accent); font-size: 1.1em; }
-        .menu-section { font-size: .7em; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-top: 6px; }
+        .menu-section { font-size: .7em; text-transform: uppercase; letter-spacing: 1px; color: #887a94; margin-top: 6px; }
         .tab-content { display: none; padding: 16px; padding-bottom: 30px; max-width: 980px; margin: 0 auto; }
         .tab-content.active { display: block; animation: fadeUp .4s ease; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        .section-title { font-family: 'Fraunces', serif; color: #9fd1ff; margin-bottom: 15px; border-bottom: 1px solid rgba(74,163,255,.2); padding-bottom: 6px; font-size: 1.1em; display: flex; align-items: center; gap: 8px; letter-spacing: .3px; }
+        .section-title { font-family: 'Fraunces', serif; color: #d0a0e0; margin-bottom: 15px; border-bottom: 1px solid rgba(160,32,32,.25); padding-bottom: 6px; font-size: 1.1em; display: flex; align-items: center; gap: 8px; letter-spacing: .3px; }
         .equip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center; margin-bottom: 25px; }
         .equip-slot { width: 70px; height: 70px; background: rgba(7,12,22,.5); border: 2px dashed var(--border); border-radius: 14px; display: flex; justify-content: center; align-items: center; position: relative; cursor: pointer; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
         .equip-slot:active { transform: scale(.95); }
@@ -77,9 +77,33 @@
         .slot-arma2 { grid-column: 3; grid-row: 2; justify-self: start; margin-left: -10px; }
         .slot-acessorio { grid-column: 1; grid-row: 1; justify-self: end; margin-right: -10px; }
         .skills-grid, .recipe-book-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .skill-card { display: flex; align-items: center; gap: 15px; background: #172338; border: 1px solid var(--border); padding: 12px; border-radius: 12px; transition: transform .2s ease, border-color .2s ease; }
-        .skill-card:hover { transform: translateY(-2px); border-color: rgba(74,163,255,.4); }
+        .skill-card { display: flex; align-items: center; gap: 15px; background: #22162f; border: 1px solid var(--border); padding: 12px; border-radius: 12px; transition: transform .2s ease, border-color .2s ease; }
+        .skill-card:hover { transform: translateY(-2px); border-color: rgba(232,200,120,.3); }
         .skill-img { width: 45px; height: 45px; border-radius: 10px; border: 1px solid rgba(243,201,105,.5); object-fit: cover; background: #000; }
+        .deck-wrapper { position: relative; padding: 10px 0; }
+        .deck-inner { display: flex; align-items: center; gap: 8px; justify-content: center; }
+        .deck-arrow { background: rgba(255,255,255,.06); border: 1px solid var(--border); color: var(--text); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all .2s; font-size: .85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .deck-arrow:hover { background: rgba(243,201,105,.12); border-color: var(--gold); color: var(--gold); transform: scale(1.1); }
+        .deck-arrow:active { transform: scale(.95); }
+        .deck-arrow.hidden { visibility: hidden; }
+        .deck-stage { position: relative; width: 100%; max-width: 320px; height: 300px; perspective: 1000px; }
+        .deck-card { position: absolute; inset: 0; background: linear-gradient(145deg,#1a1028,#22162f); border: 2px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: transform .35s ease, opacity .35s ease; backface-visibility: hidden; overflow: hidden; will-change: transform, opacity; }
+        .deck-card.stack { border-color: rgba(255,255,255,.04); background: rgba(26,16,40,.5); pointer-events: none; }
+        .deck-card.stack:nth-child(1) { transform: translateX(6px) translateY(4px) scale(.96); filter: brightness(.55); z-index: 1; }
+        .deck-card.stack:nth-child(2) { transform: translateX(12px) translateY(8px) scale(.92); filter: brightness(.35); z-index: 0; }
+        .deck-card.active { z-index: 2; border-color: var(--gold); box-shadow: 0 0 30px rgba(243,201,105,.12); }
+        .deck-card.slide-in { animation: deckSlideIn .35s ease; }
+        @keyframes deckSlideIn { from { transform: translateX(50px) scale(.92); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
+        .deck-card-img { width: 64px; height: 64px; border-radius: 10px; border: 2px solid var(--gold); object-fit: cover; margin-bottom: 6px; background: #000; flex-shrink: 0; }
+        .deck-card h4 { font-family:'Cinzel',serif; color:var(--gold); margin:0 0 2px; font-size:.95rem; }
+        .deck-card-level { font-size:.65rem; color:var(--muted); margin-bottom:4px; display:block; }
+        .deck-card p { font-size:.72rem; color:var(--muted); line-height:1.4; margin:0 0 8px; flex:1; display:flex; align-items:center; justify-content:center; }
+        .deck-card .btn-usar { background:var(--crimson2); border:none; border-radius:8px; padding:5px 14px; color:#fff; font-weight:700; cursor:pointer; transition:all .2s; font-size:.65rem; letter-spacing:.3px; flex-shrink:0; }
+        .deck-card .btn-usar:hover { filter:brightness(1.2); transform:translateY(-1px); box-shadow:0 4px 12px rgba(220,20,60,.3); }
+        .deck-dots { display:flex; gap:6px; justify-content:center; margin-top:10px; }
+        .deck-dot { width:7px; height:7px; border-radius:50%; background:var(--border); cursor:pointer; transition:all .25s; }
+        .deck-dot.active { background:var(--gold); box-shadow:0 0 8px rgba(243,201,105,.5); transform:scale(1.3); }
+        .deck-dot:hover { background:var(--gold); }
         .inv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .item-slot { background: var(--panel-2); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border); aspect-ratio: 1; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
         .item-slot:active { transform: scale(.95); }
@@ -136,20 +160,19 @@
         .grimorio-book .skill-img { border-color: rgba(120,87,45,.45); }
         .tab-content.active .book-cover { animation: coverOpen 1.2s ease forwards; }
         @keyframes coverOpen { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(-115deg); } }
-        .build-summary { background: #172338; border: 1px solid rgba(74,163,255,.25); border-radius: 18px; padding: 16px; margin-bottom: 18px; display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; box-shadow: 0 18px 30px rgba(0,0,0,.25); animation: floatSoft 6s ease-in-out infinite; position: relative; overflow: hidden; }
-        .build-summary::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: url('https://i.pinimg.com/736x/13/d4/60/13d46035503be60634544331c962dbb5.jpg') center/cover; filter: brightness(.6); opacity: .75; z-index: 0; }
-        .build-summary::after { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,.35); z-index: 0; }
+        .build-summary { background: #1a1028; border: 1px solid rgba(160,32,32,.35); border-radius: 18px; padding: 16px; margin-bottom: 18px; display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; box-shadow: 0 18px 30px rgba(0,0,0,.25); animation: floatSoft 6s ease-in-out infinite; position: relative; overflow: hidden; }
+        .build-summary::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: url('https://i.pinimg.com/736x/13/d4/60/13d46035503be60634544331c962dbb5.jpg') center/cover; filter: brightness(.4); opacity: .5; z-index: 0; }
+        .build-summary::after { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(10,7,20,.5); z-index: 0; }
         .build-summary > * { position: relative; z-index: 1; }
-        .build-summary img { width: 64px; height: 64px; border-radius: 14px; border: 2px solid rgba(243,201,105,.7); object-fit: cover; background: #000; }
+        .build-summary img { width: 64px; height: 64px; border-radius: 14px; border: 2px solid rgba(232,200,120,.7); object-fit: cover; background: #000; }
         .build-summary h3 { font-family: 'Fraunces', serif; color: var(--accent); font-size: 1.15em; margin-bottom: 2px; }
-        .build-summary .summary-class { color: #9fd1ff; font-size: .75em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .summary-chart { grid-column: 1 / -1; margin-top: 12px; background: #101a2c; border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
+        .build-summary .summary-class { color: #c4a0d0; font-size: .75em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .summary-chart { grid-column: 1 / -1; margin-top: 12px; background: #0f071a; border: 1px solid var(--border); border-radius: 14px; padding: 10px; }
         .summary-chart svg { width: 100%; height: 220px; display: block; }
-        .chart-grid { stroke: #22324d; stroke-width: 1; fill: none; }
-        .chart-axis { stroke: #1d2a42; stroke-width: 1; }
-        .chart-shape { fill: rgba(74,163,255,.25); stroke: #4aa3ff; stroke-width: 2; }
-        .chart-label { fill: #9fb2ce; font-size: 10px; font-weight: 600; letter-spacing: .4px; }
-        .chart-label.n2 { fill: #f3c969; }
+        .chart-grid { stroke: #3a2940; stroke-width: 1; fill: none; }
+        .chart-axis { stroke: #2a1a38; stroke-width: 1; }
+        .chart-shape { fill: rgba(232,200,120,.15); stroke: #e8c878; stroke-width: 2; }
+        .chart-label { fill: #b8a4c0; font-size: 10px; font-weight: 600; letter-spacing: .4px; }
         .chart-edge { stroke-width: 2.5; fill: none; }
         .summon-bar { margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
         .summon-card { background: rgba(10,16,28,.6); border: 1px solid var(--border); border-radius: 12px; padding: 8px; text-align: center; transition: transform .2s ease, border-color .2s ease; }
@@ -179,7 +202,7 @@
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 100; display: none; justify-content: center; align-items: center; padding: 10px; }
         .modal.active { display: flex; animation: fade .2s; }
-        .modal-card { background: #121a2b; width: 90vw; max-width: 380px; border-radius: 18px; padding: 20px; text-align: center; border: 1px solid rgba(74,163,255,.4); position: relative; max-height: 85vh; overflow-y: auto; margin: 10px; }
+        .modal-card { background: #170f23; width: 90vw; max-width: 380px; border-radius: 18px; padding: 20px; text-align: center; border: 1px solid rgba(160,32,32,.4); position: relative; max-height: 85vh; overflow-y: auto; margin: 10px; }
         .close-btn { position: absolute; top: 10px; right: 15px; color: #94a3b8; font-size: 1.5em; cursor: pointer; z-index: 10; }
         .mod-img { width: 90px; height: 90px; border-radius: 12px; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: cover; }
         .mod-title { font-family: 'Fraunces', serif; color: var(--accent); font-size: 1.2em; margin-bottom: 5px; }
@@ -564,10 +587,13 @@
         </div>
     </div>
     <div class="pts-pill" style="margin-bottom:20px; text-align:center; display:block;"><i class="fas fa-star"></i> <span id="p-pontos">0</span> Pts de Atributo</div>
+    <div id="msg-invest" style="display:none;background:rgba(220,20,60,.12);border:1px solid rgba(220,20,60,.3);border-radius:8px;padding:6px 10px;margin-bottom:12px;font-size:.75rem;color:var(--muted);text-align:center;"><i class="fas fa-info-circle" style="color:var(--crimson2);"></i> Os pontos já investidos não podem ser redistribuídos.</div>
     <h3 class="section-title"><i class="fas fa-heartbeat"></i> Atributos Base</h3>
     <div id="p-atributos-base" class="attr-grid"></div>
     <h3 class="section-title" id="skills-title" style="margin-top: 20px;"><i class="fas fa-fire"></i> Habilidades</h3>
     <div id="p-skills" class="skills-grid"></div>
+    <h3 class="section-title" style="margin-top:20px;"><i class="fas fa-star" style="color:var(--gold2);"></i> Perícias</h3>
+    <div id="p-habilidades" class="skills-grid"></div>
 </div>
 <div id="tab-equip" class="tab-content">
     <h3 class="section-title"><i class="fas fa-tshirt"></i> Equipamentos Ativos</h3>
@@ -710,6 +736,7 @@
 </div>
 
 <div id="export-card-container"></div>
+<div id="skill-card-container" style="position:fixed;left:-9999px;top:0;width:400px;display:none;"></div>
 
 <script>
 // ─── FIREBASE CONFIG ────────────────────────────────────────────────
@@ -720,7 +747,103 @@ const session = localStorage.getItem('rpg_session');
 if (!session || session === 'admin') window.location.href = 'index.html';
 
 let pData = null, itemsDB = {}, recipesDB = {}, skillsDB = {}, charsDB = {};
-const attrNames = { for: 'Força', res: 'Resistência', vel: 'Velocidade', agi: 'Agilidade', per: 'Percepção', resm: 'Res. Mágica', esp: 'Espírito', alm: 'Alma' };
+const attrNames = { fis: 'Físico', res: 'Resistência', vel: 'Velocidade', sub: 'Subjetivo' };
+const attrSub = { fis: ['braços','pernas'], res: ['mágica','física','mental'], vel: ['agilidade','corrida','reflexo'], sub: ['psicológico','inteligência','criatividade'] };
+const SUB_DISPLAY = { braços:'Braços', pernas:'Pernas', mágica:'Mágica', física:'Física', mental:'Mental', agilidade:'Agilidade', corrida:'Corrida', reflexo:'Reflexo', psicológico:'Psicológico', inteligência:'Inteligência', criatividade:'Criatividade' };
+const attrNamesDisp = {
+  fis: { label:'Físico', color:'var(--crimson2)', subs:['braços','pernas'] },
+  res: { label:'Resistência', color:'var(--teal2)', subs:['mágica','física','mental'] },
+  vel: { label:'Velocidade', color:'var(--emerald)', subs:['agilidade','corrida','reflexo'] },
+  sub: { label:'Subjetivo', color:'var(--gold2)', subs:['psicológico','inteligência','criatividade'] }
+};
+function renderAttrTree(prefix, baseAttr){
+  let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  Object.keys(attrNames).forEach(main=>{
+    const info=attrNamesDisp[main];
+    const v=baseAttr[main]||{};
+    const total=typeof v==='object'?(v.total||0):(typeof v==='number'?v:0);
+    html+=`<div style="background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:8px;padding:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="color:${info.color};font-weight:700;font-size:.75rem;">${info.label}</span>
+        <input type="number" id="${prefix}-${main}" value="${total}" min="0" style="width:50px;text-align:center;font-size:.7rem;padding:2px;border-radius:4px;border:1px solid var(--border);background:rgba(0,0,0,.3);color:var(--text);">
+      </div>`;
+    info.subs.forEach(sub=>{
+      const sv=typeof v==='object'?(v[sub]||0):0;
+      html+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+        <span style="font-size:.65rem;color:var(--muted);">${SUB_DISPLAY[sub]||sub}</span>
+        <input type="number" id="${prefix}-${main}-${sub}" value="${sv}" min="0" style="width:40px;text-align:center;font-size:.65rem;padding:1px 2px;border-radius:3px;border:1px solid var(--border);background:rgba(0,0,0,.2);color:var(--muted);">
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  html+='</div>';
+  return html;
+}
+function getAttrTotal(attrObj){
+  let total=0;
+  Object.keys(attrSub).forEach(main=>{
+    const v=attrObj[main];
+    if(typeof v==='object') total+=v.total||0;
+    else if(typeof v==='number') total+=v;
+  });
+  return total;
+}
+function toNumber(v){ const n=parseInt(v); return isNaN(n)?0:n; }
+function getBaseVal(attrObj, key){
+  const v=attrObj[key];
+  return typeof v==='object'?(v.total||0):(typeof v==='number'?v:0);
+}
+function renderProfileStatsObjeto(baseAttr, bonus, subBonus){
+  let html='';
+  Object.keys(attrNames).forEach(main=>{
+    const info=attrNamesDisp[main];
+    const subs = attrSub[main];
+    const baseVal=getBaseVal(baseAttr, main);
+    const total=baseVal+(bonus[main]||0);
+    html+=`<div class="attr-card" style="border-left:3px solid ${info.color};padding-bottom:6px;">
+      <div class="attr-name" style="color:${info.color};">${info.label} <span style="font-size:.7rem;color:var(--muted);font-weight:400;">[${total}]</span></div>
+      <div style="margin-top:4px;">`;
+    subs.forEach(sub=>{
+      const sv = typeof baseAttr[main]==='object' ? ((baseAttr[main]||{})[sub]||0) : 0;
+      const sb = subBonus?.[main]?.[sub]||0;
+      const display=sv+sb;
+      html+=`<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;font-size:.7rem;">
+        <span style="flex:1;color:var(--muted);">${SUB_DISPLAY[sub]||sub}</span>
+        <span style="font-weight:700;color:${info.color};width:20px;text-align:right;">${display}</span>
+        ${sb?`<span style="font-size:.55rem;color:var(--green2);">(+${sb})</span>`:''}
+        <button class="btn-add" style="position:static;transform:none;width:22px;height:22px;font-size:.6rem;" onclick="uparSub('${main}','${sub}')">+</button>
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+  return html;
+}
+function renderProfileStats(c, bonus, showSub=false){
+  const base=c.atributos_base||{};
+  let html='<div class="stat-grid-2">';
+  Object.keys(attrNames).forEach(main=>{
+    const info=attrNamesDisp[main];
+    const baseVal=getBaseVal(base, main);
+    const total=baseVal+(bonus[main]||0);
+    const bStr=(bonus[main]||0)>0?` <small style="color:var(--green2);font-size:.6em;">(+${bonus[main]})</small>`:'';
+    html+=`<div class="stat-cell">${info.label}<strong style="color:${info.color};">${total}${bStr}</strong></div>`;
+  });
+  html+='</div>';
+  if(showSub){
+    html+='<div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px;">';
+    Object.keys(attrNames).forEach(main=>{
+      const info=attrNamesDisp[main];
+      info.subs.forEach(sub=>{
+        const sv=typeof base[main]==='object'?(base[main][sub]||0):0;
+        html+=`<div style="font-size:.65rem;color:var(--muted);background:rgba(0,0,0,.15);border-radius:4px;padding:2px 6px;display:flex;justify-content:space-between;">
+          <span>${SUB_DISPLAY[sub]||sub}</span><span style="color:${info.color};">${sv}</span>
+        </div>`;
+      });
+    });
+    html+='</div>';
+  }
+  return html;
+}
 let craftMesa = [null,null,null,null,null,null,null,null,null];
 let itemCraftSelecionado = null, inventarioCraftDisponivel = {};
 let itemAtualKey = null, itemAtualId = null, itemAtualDBData = null, itemAtualAction = 'equip', itemAtualCount = 1;
@@ -843,7 +966,7 @@ db.ref('combat/sessions').on('value', snap => {
             let hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, ((char.hp || 0) / char.hp_max) * 100)) : 100;
             let hpDisplay = char.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
             const b = char.atributos_base || {};
-            const statsBar = `<div class="card-stats"><span>❤️${char.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div>`;
+            const statsBar = `<div class="card-stats"><span>❤️${char.hp||0}</span><span>⚔️${getBaseVal(b,'fis')}</span><span>🛡️${getBaseVal(b,'res')}</span><span>💨${getBaseVal(b,'vel')}</span></div>`;
             let lootHtml = '';
             if (data.status === 'defeated') {
                 cardClass += ' defeated'; hpDisplay = `<div class="pov-char-name" style="color:var(--red);">DERROTADO</div>`;
@@ -858,7 +981,7 @@ db.ref('combat/sessions').on('value', snap => {
             let hpPercent = summon.hp_max > 0 ? Math.max(0, Math.min(100, ((summon.hp || 0) / summon.hp_max) * 100)) : 100;
             let hpDisplay = summon.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
             const b = summon.atributos_base || {};
-            return `<div class="pov-char-card"><img src="${summon.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'" alt="${summon.nome||'Pet'}"><div class="pov-char-details"><div class="pov-char-name">${(summon.nome||'Pet').split(' ')[0]}</div>${hpDisplay}<div class="card-stats"><span>❤️${summon.hp||0}</span><span>⚔️${b.for||0}</span><span>🛡️${b.res||0}</span><span>⚡${b.agi||0}</span></div></div></div>`;
+            return `<div class="pov-char-card"><img src="${summon.imagem}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150'" alt="${summon.nome||'Pet'}"><div class="pov-char-details"><div class="pov-char-name">${(summon.nome||'Pet').split(' ')[0]}</div>${hpDisplay}<div class="card-stats"><span>❤️${summon.hp||0}</span><span>⚔️${getBaseVal(b,'fis')}</span><span>🛡️${getBaseVal(b,'res')}</span><span>💨${getBaseVal(b,'vel')}</span></div></div></div>`;
         };
 
         Object.entries(myCombat.tokens).forEach(([id, data]) => {
@@ -964,15 +1087,15 @@ function buildSystemPrompt(enemy) {
 INIMIGO: ${enemy.nome} — ${tipo}
 Descrição: ${descEnemy}
 HP atual: ${iaCombat.enemyHP}/${iaCombat.enemyHPMax}
-Atributos: FOR=${eStats.for}, RES=${eStats.res}, VEL=${eStats.vel}, AGI=${eStats.agi}, PER=${eStats.per}, ESP=${eStats.esp}
-
-JOGADOR: ${pData.nome} (${pData.classe || 'Aventureiro'})
-HP atual: ${iaCombat.playerHP}/${iaCombat.playerHPMax}
-Atributos: FOR=${pStats.for}, RES=${pStats.res}, VEL=${pStats.vel}, AGI=${pStats.agi}, PER=${pStats.per}, ESP=${pStats.esp}
-
-REGRAS ABSOLUTAS:
-1. A cada turno: receba a ação do jogador, narre o resultado, depois faça o inimigo agir baseado em seus atributos e personalidade.
-2. Calcule dano com base nos atributos (FOR/AGI para físico, ESP para mágico) e RES para defesa. Inclua variação aleatória.
+Atributos: FIS=${eStats.fis}, RES=${eStats.res}, VEL=${eStats.vel}, SUB=${eStats.sub}
+ 
+ JOGADOR: ${pData.nome} (${pData.classe || 'Aventureiro'})
+ HP atual: ${iaCombat.playerHP}/${iaCombat.playerHPMax}
+ Atributos: FIS=${pStats.fis}, RES=${pStats.res}, VEL=${pStats.vel}, SUB=${pStats.sub}
+ 
+ REGRAS ABSOLUTAS:
+ 1. A cada turno: receba a ação do jogador, narre o resultado, depois faça o inimigo agir baseado em seus atributos e personalidade.
+ 2. Calcule dano com base nos atributos (FIS para físico, SUB para mágico) e RES para defesa. VEL para iniciativa. Inclua variação aleatória.
 3. Ao narrar, seja cinematográfico, curto (3-4 frases). Se o inimigo é animal, descreva comportamento instintivo. Se humanoide, inclua falas e pensamentos táticos.
 4. NUNCA mate o jogador. Se HP chegar a 0, o inimigo o deixa inconsciente/fugiu/poupou por algum motivo narrativo.
 5. Se o inimigo for derrotado (HP=0), narre a derrota dele de forma épica.
@@ -1225,9 +1348,9 @@ function renderIACombatUI() {
                     <div class="ia-comb-hp-track"><div class="ia-comb-hp-fill blue" style="width:${pHPPct}%"></div></div>
                     <div class="ia-comb-stats">
                         <span>❤️ ${iaCombat.playerHP}/${iaCombat.playerHPMax}</span>
-                        <span>⚔️ FOR ${pStats.for}</span>
+                        <span>⚔️ FIS ${pStats.fis}</span>
                         <span>🛡️ RES ${pStats.res}</span>
-                        <span>⚡ AGI ${pStats.agi}</span>
+                        <span>💨 VEL ${pStats.vel}</span>
                     </div>
                 </div>
                 <div class="ia-vs-divider">VS</div>
@@ -1236,9 +1359,9 @@ function renderIACombatUI() {
                     <div class="ia-comb-hp-track"><div class="ia-comb-hp-fill red" style="width:${eHPPct}%"></div></div>
                     <div class="ia-comb-stats">
                         <span>❤️ ${iaCombat.enemyHP}/${iaCombat.enemyHPMax}</span>
-                        <span>⚔️ FOR ${eStats.for}</span>
+                        <span>⚔️ FIS ${eStats.fis}</span>
                         <span>🛡️ RES ${eStats.res}</span>
-                        <span>⚡ AGI ${eStats.agi}</span>
+                        <span>💨 VEL ${eStats.vel}</span>
                     </div>
                 </div>
             </div>
@@ -1344,7 +1467,7 @@ function coletarLootIA() {
 
 // ─── ATRIBUTOS CALCULADOS ────────────────────────────────────────────
 function getPlayerStats() {
-    let bonus = { for: 0, res: 0, vel: 0, agi: 0, per: 0, resm: 0, esp: 0, alm: 0 };
+    let bonus = { fis: 0, res: 0, vel: 0, sub: 0 };
     if (pData && pData.inventario) {
         Object.values(pData.inventario).forEach(inv => {
             if (inv.equipado && itemsDB[inv.item_id] && itemsDB[inv.item_id].mods) {
@@ -1359,11 +1482,17 @@ function getPlayerStats() {
         });
     }
     const base = (pData && pData.atributos_base) || {};
-    return Object.fromEntries(Object.keys(bonus).map(k => [k, (base[k] || 0) + bonus[k]]));
+    const out = {};
+    Object.keys(bonus).forEach(k => {
+      const bv = base[k];
+      const baseVal = typeof bv === 'object' ? (bv.total || 0) : (typeof bv === 'number' ? bv : 0);
+      out[k] = baseVal + bonus[k];
+    });
+    return out;
 }
 
 function getEnemyStats(enemy) {
-    let bonus = { for: 0, res: 0, vel: 0, agi: 0, per: 0, resm: 0, esp: 0, alm: 0 };
+    let bonus = { fis: 0, res: 0, vel: 0, sub: 0 };
     if (enemy && enemy.inventario) {
         Object.values(enemy.inventario).forEach(inv => {
             if (inv.equipado && itemsDB[inv.item_id] && itemsDB[inv.item_id].mods) {
@@ -1372,7 +1501,13 @@ function getEnemyStats(enemy) {
         });
     }
     const base = (enemy && enemy.atributos_base) || {};
-    return Object.fromEntries(Object.keys(bonus).map(k => [k, (base[k] || 0) + bonus[k]]));
+    const out = {};
+    Object.keys(bonus).forEach(k => {
+      const bv = base[k];
+      const baseVal = typeof bv === 'object' ? (bv.total || 0) : (typeof bv === 'number' ? bv : 0);
+      out[k] = baseVal + bonus[k];
+    });
+    return out;
 }
 
 // ─── PARALLAX & MISC COMBATE ─────────────────────────────────────────
@@ -1401,7 +1536,7 @@ function invocarCriatura(itemKey, itemId) {
     if (!activeCombatId || !currentCombatData) return alert('Sem combate ativo.');
     const item = itemsDB[itemId]; if (!item) return;
     const myTeam = (currentCombatData.tokens || {})[session]?.team || 'A';
-    const summon = { nome: item.nome||'Pet', imagem: item.imagem||'https://via.placeholder.com/150', team: myTeam, owner: session, status: 'alive', hp: (item.summon?.hp)||10, hp_max: (item.summon?.hp_max)||10, atributos_base: (item.summon?.atributos_base)||{for:0,res:0,agi:0} };
+    const summon = { nome: item.nome||'Pet', imagem: item.imagem||'https://via.placeholder.com/150', team: myTeam, owner: session, status: 'alive', hp: (item.summon?.hp)||10, hp_max: (item.summon?.hp_max)||10, atributos_base: (item.summon?.atributos_base)||{fis:0,res:0,vel:0,sub:0} };
     const summonKey = db.ref(`combat/sessions/${activeCombatId}/summons`).push().key;
     db.ref(`combat/sessions/${activeCombatId}/summons/${summonKey}`).set(summon);
     db.ref(`characters/${session}/inventario/${itemKey}`).remove();
@@ -1444,7 +1579,7 @@ function verStatsCombate(charId, isPublic) {
     if (c.sp_max > 0) vitalsHtml += `<div class="status-bar active"><div class="status-bar-inner" style="background:linear-gradient(to right, var(--gold), #b45309); width:${(c.sp/c.sp_max)*100}%"></div><div class="status-bar-text">SP ${c.sp}/${c.sp_max}</div></div>`;
     document.getElementById('cc-vitals').innerHTML = vitalsHtml;
     let eqSlots = {arma1:null,arma2:null,cabeca:null,peitoral:null,pernas:null,acessorio:null};
-    let bonus = {for:0,res:0,vel:0,agi:0,per:0,resm:0,esp:0,alm:0};
+    let bonus = {fis:0,res:0,vel:0,sub:0};
     if (c.inventario) Object.values(c.inventario).forEach(item => {
         if (item.equipado) {
             const idb = itemsDB[item.item_id]; if (!idb) return;
@@ -1459,43 +1594,84 @@ function verStatsCombate(charId, isPublic) {
     if (c.tipo==='Criatura') { eq.innerHTML=`<p style="color:#64748b; font-size:.8em; grid-column:1/-1;">Criaturas não usam equipamentos.</p>`; }
     else { const rEq=(idb,icon,type)=>idb?`<div class="equip-slot filled slot-${type}" title="${idb.nome}"><img src="${idb.imagem}"></div>`:`<div class="equip-slot slot-${type}"><i class="fas ${icon}" style="color:var(--border);"></i></div>`; eq.innerHTML=rEq(eqSlots.cabeca,'fa-helmet-battle','cabeca')+rEq(eqSlots.peitoral,'fa-tshirt','peitoral')+rEq(eqSlots.pernas,'fa-shoe-prints','pernas')+rEq(eqSlots.arma1,'fa-hand-rock','arma1')+rEq(eqSlots.arma2,'fa-hand-rock','arma2')+rEq(eqSlots.acessorio,'fa-ring','acessorio'); }
     let statsHtml=''; const base=c.atributos_base||{};
-    Object.keys(attrNames).forEach(k=>{const total=(base[k]||0)+bonus[k]; let bStr=bonus[k]>0?`<span class="val-bonus">+${bonus[k]}</span>`:''; statsHtml+=`<div class="attr-card" style="padding:8px;"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div></div>`;});
+    Object.keys(attrNames).forEach(k=>{
+      const info=attrNamesDisp[k];
+      const total=getBaseVal(base,k)+(bonus[k]||0);
+      let bStr=bonus[k]>0?`<span class="val-bonus">+${bonus[k]}</span>`:'';
+      statsHtml+=`<div class="attr-card" style="padding:8px;border-left:3px solid ${info.color};"><div class="attr-name" style="color:${info.color};">${info.label}</div><div class="attr-value">${total} ${bStr}</div></div>`;
+    });
     document.getElementById('cc-stats').innerHTML=statsHtml;
     document.getElementById('combat-char-modal').classList.add('active');
 }
 
 // ─── STATUS & INVENTÁRIO ─────────────────────────────────────────────
+const MAIN_KEYS=['fis','res','vel','sub'];
 function renderStatusEInv() {
-    let bonus={for:0,res:0,vel:0,agi:0,per:0,resm:0,esp:0,alm:0};
+    let bonus={fis:0,res:0,vel:0,sub:0};
+    let subBonus={};
+    MAIN_KEYS.forEach(m=>{subBonus[m]={}; attrSub[m].forEach(s=>subBonus[m][s]=0);});
     let eqSlots={arma1:null,arma2:null,cabeca:null,peitoral:null,pernas:null,acessorio:null};
     let equippedItems=[];
     if (pData.inventario) Object.entries(pData.inventario).forEach(([key,invItem])=>{if(invItem.equipado) equippedItems.push({key,...invItem});});
+    const applyMods = (mods) => {
+        if(!mods) return;
+        Object.keys(mods).forEach(k=>{
+            const dot=k.indexOf('.');
+            if(dot>0){const main=k.slice(0,dot),sub=k.slice(dot+1); if(subBonus[main]&&subBonus[main][sub]!==undefined) subBonus[main][sub]+=mods[k];}
+            else if(bonus[k]!==undefined) bonus[k]+=mods[k];
+        });
+    };
     equippedItems.forEach(item=>{
         const idb=itemsDB[item.item_id]; if(!idb) return; let placed=false;
         if(idb.categoria==='Arma'){if(!eqSlots.arma1){eqSlots.arma1={item,idb};placed=true;}else if(!eqSlots.arma2){eqSlots.arma2={item,idb};placed=true;}}
         else if(idb.categoria==='Armadura'){if(idb.slot_type==='Cabeça'&&!eqSlots.cabeca){eqSlots.cabeca={item,idb};placed=true;}else if(idb.slot_type==='Peitoral'&&!eqSlots.peitoral){eqSlots.peitoral={item,idb};placed=true;}else if(idb.slot_type==='Pernas'&&!eqSlots.pernas){eqSlots.pernas={item,idb};placed=true;}}
         else if(idb.categoria==='Acessorio'&&!eqSlots.acessorio){eqSlots.acessorio={item,idb};placed=true;}
-        if(placed&&idb.mods) Object.keys(bonus).forEach(k=>bonus[k]+=(idb.mods[k]||0));
+        if(placed) applyMods(idb.mods);
     });
-    if(pData.skills) Object.keys(pData.skills).forEach(sId=>{const skill=skillsDB[sId]; if(skill&&skill.buffs) Object.keys(bonus).forEach(k=>bonus[k]+=(skill.buffs[k]||0));});
+    if(pData.skills) Object.keys(pData.skills).forEach(sId=>{const skill=skillsDB[sId]; if(skill) applyMods(skill.buffs);});
     const renderEq=(slotData,emptyIcon,label,slotType)=>{if(slotData) return `<div class="equip-slot filled slot-${slotType}" onclick="abrirItem('${slotData.item.key}','${slotData.item.item_id}',true,1)"><img src="${slotData.idb.imagem}"><div class="equip-slot-label">${label}</div></div>`; else return `<div class="equip-slot slot-${slotType}" onclick="abrirEquipPicker('${slotType}')"><i class="fas ${emptyIcon}" style="color:var(--border); font-size:1.8em;"></i><div class="equip-slot-label">${label}</div></div>`;};
     document.getElementById('p-equipamentos').innerHTML=renderEq(eqSlots.cabeca,'fa-helmet-battle','Cabeça','cabeca')+renderEq(eqSlots.peitoral,'fa-tshirt','Peitoral','peitoral')+renderEq(eqSlots.pernas,'fa-shoe-prints','Pernas','pernas')+renderEq(eqSlots.arma1,'fa-hand-rock','Mão 1','arma1')+renderEq(eqSlots.arma2,'fa-hand-rock','Mão 2','arma2')+renderEq(eqSlots.acessorio,'fa-ring','Amuleto','acessorio');
     const boxSkills=document.getElementById('p-skills');
     const skillsTitle=document.getElementById('skills-title');
-    boxSkills.innerHTML='';
     const skillIds=pData.skills?Object.keys(pData.skills):[];
     if(skillIds.length){
-        skillIds.forEach(sId=>{const skill=skillsDB[sId]; if(skill) boxSkills.innerHTML+=`<div class="skill-card"><img class="skill-img" src="${skill.imagem}"><div class="skill-info"><h4>${skill.nome}</h4><p>${skill.descricao}</p></div></div>`;});
         if (skillsTitle) skillsTitle.classList.remove('hidden');
         boxSkills.classList.remove('hidden');
+        boxSkills.innerHTML=`
+            <div class="deck-wrapper">
+                <div class="deck-inner">
+                    <button class="deck-arrow" id="deck-prev" onclick="deckPrev()"><i class="fas fa-chevron-left"></i></button>
+                    <div class="deck-stage" id="deck-stage"></div>
+                    <button class="deck-arrow" id="deck-next" onclick="deckNext()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="deck-dots" id="deck-dots"></div>
+            </div>`;
+        window.deckSkills=skillIds.filter(sId=>skillsDB[sId]);
+        window.deckIndex=0;
+        renderDeck();
     } else {
         if (skillsTitle) skillsTitle.classList.add('hidden');
         boxSkills.classList.add('hidden');
     }
+    const habEl=document.getElementById('p-habilidades');
+    if(habEl){
+      if(pData.habilidades){
+        let habHtml='';
+        Object.entries(pData.habilidades).forEach(([hName, hLevel])=>{
+          habHtml+=`<div class="skill-card" style="border-color:rgba(232,200,120,.3);">
+            <div class="skill-info"><h4 style="color:var(--gold2);">${hName}</h4></div>
+            <span style="font-size:1.1em;font-weight:800;color:var(--gold);">Nv. ${hLevel}/9</span>
+          </div>`;
+        });
+        habEl.innerHTML=habHtml;
+        habEl.closest('.hidden')?.classList.remove('hidden');
+      } else {
+        habEl.innerHTML='<p style="color:var(--muted);font-size:.8em;">Nenhuma perícia ainda.</p>';
+      }
+    }
     const atributosBase=pData.atributos_base||{};
-    const boxAtrBase=document.getElementById('p-atributos-base'); boxAtrBase.innerHTML='';
-    let totalPower=0;
-    Object.keys(attrNames).forEach(k=>{const total=(atributosBase[k]||0)+bonus[k]; totalPower+=total; let bStr=bonus[k]>0?`<span class="val-bonus">+${bonus[k]}</span>`:''; boxAtrBase.innerHTML+=`<div class="attr-card"><div class="attr-name">${attrNames[k]}</div><div class="attr-value">${total} ${bStr}</div><button class="btn-add" onclick="upar('${k}')">+</button></div>`;});
+    const boxAtrBase=document.getElementById('p-atributos-base');
+    boxAtrBase.innerHTML = renderProfileStatsObjeto(atributosBase, bonus, subBonus);
     const summaryImg=document.getElementById('summary-img');
     const summaryName=document.getElementById('summary-name');
     const summaryClass=document.getElementById('summary-class');
@@ -1506,30 +1682,27 @@ function renderStatusEInv() {
     const chart=document.getElementById('attr-chart');
     if (chart) {
         const keys = Object.keys(attrNames);
-        const values = keys.map(k => (atributosBase[k] || 0) + bonus[k]);
-        const colors = {
-            for: '#ef6b6b',
-            res: '#f3c969',
-            vel: '#4aa3ff',
-            agi: '#31c5d9',
-            per: '#7c5cff',
-            resm: '#3ac7a1',
-            esp: '#f59e7a',
-            alm: '#d68cff'
-        };
-        const hasLevel2 = values.some(v => v > 25);
-        const max = hasLevel2 ? 50 : 25;
+        const values = keys.map(k => getBaseVal(atributosBase, k) + (bonus[k]||0));
+        const colors = { fis: 'var(--crimson2)', res: 'var(--teal2)', vel: 'var(--emerald)', sub: 'var(--gold2)' };
+        const totalPts = values.reduce((a,b)=>a+b, 0);
+        const isV2 = totalPts > 50;
+        const max = isV2 ? 100 : 50;
         const size = 220;
         const cx = size / 2;
         const cy = size / 2;
         const radius = 70;
         const rings = 4;
-        const angleStep = (Math.PI * 2) / keys.length;
+        const n = keys.length;
+        const angleStep = (Math.PI * 2) / n;
 
-        const ringPts = (r) => keys.map((_, i) => {
-            const a = -Math.PI / 2 + i * angleStep;
-            return `${(cx + Math.cos(a) * r).toFixed(1)},${(cy + Math.sin(a) * r).toFixed(1)}`;
-        }).join(' ');
+        const ringPts = (r) => {
+          const pts = [];
+          for(let i=0;i<6;i++){
+            const a = -Math.PI/2 + i * (Math.PI*2/6);
+            pts.push(`${(cx+Math.cos(a)*r).toFixed(1)},${(cy+Math.sin(a)*r).toFixed(1)}`);
+          }
+          return pts.join(' ');
+        };
 
         const polyPts = values.map((v, i) => {
             const a = -Math.PI / 2 + i * angleStep;
@@ -1540,10 +1713,7 @@ function renderStatusEInv() {
         const points = values.map((v, i) => {
             const a = -Math.PI / 2 + i * angleStep;
             const rr = (Math.min(v, max) / max) * radius;
-            return {
-                x: (cx + Math.cos(a) * rr),
-                y: (cy + Math.sin(a) * rr)
-            };
+            return { x: (cx + Math.cos(a) * rr), y: (cy + Math.sin(a) * rr) };
         });
 
         const axes = keys.map((_, i) => {
@@ -1558,15 +1728,14 @@ function renderStatusEInv() {
             const labelR = radius + 18;
             const x = cx + Math.cos(a) * labelR;
             const y = cy + Math.sin(a) * labelR;
-            const isN2 = values[i] > 25;
-            const suffix = isN2 ? ' N2' : '';
             const color = colors[k] || '#9fb2ce';
-            return `<text class="chart-label${isN2 ? ' n2' : ''}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" fill="${color}">${attrNames[k]}${suffix}</text>`;
+            return `<text class="chart-label" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" fill="${color}">${attrNames[k]}</text>`;
         }).join('');
 
         const edgeDefs = points.map((p, i) => {
             const next = points[(i + 1) % points.length];
-            return `<linearGradient id="edge-${i}" gradientUnits="userSpaceOnUse" x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${next.x.toFixed(1)}" y2="${next.y.toFixed(1)}"><stop offset="0%" stop-color="${colors[keys[i]] || '#9fb2ce'}" /><stop offset="100%" stop-color="${colors[keys[(i + 1) % keys.length]] || '#9fb2ce'}" /></linearGradient>`;
+            const c0 = colors[keys[i]]||'#9fb2ce', c1 = colors[keys[(i+1)%keys.length]]||'#9fb2ce';
+            return `<linearGradient id="edge-${i}" gradientUnits="userSpaceOnUse" x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${next.x.toFixed(1)}" y2="${next.y.toFixed(1)}"><stop offset="0%" stop-color="${c0}" /><stop offset="100%" stop-color="${c1}" /></linearGradient>`;
         }).join('');
 
         const edges = points.map((p, i) => {
@@ -1579,6 +1748,7 @@ function renderStatusEInv() {
             return `<polygon class="chart-grid" points="${ringPts(r)}" />`;
         }).join('');
 
+        const v2badge = isV2 ? `<text x="${size-10}" y="16" text-anchor="end" fill="var(--gold)" font-weight="900" font-size="13" font-family="Poppins, sans-serif">V2</text>` : '';
         chart.innerHTML = `
             <defs>${edgeDefs}</defs>
             ${ringsHtml}
@@ -1586,6 +1756,7 @@ function renderStatusEInv() {
             <polygon class="chart-shape" points="${polyPts}" />
             ${edges}
             ${labels}
+            ${v2badge}
         `;
     }
     const hpChip=document.getElementById('hp-chip');
@@ -1610,7 +1781,24 @@ function renderStatusEInv() {
 }
 
 function renderItemSlot(uniqKey,itemId,equipado,count){const idb=itemsDB[itemId]; const eqClass=equipado?' equipped':''; const badge=count>1?`<div class="item-badge">x${count}</div>`:''; return `<div class="item-slot${eqClass}" onclick="abrirItem('${uniqKey}','${itemId}',${equipado},${count})">${badge}<img class="item-img" src="${idb.imagem}"></div>`;}
-function upar(atr){if((pData.pontos||0)<=0) return alert("Sem pontos de atributo."); if(confirm(`Investir 1 ponto em ${attrNames[atr]}?`)){const baseAtual=pData.atributos_base?(pData.atributos_base[atr]||0):0; db.ref(`characters/${session}/pontos`).set(pData.pontos-1); db.ref(`characters/${session}/atributos_base/${atr}`).set(baseAtual+1);}}
+let msgInvestShown=false;
+function uparSub(atr, sub){
+  if((pData.pontos||0)<=0){
+    if(!msgInvestShown){
+      const el=document.getElementById('msg-invest');
+      if(el){el.style.display='block'; msgInvestShown=true;}
+    }
+    return;
+  }
+  const baseAtual=pData.atributos_base||{};
+  const cur = baseAtual[atr] || {};
+  const curTotal = cur.total || 0;
+  const nextVal = { ...cur };
+  nextVal[sub] = (nextVal[sub] || 0) + 1;
+  nextVal.total = curTotal + 1;
+  db.ref(`characters/${session}/pontos`).set(pData.pontos-1);
+  db.ref(`characters/${session}/atributos_base/${atr}`).set(nextVal);
+}
 function abrirEquipPicker(slotType){const grid=document.getElementById('picker-grid'); grid.innerHTML=''; let found=false; Object.entries(pData.inventario||{}).forEach(([key,invItem])=>{const idb=itemsDB[invItem.item_id]; if(idb&&!invItem.equipado){let match=false; if((slotType==='arma1'||slotType==='arma2')&&idb.categoria==='Arma') match=true; if(slotType==='acessorio'&&idb.categoria==='Acessorio') match=true; if(idb.categoria==='Armadura'){if(slotType==='cabeca'&&idb.slot_type==='Cabeça') match=true; if(slotType==='peitoral'&&idb.slot_type==='Peitoral') match=true; if(slotType==='pernas'&&idb.slot_type==='Pernas') match=true;} if(match){found=true; grid.innerHTML+=`<div class="picker-item" onclick="finalizarEquip('${key}')"><img src="${idb.imagem}"><span style="font-size:.7em">${idb.nome}</span></div>`;}}});
 if(!found) grid.innerHTML=`<p style="color:#64748b; font-size:.8em;">Nenhum item compatível na bolsa.</p>`; document.getElementById('picker-title').innerText=`Equipar`; document.getElementById('picker-modal').classList.add('active');}
 function finalizarEquip(itemKey){db.ref(`characters/${session}/inventario/${itemKey}/equipado`).set(true); fecharModal('picker-modal');}
@@ -1838,7 +2026,7 @@ function rolarDadoPlayer(faces){
 }
 
 // ─── EXPORTAR ────────────────────────────────────────────────────────
-async function exportarFicha(){const card=document.getElementById('export-card-container'); const data={nome:pData.nome,classe:pData.classe,imagem:pData.imagem,atributos:{},equipamentos:[],habilidades:[]}; document.querySelectorAll('#p-atributos-base .attr-card').forEach(el=>{data.atributos[el.querySelector('.attr-name').innerText]=el.querySelector('.attr-value').innerText;}); document.querySelectorAll('#p-equipamentos .equip-slot.filled').forEach(el=>data.equipamentos.push(el.querySelector('img').src)); document.querySelectorAll('#p-skills .skill-card').forEach(el=>data.habilidades.push({img:el.querySelector('img').src,nome:el.querySelector('h4').innerText})); const goldColor=getComputedStyle(document.documentElement).getPropertyValue('--gold'); const blueColor=getComputedStyle(document.documentElement).getPropertyValue('--blue'); let atrHtml=Object.entries(data.atributos).map(([k,v])=>`<div style="flex:1; min-width:80px; text-align:center; background:rgba(0,0,0,.3); padding:5px; border-radius:5px;"><strong style="color:${goldColor}; display:block;">${k}</strong> ${v}</div>`).join(''); let eqHtml=data.equipamentos.map(src=>`<img src="${src}" style="width:50px; height:50px; border-radius:5px; border:1px solid #334155; object-fit:cover;">`).join(''); let skHtml=data.habilidades.map(s=>`<div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;"><img src="${s.img}" style="width:30px; height:30px; border-radius:5px;"><span>${s.nome}</span></div>`).join(''); card.innerHTML=`<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos</h4><div style="display:flex; gap:8px; font-size:.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Equipamentos</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml||'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:.8em;">${skHtml||'Nenhuma.'}</div>`; const canvas=await html2canvas(card,{backgroundColor:'#1e293b',useCORS:true}); const link=document.createElement('a'); link.download=`ficha_${session}.png`; link.href=canvas.toDataURL("image/png"); link.click();}
+async function exportarFicha(){const card=document.getElementById('export-card-container'); const data={nome:pData.nome,classe:pData.classe,imagem:pData.imagem,atributos:{},equipamentos:[],habilidades:[]}; document.querySelectorAll('#p-atributos-base .attr-card').forEach(el=>{data.atributos[el.querySelector('.attr-name').innerText]=el.querySelector('.attr-value').innerText;}); document.querySelectorAll('#p-equipamentos .equip-slot.filled').forEach(el=>data.equipamentos.push(el.querySelector('img').src)); if(pData.skills) Object.keys(pData.skills).forEach(sId=>{const s=skillsDB[sId]; if(s) data.habilidades.push({img:s.imagem,nome:s.nome});}); const goldColor=getComputedStyle(document.documentElement).getPropertyValue('--gold'); const blueColor=getComputedStyle(document.documentElement).getPropertyValue('--blue'); let atrHtml=Object.entries(data.atributos).map(([k,v])=>`<div style="flex:1; min-width:80px; text-align:center; background:rgba(0,0,0,.3); padding:5px; border-radius:5px;"><strong style="color:${goldColor}; display:block;">${k}</strong> ${v}</div>`).join(''); let eqHtml=data.equipamentos.map(src=>`<img src="${src}" style="width:50px; height:50px; border-radius:5px; border:1px solid #334155; object-fit:cover;">`).join(''); let skHtml=data.habilidades.map(s=>`<div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;"><img src="${s.img}" style="width:30px; height:30px; border-radius:5px;"><span>${s.nome}</span></div>`).join(''); card.innerHTML=`<div style="text-align:center; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;"><img src="${data.imagem}" style="width:100px; height:100px; border-radius:50%; border:2px solid ${goldColor}; margin-bottom:10px;"><h2 style="font-family:'Cinzel',serif; color:${goldColor}; margin:0;">${data.nome}</h2><p style="color:${blueColor};">${data.classe}</p></div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Atributos</h4><div style="display:flex; gap:8px; font-size:.8em; flex-wrap:wrap;">${atrHtml}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Equipamentos</h4><div style="display:flex; gap:8px; flex-wrap:wrap;">${eqHtml||'Nenhum.'}</div><h4 style="font-family:'Cinzel',serif; margin:10px 0; color:${blueColor};">Habilidades</h4><div style="font-size:.8em;">${skHtml||'Nenhuma.'}</div>`; const canvas=await html2canvas(card,{backgroundColor:'#1e293b',useCORS:true}); const link=document.createElement('a'); link.download=`ficha_${session}.png`; link.href=canvas.toDataURL("image/png"); link.click();}
 
 // ─── DIÁRIO & MISC ───────────────────────────────────────────────────
 document.getElementById('diario').addEventListener('input', () => { diaryDirty = true; });
@@ -1847,6 +2035,76 @@ function fecharModal(id){document.getElementById(id).classList.remove('active');
 function openMenu(){document.getElementById('menu-overlay').classList.add('active');}
 function closeMenu(){document.getElementById('menu-overlay').classList.remove('active');}
 function openMenuTab(id,el){closeMenu(); mudarAba(id,el);}
+function usarSkill(sId){
+    const skill=skillsDB[sId];
+    if(!skill) return alert('Skill não encontrada.');
+    const goldColor=getComputedStyle(document.documentElement).getPropertyValue('--gold');
+    const crimsonColor='#dc143c';
+    const container=document.getElementById('skill-card-container');
+    container.style.display='block';
+    const level=pData.skills?.[sId]||'';
+    container.innerHTML=`
+        <div style="width:400px;background:linear-gradient(145deg,#0a0714,#1a0f2e);border:2px solid ${crimsonColor};border-radius:16px;padding:20px;font-family:'Inter',sans-serif;color:#fff;box-sizing:border-box;">
+            <div style="text-align:center;border-bottom:1px solid rgba(220,20,60,.3);padding-bottom:12px;margin-bottom:12px;">
+                <img src="${skill.imagem}" style="width:80px;height:80px;border-radius:12px;border:2px solid ${goldColor};object-fit:cover;margin-bottom:8px;">
+                <h2 style="font-family:'Cinzel',serif;color:${goldColor};margin:0;font-size:1.3rem;">${skill.nome}</h2>
+                ${level?`<span style="font-size:.75rem;color:#888;">Nv. ${level}</span>`:''}
+            </div>
+            <p style="font-size:.85rem;line-height:1.5;margin:0 0 12px;color:#ccc;text-align:center;">${skill.descricao}</p>
+            <div style="text-align:center;padding:8px 0;border-top:1px solid rgba(220,20,60,.2);">
+                <span style="font-family:'Cinzel',serif;color:${crimsonColor};font-size:.8rem;">✦ ATAQUE DE MAGIA ✦</span>
+            </div>
+        </div>`;
+    html2canvas(container,{scale:2,backgroundColor:null,useCORS:true}).then(canvas=>{
+        const link=document.createElement('a');
+        link.download=`skill_${skill.nome.replace(/\s+/g,'_')}.png`;
+        link.href=canvas.toDataURL('image/png');
+        link.click();
+        container.style.display='none';
+        container.innerHTML='';
+    }).catch(()=>{
+        container.style.display='none';
+        container.innerHTML='';
+        alert('Não foi possível gerar a imagem da skill. Tente novamente.');
+    });
+}
+function renderDeck(){
+  const list=window.deckSkills||[];
+  const idx=window.deckIndex||0;
+  const stage=document.getElementById('deck-stage');
+  const prevBtn=document.getElementById('deck-prev');
+  const nextBtn=document.getElementById('deck-next');
+  const dots=document.getElementById('deck-dots');
+  if(!stage) return;
+  if(list.length<2){
+    if(prevBtn) prevBtn.classList.add('hidden');
+    if(nextBtn) nextBtn.classList.add('hidden');
+  }else{
+    if(prevBtn){prevBtn.classList.toggle('hidden',idx===0);}
+    if(nextBtn){nextBtn.classList.toggle('hidden',idx===list.length-1);}
+  }
+  const stacks=[];
+  for(let i=1;i<=2;i++){
+    const si=idx+i;
+    if(si>=0&&si<list.length) stacks.push(list[si]);
+  }
+  let html='';
+  stacks.forEach(sId=>{
+    const s=skillsDB[sId];
+    if(s) html+=`<div class="deck-card stack"><img class="deck-card-img" src="${s.imagem}"><h4 style="font-size:.8rem;">${s.nome}</h4></div>`;
+  });
+  const cId=list[idx];
+  const c=skillsDB[cId];
+  if(c){
+    const lv=pData.skills?.[cId]||'';
+    html+=`<div class="deck-card active slide-in"><img class="deck-card-img" src="${c.imagem}"><h4>${c.nome}</h4>${lv?`<span class="deck-card-level">Nv. ${lv}</span>`:''}<p>${c.descricao}</p><button class="btn-usar" onclick="usarSkill('${cId}')"><i class="fas fa-bolt"></i> Usar</button></div>`;
+  }
+  stage.innerHTML=html;
+  if(dots) dots.innerHTML=list.map((id,i)=>`<span class="deck-dot${i===idx?' active':''}" onclick="deckGoTo(${i})"></span>`).join('');
+}
+function deckPrev(){if(window.deckIndex>0){window.deckIndex--; renderDeck();}}
+function deckNext(){const list=window.deckSkills||[]; if(window.deckIndex<list.length-1){window.deckIndex++; renderDeck();}}
+function deckGoTo(i){window.deckIndex=i; renderDeck();}
 function mudarAba(id,el){
     document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));

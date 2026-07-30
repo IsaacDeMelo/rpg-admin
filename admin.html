@@ -13,28 +13,25 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
-  --bg:       #07090f;
-  --surface:  #0c0f1a;
-  --panel:    #10141f;
-  --panel2:   #151a28;
-  --border:   #1c2438;
-  --border2:  #253048;
-  --text:     #c8d4e8;
-  --muted:    #4a6080;
-  --gold:     #d4963a;
-  --gold2:    #f0c878;
-  --amber:    #e8a828;
-  --blue:     #2860b8;
-  --blue2:    #4a88d0;
-  --blue3:    #80b8f0;
-  --green:    #1a8050;
-  --green2:   #30c080;
-  --red:      #b83828;
-  --red2:     #e05050;
-  --purple:   #6828a0;
-  --purple2:  #9858c8;
-  --cyan:     #1878a0;
-  --cyan2:    #28b8d0;
+  --bg:       #0a0510;
+  --surface:  #120a1e;
+  --panel:    #1a0f2e;
+  --panel2:   #22153a;
+  --border:   #2e1a50;
+  --border2:  #3d2268;
+  --text:     #e0d0f0;
+  --muted:    #7a5a9a;
+  --gold:     #c8a030;
+  --gold2:    #f0d878;
+  --amber:    #d4902a;
+  --crimson:  #a02020;
+  --crimson2: #e04040;
+  --emerald:  #108050;
+  --emerald2: #20c080;
+  --violet:   #5a1a8a;
+  --violet2:  #8a3aca;
+  --teal:     #10606a;
+  --teal2:    #20a0b0;
   --font-head:'Raleway', sans-serif;
   --font-body:'Poppins', sans-serif;
 }
@@ -42,7 +39,7 @@
 ::-webkit-scrollbar { width:4px; height:4px; }
 ::-webkit-scrollbar-track { background:var(--bg); }
 ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
-::-webkit-scrollbar-thumb:hover { background:var(--gold); }
+::-webkit-scrollbar-thumb:hover { background:var(--violet2); }
 
 body {
   background:var(--bg);
@@ -58,8 +55,8 @@ body::before {
   content:'';
   position:fixed; inset:0;
   background:
-    radial-gradient(ellipse 70% 50% at 15% 15%, rgba(40,96,184,.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 60% at 85% 85%, rgba(212,150,58,.05) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 50% at 15% 15%, rgba(90,26,138,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 85% 85%, rgba(200,160,48,.06) 0%, transparent 60%);
   pointer-events:none; z-index:0;
 }
 
@@ -483,6 +480,9 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
       <div class="menu-btn dice-btn" onclick="nav('sec-dice', this)">
         <div class="icon"><i class="fas fa-dice-d20"></i></div>Rolar Dados
       </div>
+      <div class="menu-btn" onclick="nav('sec-database', this)" style="border-color:rgba(160,32,32,.3);">
+        <div class="icon" style="color:var(--red2);"><i class="fas fa-database"></i></div>Database
+      </div>
     </div>
   </nav>
 
@@ -567,17 +567,8 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <input type="number" id="c-sp"     placeholder="SP Atual"  value="0">
           <input type="number" id="c-sp_max" placeholder="SP Máx"    value="0">
         </div>
-        <label class="field-label" style="margin-bottom:8px; color:var(--gold);">Atributos Base</label>
-        <div class="attr-grid">
-          <div class="attr-box"><label>FOR</label><input type="number" id="c-for"  value="0"></div>
-          <div class="attr-box"><label>RES</label><input type="number" id="c-res"  value="0"></div>
-          <div class="attr-box"><label>VEL</label><input type="number" id="c-vel"  value="0"></div>
-          <div class="attr-box"><label>AGI</label><input type="number" id="c-agi"  value="0"></div>
-          <div class="attr-box"><label>PER</label><input type="number" id="c-per"  value="0"></div>
-          <div class="attr-box"><label>RSM</label><input type="number" id="c-resm" value="0"></div>
-          <div class="attr-box"><label>ESP</label><input type="number" id="c-esp"  value="0"></div>
-          <div class="attr-box"><label>ALM</label><input type="number" id="c-alm"  value="0"></div>
-        </div>
+        <label class="field-label" style="margin-bottom:8px; color:var(--violet2);">Atributos Base</label>
+        <div id="create-attr-tree" style="margin-bottom:12px;"></div>
         <label class="field-label">Ouro / Moedas</label>
         <input type="number" id="c-gold" value="0" placeholder="0">
         <button class="btn btn-green" onclick="criarEntidade()"><i class="fas fa-save"></i> Salvar Entidade</button>
@@ -651,15 +642,57 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         </div>
         <div>
           <label class="field-label" style="color:var(--blue3); margin-bottom:8px;">Bônus ao Equipar (Opcional)</label>
-          <div class="attr-grid">
-            <div class="attr-box"><label>FOR</label><input type="number" id="m-for"  value="0"></div>
-            <div class="attr-box"><label>RES</label><input type="number" id="m-res"  value="0"></div>
-            <div class="attr-box"><label>VEL</label><input type="number" id="m-vel"  value="0"></div>
-            <div class="attr-box"><label>AGI</label><input type="number" id="m-agi"  value="0"></div>
-            <div class="attr-box"><label>PER</label><input type="number" id="m-per"  value="0"></div>
-            <div class="attr-box"><label>RSM</label><input type="number" id="m-resm" value="0"></div>
-            <div class="attr-box"><label>ESP</label><input type="number" id="m-esp"  value="0"></div>
-            <div class="attr-box"><label>ALM</label><input type="number" id="m-alm"  value="0"></div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--crimson);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">FIS</label>
+                <input type="number" id="m-fis" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">braços</span>
+                <input type="number" id="m-fis-bracos" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">pernas</span>
+                <input type="number" id="m-fis-pernas" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--teal2);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">RES</label>
+                <input type="number" id="m-res" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">mágica</span>
+                <input type="number" id="m-res-magica" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">física</span>
+                <input type="number" id="m-res-fisica" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">mental</span>
+                <input type="number" id="m-res-mental" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--emerald);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">VEL</label>
+                <input type="number" id="m-vel" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">agilidade</span>
+                <input type="number" id="m-vel-agilidade" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">corrida</span>
+                <input type="number" id="m-vel-corrida" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">reflexo</span>
+                <input type="number" id="m-vel-reflexo" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--gold2);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">SUB</label>
+                <input type="number" id="m-sub" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">psicológico</span>
+                <input type="number" id="m-sub-psicologico" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">inteligência</span>
+                <input type="number" id="m-sub-inteligencia" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">criatividade</span>
+                <input type="number" id="m-sub-criatividade" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
           </div>
           <label class="field-label" style="margin-top:4px;">Valor em Ouro</label>
           <input type="number" id="i-valor" value="0" placeholder="0">
@@ -781,15 +814,57 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         </div>
         <div>
           <label class="field-label" style="color:var(--green2); margin-bottom:8px;">Buffs Passivos</label>
-          <div class="attr-grid">
-            <div class="attr-box"><label>FOR</label><input type="number" id="sb-for"  value="0"></div>
-            <div class="attr-box"><label>RES</label><input type="number" id="sb-res"  value="0"></div>
-            <div class="attr-box"><label>VEL</label><input type="number" id="sb-vel"  value="0"></div>
-            <div class="attr-box"><label>AGI</label><input type="number" id="sb-agi"  value="0"></div>
-            <div class="attr-box"><label>PER</label><input type="number" id="sb-per"  value="0"></div>
-            <div class="attr-box"><label>RSM</label><input type="number" id="sb-resm" value="0"></div>
-            <div class="attr-box"><label>ESP</label><input type="number" id="sb-esp"  value="0"></div>
-            <div class="attr-box"><label>ALM</label><input type="number" id="sb-alm"  value="0"></div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--crimson);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">FIS</label>
+                <input type="number" id="sb-fis" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">braços</span>
+                <input type="number" id="sb-fis-bracos" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">pernas</span>
+                <input type="number" id="sb-fis-pernas" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--teal2);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">RES</label>
+                <input type="number" id="sb-res" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">mágica</span>
+                <input type="number" id="sb-res-magica" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">física</span>
+                <input type="number" id="sb-res-fisica" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">mental</span>
+                <input type="number" id="sb-res-mental" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--emerald);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">VEL</label>
+                <input type="number" id="sb-vel" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">agilidade</span>
+                <input type="number" id="sb-vel-agilidade" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">corrida</span>
+                <input type="number" id="sb-vel-corrida" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">reflexo</span>
+                <input type="number" id="sb-vel-reflexo" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--gold2);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">SUB</label>
+                <input type="number" id="sb-sub" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">psicológico</span>
+                <input type="number" id="sb-sub-psicologico" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">inteligência</span>
+                <input type="number" id="sb-sub-inteligencia" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">criatividade</span>
+                <input type="number" id="sb-sub-criatividade" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
           </div>
           <button class="btn btn-green" onclick="criarSkill()"><i class="fas fa-book-dead"></i> Salvar Habilidade</button>
         </div>
@@ -932,6 +1007,20 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
     </div>
   </div>
 
+  <!-- ── Database ──────────────────────────────────────────────────────── -->
+  <div id="sec-database" class="section">
+    <div class="page-header">
+      <div>
+        <div class="page-title"><span style="color:var(--red2);">Database</span></div>
+        <div class="page-sub">Ferramentas de manutenção do banco de dados.</div>
+      </div>
+    </div>
+    <div class="glass" style="padding:18px;">
+      <p style="color:var(--muted);font-size:.82rem;margin-bottom:12px;">Limpa completamente todos os dados do banco (personagens, itens, habilidades, combates, crafting). Use com extrema cautela.</p>
+      <button class="btn btn-red" onclick="limparDatabase()"><i class="fas fa-bomb"></i> Limpar Tudo (Wipe)</button>
+    </div>
+  </div>
+
 </div><!-- /main-content -->
 
 <!-- ══ MODAIS ══════════════════════════════════════════════════════════════ -->
@@ -985,16 +1074,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <div></div>
       </div>
       <label class="field-label mt-16" style="margin-top:14px; display:block;">Atributos Base</label>
-      <div class="attr-grid">
-        <div class="attr-box"><label>FOR</label><input type="number" id="ec-for"></div>
-        <div class="attr-box"><label>RES</label><input type="number" id="ec-res"></div>
-        <div class="attr-box"><label>VEL</label><input type="number" id="ec-vel"></div>
-        <div class="attr-box"><label>AGI</label><input type="number" id="ec-agi"></div>
-        <div class="attr-box"><label>PER</label><input type="number" id="ec-per"></div>
-        <div class="attr-box"><label>RSM</label><input type="number" id="ec-resm"></div>
-        <div class="attr-box"><label>ESP</label><input type="number" id="ec-esp"></div>
-        <div class="attr-box"><label>ALM</label><input type="number" id="ec-alm"></div>
-      </div>
+      <div id="ec-attr-tree"></div>
       <label class="field-label">Descrição / Lore</label>
       <textarea id="ec-desc" rows="3" placeholder="Lore e notas…"></textarea>
       <button class="btn btn-green" onclick="salvarEditChar()"><i class="fas fa-save"></i> Salvar Alterações</button>
@@ -1062,15 +1142,57 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         </div>
         <div>
           <label class="field-label" style="color:var(--blue3);">Bônus ao Equipar</label>
-          <div class="attr-grid">
-            <div class="attr-box"><label>FOR</label><input type="number" id="e-m-for"></div>
-            <div class="attr-box"><label>RES</label><input type="number" id="e-m-res"></div>
-            <div class="attr-box"><label>VEL</label><input type="number" id="e-m-vel"></div>
-            <div class="attr-box"><label>AGI</label><input type="number" id="e-m-agi"></div>
-            <div class="attr-box"><label>PER</label><input type="number" id="e-m-per"></div>
-            <div class="attr-box"><label>RSM</label><input type="number" id="e-m-resm"></div>
-            <div class="attr-box"><label>ESP</label><input type="number" id="e-m-esp"></div>
-            <div class="attr-box"><label>ALM</label><input type="number" id="e-m-alm"></div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--crimson);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">FIS</label>
+                <input type="number" id="e-m-fis" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">braços</span>
+                <input type="number" id="e-m-fis-bracos" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">pernas</span>
+                <input type="number" id="e-m-fis-pernas" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--teal2);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">RES</label>
+                <input type="number" id="e-m-res" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">mágica</span>
+                <input type="number" id="e-m-res-magica" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">física</span>
+                <input type="number" id="e-m-res-fisica" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">mental</span>
+                <input type="number" id="e-m-res-mental" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--emerald);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">VEL</label>
+                <input type="number" id="e-m-vel" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">agilidade</span>
+                <input type="number" id="e-m-vel-agilidade" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">corrida</span>
+                <input type="number" id="e-m-vel-corrida" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">reflexo</span>
+                <input type="number" id="e-m-vel-reflexo" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--gold2);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">SUB</label>
+                <input type="number" id="e-m-sub" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">psicológico</span>
+                <input type="number" id="e-m-sub-psicologico" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">inteligência</span>
+                <input type="number" id="e-m-sub-inteligencia" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">criatividade</span>
+                <input type="number" id="e-m-sub-criatividade" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
           </div>
           <button class="btn btn-gold mt-8" onclick="salvarEdicaoItem()"><i class="fas fa-save"></i> Salvar Alterações</button>
         </div>
@@ -1097,15 +1219,57 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         </div>
         <div>
           <label class="field-label" style="color:var(--green2);">Buffs Passivos</label>
-          <div class="attr-grid">
-            <div class="attr-box"><label>FOR</label><input type="number" id="e-sb-for"></div>
-            <div class="attr-box"><label>RES</label><input type="number" id="e-sb-res"></div>
-            <div class="attr-box"><label>VEL</label><input type="number" id="e-sb-vel"></div>
-            <div class="attr-box"><label>AGI</label><input type="number" id="e-sb-agi"></div>
-            <div class="attr-box"><label>PER</label><input type="number" id="e-sb-per"></div>
-            <div class="attr-box"><label>RSM</label><input type="number" id="e-sb-resm"></div>
-            <div class="attr-box"><label>ESP</label><input type="number" id="e-sb-esp"></div>
-            <div class="attr-box"><label>ALM</label><input type="number" id="e-sb-alm"></div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--crimson);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">FIS</label>
+                <input type="number" id="e-sb-fis" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">braços</span>
+                <input type="number" id="e-sb-fis-bracos" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">pernas</span>
+                <input type="number" id="e-sb-fis-pernas" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--teal2);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">RES</label>
+                <input type="number" id="e-sb-res" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">mágica</span>
+                <input type="number" id="e-sb-res-magica" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">física</span>
+                <input type="number" id="e-sb-res-fisica" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">mental</span>
+                <input type="number" id="e-sb-res-mental" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--emerald);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">VEL</label>
+                <input type="number" id="e-sb-vel" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">agilidade</span>
+                <input type="number" id="e-sb-vel-agilidade" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">corrida</span>
+                <input type="number" id="e-sb-vel-corrida" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">reflexo</span>
+                <input type="number" id="e-sb-vel-reflexo" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
+            <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <label style="color:var(--gold2);font-family:var(--font-head);font-size:.6rem;font-weight:800;letter-spacing:.12em;min-width:28px;">SUB</label>
+                <input type="number" id="e-sb-sub" value="0" style="width:52px;margin:0;padding:3px;text-align:center;font-size:1rem;font-weight:700;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--gold2);">
+                <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:.05em;">Total</span>
+                <span style="font-size:.6rem;color:var(--muted);margin-left:6px;">psicológico</span>
+                <input type="number" id="e-sb-sub-psicologico" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">inteligência</span>
+                <input type="number" id="e-sb-sub-inteligencia" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+                <span style="font-size:.6rem;color:var(--muted);">criatividade</span>
+                <input type="number" id="e-sb-sub-criatividade" value="0" style="width:46px;margin:0;padding:2px;text-align:center;font-size:.85rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:var(--text);">
+              </div>
+            </div>
           </div>
           <button class="btn btn-green mt-8" onclick="salvarEdicaoSkill()"><i class="fas fa-save"></i> Salvar Alterações</button>
         </div>
@@ -1188,8 +1352,9 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let DB_CHARS={}, DB_ITEMS={}, DB_SKILLS={}, DB_RECIPES={}, DB_COMBATS={}, DB_CHEST_TEMPLATES={};
-const attrNames = { for:'FOR', res:'RES', vel:'VEL', agi:'AGI', per:'PER', resm:'RSM', esp:'ESP', alm:'ALM' };
-const PLACEHOLDER_IMG = 'https://via.placeholder.com/150/10141f/4a6080?text=?';
+const attrNames = { fis:'FIS', res:'RES', vel:'VEL', sub:'SUB' };
+const attrSub = { fis:['braços','pernas'], res:['mágica','física','mental'], vel:['agilidade','corrida','reflexo'], sub:['psicológico','inteligência','criatividade'] };
+const PLACEHOLDER_IMG = 'https://via.placeholder.com/150/1a0f2e/7a5a9a?text=?';
 let searchChars='', filterCharType='all', searchItems='', filterItemCat='all', searchSkills='';
 let diceHistory=[];
 
@@ -1222,11 +1387,69 @@ function handleFileUpload(input, targetId){
 }
 
 /* ── NAV ─────────────────────────────────────────────────────────────────── */
+const attrNamesDisp = {
+  fis:{label:'FIS',color:'var(--crimson2)',subs:{braços:'Braços',pernas:'Pernas'}},
+  res:{label:'RES',color:'var(--emerald2)',subs:{mágica:'Mágica',física:'Física',mental:'Mental'}},
+  vel:{label:'VEL',color:'var(--teal2)',subs:{agilidade:'Agilidade',corrida:'Corrida',reflexo:'Reflexo'}},
+  sub:{label:'SUB',color:'var(--violet2)',subs:{psicológico:'Psicológico',inteligência:'Inteligência',criatividade:'Criatividade'}}
+};
+
+function renderAttrTree(prefix, values){
+  let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+  Object.keys(attrNamesDisp).forEach(main => {
+    const info = attrNamesDisp[main];
+    const val = values && values[main] ? values[main] : {};
+    const total = val.total || 0;
+    const subs = Object.keys(info.subs);
+    html += `<div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:6px;">
+        <span style="font-family:var(--font-head);font-weight:900;font-size:.85rem;color:${info.color};">${info.label}</span>
+        <input type="number" id="${prefix}-${main}" value="${total}" min="0" style="width:60px;padding:3px 6px;margin:0;text-align:center;font-weight:700;color:${info.color};background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:6px;" oninput="validarPool('${prefix}','${main}')">
+        <span style="font-size:.6rem;color:var(--muted);margin-left:auto;" id="${prefix}-${main}-rest">${total}</span>
+      </div>`;
+    subs.forEach(sub => {
+      const subVal = val[sub] || 0;
+      html += `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;padding-left:8px;">
+        <span style="font-size:.65rem;color:var(--muted);font-weight:600;flex:1;">${info.subs[sub]}</span>
+        <input type="number" id="${prefix}-${main}-${sub}" value="${subVal}" min="0" style="width:50px;padding:2px 4px;margin:0;text-align:center;font-size:.78rem;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:5px;" oninput="validarPool('${prefix}','${main}')">
+      </div>`;
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+function validarPool(prefix, main){
+  const totalIn = document.getElementById(`${prefix}-${main}`);
+  if(!totalIn) return;
+  const total = Math.max(0, parseInt(totalIn.value)||0);
+  const info = attrNamesDisp[main];
+  let sum = 0;
+  Object.keys(info.subs).forEach(sub => {
+    const el = document.getElementById(`${prefix}-${main}-${sub}`);
+    if(el){
+      let v = parseInt(el.value)||0;
+      if(v < 0) v = 0;
+      el.value = v;
+      sum += v;
+    }
+  });
+  const restEl = document.getElementById(`${prefix}-${main}-rest`);
+  if(restEl){
+    const rest = Math.max(0, total - sum);
+    restEl.textContent = rest > 0 ? `+${rest}` : '0';
+    restEl.style.color = rest > 0 ? 'var(--green2)' : 'var(--muted)';
+  }
+}
+
 function nav(id, el){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.menu-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(el) el.classList.add('active');
+  if(id==='sec-create-char' && document.getElementById('create-attr-tree')){
+    document.getElementById('create-attr-tree').innerHTML = renderAttrTree('c', {});
+  }
 }
 function sair(){ localStorage.removeItem('rpg_session'); window.location.href='index.html'; }
 
@@ -1383,6 +1606,15 @@ function criarEntidade(){
   const id=ensureId(document.getElementById('c-user').value,'Login/ID'); if(!id) return;
   const nome=ensureRequired(document.getElementById('c-nome').value,'Nome'); if(!nome) return;
   const classe=ensureRequired(document.getElementById('c-classe').value,'Classe'); if(!classe) return;
+  const attrBase = {};
+  Object.keys(attrNames).forEach(main => {
+    const total = toNumber(document.getElementById(`c-${main}`)?.value) || 0;
+    const subs = {};
+    attrSub[main].forEach(sub => {
+      subs[sub] = toNumber(document.getElementById(`c-${main}-${sub}`)?.value) || 0;
+    });
+    attrBase[main] = { total, ...subs };
+  });
   db.ref('characters/'+id).set({
     tipo:document.getElementById('c-tipo').value, senha:document.getElementById('c-pass').value,
     nome, classe, imagem:document.getElementById('c-img').value||PLACEHOLDER_IMG,
@@ -1392,8 +1624,27 @@ function criarEntidade(){
     hp:toNumber(document.getElementById('c-hp').value), hp_max:toNumber(document.getElementById('c-hp_max').value),
     mp:toNumber(document.getElementById('c-mp').value), mp_max:toNumber(document.getElementById('c-mp_max').value),
     sp:toNumber(document.getElementById('c-sp').value), sp_max:toNumber(document.getElementById('c-sp_max').value),
-    atributos_base:{ for:toNumber(document.getElementById('c-for').value), res:toNumber(document.getElementById('c-res').value), vel:toNumber(document.getElementById('c-vel').value), agi:toNumber(document.getElementById('c-agi').value), per:toNumber(document.getElementById('c-per').value), resm:toNumber(document.getElementById('c-resm').value), esp:toNumber(document.getElementById('c-esp').value), alm:toNumber(document.getElementById('c-alm').value) }
+    atributos_base: attrBase
   }).then(()=>{ showToast('Entidade criada!'); nav('sec-lib-chars'); });
+}
+
+function getAttrTotal(b, main){
+  if(!b||!b[main]) return 0;
+  return b[main].total || 0;
+}
+function getBaseVal(attrObj, key){
+  const v=attrObj[key];
+  return typeof v==='object'?(v.total||0):(typeof v==='number'?v:0);
+}
+function renderProfileStats(c, bonus, showSub){
+  const base=c.atributos_base||{};
+  let html='<div class="stat-grid-2">';
+  Object.keys(attrNames).forEach(main=>{
+    const val=getBaseVal(base,main)+(bonus[main]||0);
+    html+=`<div class="stat-cell">${attrNamesDisp[main].label}<strong style="color:${attrNamesDisp[main].color};">${val}</strong></div>`;
+  });
+  html+='</div>';
+  return html;
 }
 
 function renderChars(){
@@ -1406,6 +1657,7 @@ function renderChars(){
   if(!filtered.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fas fa-ghost"></i><p>Nenhum habitante encontrado.</p></div>'; return; }
   filtered.forEach(id=>{
     const c=DB_CHARS[id], b=c.atributos_base||{};
+    const fis=getAttrTotal(b,'fis'), res=getAttrTotal(b,'res'), vel=getAttrTotal(b,'vel'), sub=getAttrTotal(b,'sub');
     grid.innerHTML+=`<div class="card" onclick="abrirPerfilChar('${id}')">
       <div class="card-img-wrap">
         <span class="card-badge ${badgeClass(c.tipo)}">${c.tipo}</span>
@@ -1415,10 +1667,10 @@ function renderChars(){
         <div class="card-name">${c.nome||'Sem Nome'}</div>
         <div class="card-sub">${c.classe||'—'}</div>
         <div class="card-stats">
-          <span><i class="fas fa-heart" style="color:var(--red2)"></i>${c.hp_max||0}</span>
-          <span><i class="fas fa-fist-raised" style="color:var(--gold)"></i>${b.for||0}</span>
-          <span><i class="fas fa-shield-alt" style="color:var(--blue2)"></i>${b.res||0}</span>
-          <span><i class="fas fa-bolt" style="color:var(--amber)"></i>${b.agi||0}</span>
+          <span><i class="fas fa-heart" style="color:var(--crimson2)"></i>${c.hp_max||0}</span>
+          <span><i class="fas fa-fist-raised" style="color:var(--crimson2)"></i>F${fis}</span>
+          <span><i class="fas fa-shield-alt" style="color:var(--emerald2)"></i>R${res}</span>
+          <span><i class="fas fa-bolt" style="color:var(--teal2)"></i>V${vel}</span>
         </div>
       </div>
     </div>`;
@@ -1428,22 +1680,26 @@ function renderChars(){
 let activeCharId=null;
 function abrirPerfilChar(charId){
   activeCharId=charId; const c=DB_CHARS[charId]; if(!c) return closeModal('char-modal');
-  let bonus={for:0,res:0,vel:0,agi:0,per:0,resm:0,esp:0,alm:0};
+  let bonus={fis:0,res:0,vel:0,sub:0};
   if(c.tipo!=='Criatura'){
     if(c.inventario) Object.values(c.inventario).forEach(item=>{ if(item.equipado && DB_ITEMS[item.item_id]?.mods) Object.keys(bonus).forEach(k=>bonus[k]+=(DB_ITEMS[item.item_id].mods[k]||0)); });
     if(c.skills) Object.keys(c.skills).forEach(sId=>{ if(DB_SKILLS[sId]?.buffs) Object.keys(bonus).forEach(k=>bonus[k]+=(DB_SKILLS[sId].buffs[k]||0)); });
   }
-  let statsHtml='';
-  Object.keys(attrNames).forEach(k=>{
-    const total=((c.atributos_base||{})[k]||0)+bonus[k];
-    const bStr=bonus[k]>0?` <small style="color:var(--green2);font-size:.6em;">(+${bonus[k]})</small>`:'';
-    statsHtml+=`<div class="stat-cell">${attrNames[k]}<strong>${total}${bStr}</strong></div>`;
-  });
+  const statsHtml = renderProfileStats(c, bonus, true);
   const vitals=`
-    <div class="vital-chip" style="color:var(--red2); border-color:rgba(224,80,80,.25);">❤️ ${c.hp||0}/${c.hp_max||0}</div>
-    ${(c.mp_max||0)>0?`<div class="vital-chip" style="color:var(--blue3); border-color:rgba(74,136,208,.25);">💧 ${c.mp||0}/${c.mp_max||0}</div>`:''}
-    ${(c.sp_max||0)>0?`<div class="vital-chip" style="color:var(--amber); border-color:rgba(232,168,40,.25);">⚡ ${c.sp||0}/${c.sp_max||0}</div>`:''}
-    ${(c.gold||0)>0?`<div class="vital-chip" style="color:var(--gold2); border-color:rgba(212,150,58,.25);">🪙 ${c.gold||0}</div>`:''}`;
+    <div class="vital-chip" style="color:var(--crimson2); border-color:rgba(160,32,32,.25);">❤️ ${c.hp||0}/${c.hp_max||0}</div>
+    ${(c.mp_max||0)>0?`<div class="vital-chip" style="color:var(--teal2); border-color:rgba(16,96,106,.25);">💧 ${c.mp||0}/${c.mp_max||0}</div>`:''}
+    ${(c.sp_max||0)>0?`<div class="vital-chip" style="color:var(--gold); border-color:rgba(200,160,48,.25);">⚡ ${c.sp||0}/${c.sp_max||0}</div>`:''}
+    ${(c.gold||0)>0?`<div class="vital-chip" style="color:var(--gold2); border-color:rgba(240,216,120,.25);">🪙 ${c.gold||0}</div>`:''}`;
+
+  let habHtml = '';
+  if(c.habilidades) Object.entries(c.habilidades).forEach(([hName, hLevel])=>{
+    habHtml += `<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;margin-bottom:4px;">
+      <span style="font-size:.75rem;color:var(--text);">${hName}</span>
+      <span style="font-size:.7rem;font-weight:700;color:var(--gold2);">Nv. ${hLevel}/9</span>
+    </div>`;
+  });
+  if(!habHtml) habHtml = '<span class="hint">Nenhuma perícia atribuída.</span>';
 
   let rightHtml='';
   if(c.tipo==='Criatura'){
@@ -1467,8 +1723,10 @@ function abrirPerfilChar(charId){
     rightHtml=`
       <div class="profile-section-title" style="margin-top:0;">Equipamentos</div>
       <div id="cp-equip-grid" class="equip-layout"></div>
-      <div class="profile-section-title">Habilidades <button class="inline-btn green" onclick="abrirPicker('give_skill','${charId}')"><i class="fas fa-plus"></i> Ensinar</button></div>
-      <div class="skill-list">${skillsHtml||'<span class="hint">Nenhuma habilidade.</span>'}</div>
+      <div class="profile-section-title">Magias <button class="inline-btn green" onclick="abrirPicker('give_skill','${charId}')"><i class="fas fa-plus"></i> Ensinar</button></div>
+      <div class="skill-list">${skillsHtml||'<span class="hint">Nenhuma magia.</span>'}</div>
+      <div class="profile-section-title mt-16">Perícias <button class="inline-btn gold" onclick="abrirPicker('give_habilidade','${charId}')"><i class="fas fa-plus"></i> Atribuir</button></div>
+      <div style="margin-bottom:12px;">${habHtml}</div>
       <div class="profile-section-title mt-16">Bolsa <button class="inline-btn green" onclick="abrirPicker('give_item','${charId}')"><i class="fas fa-plus"></i> Dar Item</button></div>
       <div class="inv-grid">${invHtml||'<span class="hint">Bolsa vazia.</span>'}</div>
       <div class="profile-section-title mt-16">Notas do Narrador</div>
@@ -1488,7 +1746,7 @@ function abrirPerfilChar(charId){
         <button class="btn-dmg" onclick="ajustarHp('${charId}', -1)">-Dano</button>
         <button class="btn-heal" onclick="ajustarHp('${charId}', 1)">+Cura</button>
       </div>
-      <div class="stat-grid-2">${statsHtml}</div>
+      ${statsHtml}
       ${c.description?`<p style="margin-top:14px; font-size:.78rem; color:var(--muted); line-height:1.5; font-style:italic;">${c.description}</p>`:''}
       <button class="btn btn-red" style="margin-top:18px;" onclick="deletarChar('${charId}')"><i class="fas fa-trash"></i> Excluir Entidade</button>
     </div>
@@ -1526,10 +1784,20 @@ function abrirEditChar(charId){
   document.getElementById('ec-desc').value=c.description||'';
   ['hp','hp_max','mp','mp_max','sp','sp_max'].forEach(f=>document.getElementById('ec-'+f).value=c[f]||0);
   const b=c.atributos_base||{};
-  ['for','res','vel','agi','per','resm','esp','alm'].forEach(k=>document.getElementById('ec-'+k).value=b[k]||0);
+  const ecTree = document.getElementById('ec-attr-tree');
+  if(ecTree) ecTree.innerHTML = renderAttrTree('ec', b);
   document.getElementById('edit-char-modal').classList.add('active');
 }
 function salvarEditChar(){
+  const attrBase = {};
+  Object.keys(attrNames).forEach(main => {
+    const total = toNumber(document.getElementById(`ec-${main}`)?.value) || 0;
+    const subs = {};
+    attrSub[main].forEach(sub => {
+      subs[sub] = toNumber(document.getElementById(`ec-${main}-${sub}`)?.value) || 0;
+    });
+    attrBase[main] = { total, ...subs };
+  });
   db.ref(`characters/${activeCharId}`).update({
     nome:document.getElementById('ec-nome').value, classe:document.getElementById('ec-classe').value,
     imagem:document.getElementById('ec-img').value, pontos:Number(document.getElementById('ec-pts').value),
@@ -1538,7 +1806,7 @@ function salvarEditChar(){
     hp:Number(document.getElementById('ec-hp').value), hp_max:Number(document.getElementById('ec-hp_max').value),
     mp:Number(document.getElementById('ec-mp').value), mp_max:Number(document.getElementById('ec-mp_max').value),
     sp:Number(document.getElementById('ec-sp').value), sp_max:Number(document.getElementById('ec-sp_max').value),
-    atributos_base:{ for:Number(document.getElementById('ec-for').value), res:Number(document.getElementById('ec-res').value), vel:Number(document.getElementById('ec-vel').value), agi:Number(document.getElementById('ec-agi').value), per:Number(document.getElementById('ec-per').value), resm:Number(document.getElementById('ec-resm').value), esp:Number(document.getElementById('ec-esp').value), alm:Number(document.getElementById('ec-alm').value) }
+    atributos_base: attrBase
   }).then(()=>{ showToast('Entidade atualizada!'); closeModal('edit-char-modal'); });
 }
 function removerSkill(cId,sId){ db.ref(`characters/${cId}/skills/${sId}`).remove(); }
@@ -1592,6 +1860,30 @@ function adminFinalizeEquip(k){ db.ref(`characters/${activeCharId}/inventario/${
 function adminUnequipItem(k){ if(confirm('Desequipar?')) db.ref(`characters/${activeCharId}/inventario/${k}/equipado`).set(false); }
 
 /* ══ ITENS ════════════════════════════════════════════════════════════════ */
+const SUB_KEYS={fis:['bracos','pernas'],res:['magica','fisica','mental'],vel:['agilidade','corrida','reflexo'],sub:['psicologico','inteligencia','criatividade']};
+const SUB_LABELS={bracos:'braços',pernas:'pernas',magica:'mágica',fisica:'física',mental:'mental',agilidade:'agilidade',corrida:'corrida',reflexo:'reflexo',psicologico:'psicológico',inteligencia:'inteligência',criatividade:'criatividade'};
+function coletarMods(p){
+  const mods={};
+  ['fis','res','vel','sub'].forEach(m=>{
+    const v=toNumber(document.getElementById(p+'-'+m).value);
+    if(v) mods[m]=v;
+    (SUB_KEYS[m]||[]).forEach(sk=>{
+      const sv=toNumber(document.getElementById(p+'-'+m+'-'+sk).value);
+      if(sv) mods[m+'.'+SUB_LABELS[sk]]=sv;
+    });
+  });
+  return mods;
+}
+function preencherMods(p,mods){
+  ['fis','res','vel','sub'].forEach(m=>{
+    const mainEl=document.getElementById(p+'-'+m);
+    if(mainEl) mainEl.value=mods[m]||0;
+    (SUB_KEYS[m]||[]).forEach(sk=>{
+      const el=document.getElementById(p+'-'+m+'-'+sk);
+      if(el) el.value=mods[m+'.'+SUB_LABELS[sk]]||0;
+    });
+  });
+}
 function toggleSubcat(catId,wrapperId,consumableId){
   const cat=document.getElementById(catId).value;
   document.getElementById(wrapperId).style.display=cat==='Armadura'?'block':'none';
@@ -1601,7 +1893,7 @@ function criarItem(){
   const id=ensureId(document.getElementById('i-id').value,'ID'); if(!id) return;
   const nome=ensureRequired(document.getElementById('i-nome').value,'Nome'); if(!nome) return;
   let d={nome, imagem:document.getElementById('i-img').value||PLACEHOLDER_IMG, categoria:document.getElementById('i-cat').value, rarity:document.getElementById('i-rarity').value, valor:toNumber(document.getElementById('i-valor').value), descricao:document.getElementById('i-desc').value,
-    mods:{for:toNumber(document.getElementById('m-for').value),res:toNumber(document.getElementById('m-res').value),vel:toNumber(document.getElementById('m-vel').value),agi:toNumber(document.getElementById('m-agi').value),per:toNumber(document.getElementById('m-per').value),resm:toNumber(document.getElementById('m-resm').value),esp:toNumber(document.getElementById('m-esp').value),alm:toNumber(document.getElementById('m-alm').value)}};
+    mods:coletarMods('m')};
   if(d.categoria==='Armadura') d.slot_type=document.getElementById('i-subcat').value;
   if(d.categoria==='Consumivel') d.effects={hp:toNumber(document.getElementById('i-eff-hp').value),mp:toNumber(document.getElementById('i-eff-mp').value),sp:toNumber(document.getElementById('i-eff-sp').value),hp_full:!!document.getElementById('i-eff-hp-full')?.checked,mp_full:!!document.getElementById('i-eff-mp-full')?.checked,sp_full:!!document.getElementById('i-eff-sp-full')?.checked};
   db.ref('items/'+id).set(d).then(()=>{ showToast('Item forjado!'); nav('sec-lib-items'); });
@@ -1629,13 +1921,13 @@ function abrirPerfilItem(itemId){
   toggleSubcat('e-i-cat','e-i-subcat-wrapper','e-i-consumable-wrapper');
   if(item.categoria==='Armadura') document.getElementById('e-i-subcat').value=item.slot_type;
   if(item.categoria==='Consumivel'){ const ef=item.effects||{}; document.getElementById('e-i-eff-hp').value=ef.hp||0; document.getElementById('e-i-eff-mp').value=ef.mp||0; document.getElementById('e-i-eff-sp').value=ef.sp||0; document.getElementById('e-i-eff-hp-full').checked=!!ef.hp_full; document.getElementById('e-i-eff-mp-full').checked=!!ef.mp_full; document.getElementById('e-i-eff-sp-full').checked=!!ef.sp_full; }
-  const m=item.mods||{}; ['for','res','vel','agi','per','resm','esp','alm'].forEach(k=>document.getElementById('e-m-'+k).value=m[k]||0);
+  preencherMods('e-m',item.mods||{});
   document.getElementById('edit-item-modal').classList.add('active');
 }
 function salvarEdicaoItem(){
   const id=document.getElementById('e-i-id').value;
   let d={nome:document.getElementById('e-i-nome').value, imagem:document.getElementById('e-i-img').value||PLACEHOLDER_IMG, categoria:document.getElementById('e-i-cat').value, rarity:document.getElementById('e-i-rarity').value, valor:toNumber(document.getElementById('e-i-valor').value), descricao:document.getElementById('e-i-desc').value,
-    mods:{for:toNumber(document.getElementById('e-m-for').value),res:toNumber(document.getElementById('e-m-res').value),vel:toNumber(document.getElementById('e-m-vel').value),agi:toNumber(document.getElementById('e-m-agi').value),per:toNumber(document.getElementById('e-m-per').value),resm:toNumber(document.getElementById('e-m-resm').value),esp:toNumber(document.getElementById('e-m-esp').value),alm:toNumber(document.getElementById('e-m-alm').value)}};
+    mods:coletarMods('e-m')};
   if(d.categoria==='Armadura') d.slot_type=document.getElementById('e-i-subcat').value;
   if(d.categoria==='Consumivel') d.effects={hp:toNumber(document.getElementById('e-i-eff-hp').value),mp:toNumber(document.getElementById('e-i-eff-mp').value),sp:toNumber(document.getElementById('e-i-eff-sp').value),hp_full:!!document.getElementById('e-i-eff-hp-full')?.checked,mp_full:!!document.getElementById('e-i-eff-mp-full')?.checked,sp_full:!!document.getElementById('e-i-eff-sp-full')?.checked};
   else d.effects=null;
@@ -1648,7 +1940,7 @@ function criarSkill(){
   const id=ensureId(document.getElementById('s-id').value,'ID'); if(!id) return;
   const nome=ensureRequired(document.getElementById('s-nome').value,'Nome'); if(!nome) return;
   db.ref('skills/'+id).set({nome, imagem:document.getElementById('s-img').value||PLACEHOLDER_IMG, descricao:document.getElementById('s-desc').value,
-    buffs:{for:toNumber(document.getElementById('sb-for').value),res:toNumber(document.getElementById('sb-res').value),vel:toNumber(document.getElementById('sb-vel').value),agi:toNumber(document.getElementById('sb-agi').value),per:toNumber(document.getElementById('sb-per').value),resm:toNumber(document.getElementById('sb-resm').value),esp:toNumber(document.getElementById('sb-esp').value),alm:toNumber(document.getElementById('sb-alm').value)}
+    buffs:coletarMods('sb')
   }).then(()=>showToast('Habilidade registrada!'));
 }
 function renderSkills(){
@@ -1667,16 +1959,43 @@ function abrirPerfilSkill(skillId){
   document.getElementById('e-s-nome').value=sk.nome;
   document.getElementById('e-s-img').value=sk.imagem;
   document.getElementById('e-s-desc').value=sk.descricao||'';
-  const b=sk.buffs||{}; ['for','res','vel','agi','per','resm','esp','alm'].forEach(k=>document.getElementById('e-sb-'+k).value=b[k]||0);
+  preencherMods('e-sb',sk.buffs||{});
   document.getElementById('edit-skill-modal').classList.add('active');
 }
 function salvarEdicaoSkill(){
   const id=document.getElementById('e-s-id').value;
   db.ref('skills/'+id).update({nome:document.getElementById('e-s-nome').value, imagem:document.getElementById('e-s-img').value||PLACEHOLDER_IMG, descricao:document.getElementById('e-s-desc').value,
-    buffs:{for:toNumber(document.getElementById('e-sb-for').value),res:toNumber(document.getElementById('e-sb-res').value),vel:toNumber(document.getElementById('e-sb-vel').value),agi:toNumber(document.getElementById('e-sb-agi').value),per:toNumber(document.getElementById('e-sb-per').value),resm:toNumber(document.getElementById('e-sb-resm').value),esp:toNumber(document.getElementById('e-sb-esp').value),alm:toNumber(document.getElementById('e-sb-alm').value)}
+    buffs:coletarMods('e-sb')
   }).then(()=>{ showToast('Habilidade atualizada!'); closeModal('edit-skill-modal'); });
 }
 function excluirSkillMundo(){ const id=document.getElementById('e-s-id').value; if(confirm('Excluir habilidade?')) db.ref('skills/'+id).remove().then(()=>closeModal('edit-skill-modal')); }
+
+/* ══ PERÍCIAS (HABILIDADES) ════════════════════════════════════════════════ */
+const DEFAULT_HABILIDADES = [
+  'Espadas', 'Arco e flecha', 'Pesca', 'Alquimia', 'Furtividade',
+  'Liderança', 'Medicina', 'Sobrevivência', 'Persuasão', 'Intimidação',
+  'Atletismo', 'Ferraria', 'Navegação', 'Astronomia', 'Herbologia',
+  'Armadilhas', 'Culinária', 'Música', 'Arte', 'Diplomacia'
+];
+function atribuirHabilidade(charId, habName, level){
+  db.ref(`characters/${charId}/habilidades/${habName}`).set(level).then(()=>{ showToast(`Perícia "${habName}" atribuída!`); abrirPerfilChar(charId); });
+}
+function removerHabilidade(charId, habName){
+  if(!confirm(`Remover perícia "${habName}"?`)) return;
+  db.ref(`characters/${charId}/habilidades/${habName}`).remove().then(()=>{ showToast('Perícia removida!'); abrirPerfilChar(charId); });
+}
+
+/* ══ WIPE DATABASE ════════════════════════════════════════════════════════ */
+function limparDatabase(){
+  if(!confirm('ISSO VAI APAGAR TODOS OS DADOS!\n\nPersonagens, itens, habilidades, combates e crafting serão perdidos permanentemente.\n\nTem certeza?')) return;
+  if(!confirm('ÚLTIMA CHANCE!\n\nDigite CONFIRMAR no campo abaixo para prosseguir.')) return;
+  const resposta = prompt('Digite "CONFIRMAR" para limpar tudo:');
+  if(resposta !== 'CONFIRMAR') return showToast('Wipe cancelado.');
+  db.ref().set({}).then(()=>{
+    showToast('Banco de dados limpo!');
+    location.reload();
+  }).catch(err=>showToast('Erro: '+err,'error'));
+}
 
 /* ══ PICKER ═══════════════════════════════════════════════════════════════ */
 let pickerCtx={type:null,targetId:null,slotIndex:null};
@@ -1707,6 +2026,12 @@ function abrirPicker(type,targetId=null,slotIndex=null){
       const skill=DB_SKILLS[id];
       if(skill) pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker('${id}')"><img src="${skill.imagem}" onerror="this.src='${PLACEHOLDER_IMG}'"><span>${skill.nome||'Habilidade'}</span></div>`;
     });
+  } else if(type==='give_habilidade'){
+    titleEl.textContent='Selecionar Perícia';
+    if(qtdBox) qtdBox.style.display='none';
+    DEFAULT_HABILIDADES.forEach(h=>{
+      pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker('${h}')" style="border-color:var(--green2);"><div style="width:100%;min-height:60px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:.72rem;padding:4px;">${h}</div></div>`;
+    });
   }
   modal.classList.add('active');
 }
@@ -1721,6 +2046,13 @@ function selecionarPicker(id){
   else if(pickerCtx.type==='give_skill'){
     if(!pickerCtx.targetId||!id) return showToast('Dados inválidos','error');
     db.ref(`characters/${pickerCtx.targetId}/skills/${id}`).set(true);
+  }
+  else if(pickerCtx.type==='give_habilidade'){
+    if(!pickerCtx.targetId||!id) return showToast('Dados inválidos','error');
+    const lvl = prompt(`Nível para "${id}" (0-9):`, '1');
+    const n = parseInt(lvl);
+    if(isNaN(n)||n<0||n>9) return showToast('Nível inválido (0-9)','error');
+    atribuirHabilidade(pickerCtx.targetId, id, n);
   }
   else if(pickerCtx.type==='craft_ing'){
     if(pickerCtx.slotIndex===null) return showToast('Slot inválido','error');
@@ -2014,7 +2346,7 @@ function exportarFicha(){
     txt+=`NOME: ${c.nome||'?'} | CLASSE: ${c.classe||'?'} | TIPO: ${c.tipo||'?'}\n`;
     txt+=`HP: ${c.hp||0}/${c.hp_max||0}  MP: ${c.mp||0}/${c.mp_max||0}  SP: ${c.sp||0}/${c.sp_max||0}\n`;
     txt+=`OURO: ${c.gold||0} | PTS LIVRES: ${c.pontos||0}\n`;
-    txt+=`ATRIBUTOS: FOR${b.for||0} RES${b.res||0} VEL${b.vel||0} AGI${b.agi||0} PER${b.per||0} RSM${b.resm||0} ESP${b.esp||0} ALM${b.alm||0}\n`;
+    txt+=`ATRIBUTOS: FIS${getBaseVal(b,'fis')} RES${getBaseVal(b,'res')} VEL${getBaseVal(b,'vel')} SUB${getBaseVal(b,'sub')}\n`;
     if(c.description) txt+=`LORE: ${c.description}\n`;
     txt+=`\n`;
   });

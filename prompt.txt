@@ -1,0 +1,23 @@
+Novos atributos: 
+
+Pontos de Atributo
+[00] Fis
+— [00] Braços
+— [00] Pernas
+[00] Res
+— [00] Mágica
+— [00] Física
+— [00] Mental
+[00] Vel
+— [00] Agilidade
+— [00] Corrida 
+— [00] Reflexo 
+[00] Sub
+— [00] Psicológico 
+— [00] Inteligência 
+— [00] Criatividade 
+Pontos de habilidade
+— [0] Espadas 
+— [0] Arco e flecha 
+— [0] Pesca 
+...etc (esses pontos de habilidade inicialmente ficam vazios, mas caso o mestre atribua a habilidade, ela começa no nivel 0 e so vai até o 9. Na parte do jogador, ele pode ver a foto de seu personagem, seus atributos, e tudo que especifiquei. deve ter um grafico hexagonal (ou como voce quiser) pra representar a força do persongem. Use a regra dos níveis, tipo, enquanto a pessoa tiver até 50 pontos totais, o grafico fica de um tamanho, passou disso, ele aumenta (os numeros de parametro ficam maiores) e em cima do gráfico fica um V2, enifm, voce entendeu. Os itens devem ser catalogados por categoria, e funcionalidade, tipo, armadura, arma, consumível, material (tem sistema de craft que quero incluir, e alguns itens podem ser craftados). Tem alguma dúvida? pergunte antes de fazer.
