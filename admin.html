@@ -1869,7 +1869,7 @@ function coletarMods(p){
     if(v) mods[m]=v;
     (SUB_KEYS[m]||[]).forEach(sk=>{
       const sv=toNumber(document.getElementById(p+'-'+m+'-'+sk).value);
-      if(sv) mods[m+'.'+SUB_LABELS[sk]]=sv;
+      if(sv) mods[m+'_'+SUB_LABELS[sk]]=sv;
     });
   });
   return mods;
@@ -1880,7 +1880,7 @@ function preencherMods(p,mods){
     if(mainEl) mainEl.value=mods[m]||0;
     (SUB_KEYS[m]||[]).forEach(sk=>{
       const el=document.getElementById(p+'-'+m+'-'+sk);
-      if(el) el.value=mods[m+'.'+SUB_LABELS[sk]]||0;
+      if(el) el.value=mods[m+'_'+SUB_LABELS[sk]]||0;
     });
   });
 }

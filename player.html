@@ -1616,8 +1616,8 @@ function renderStatusEInv() {
     const applyMods = (mods) => {
         if(!mods) return;
         Object.keys(mods).forEach(k=>{
-            const dot=k.indexOf('.');
-            if(dot>0){const main=k.slice(0,dot),sub=k.slice(dot+1); if(subBonus[main]&&subBonus[main][sub]!==undefined) subBonus[main][sub]+=mods[k];}
+            const sep=k.indexOf('_');
+            if(sep>0){const main=k.slice(0,sep),sub=k.slice(sep+1); if(subBonus[main]&&subBonus[main][sub]!==undefined) subBonus[main][sub]+=mods[k];}
             else if(bonus[k]!==undefined) bonus[k]+=mods[k];
         });
     };
@@ -1829,7 +1829,7 @@ function abrirItem(uniqKey,itemId,equipado,count){
     document.getElementById('mod-cat').innerText=itemAtualDBData.categoria+(count>1?` (Possui ${count})`:'');
     document.getElementById('mod-desc').innerText=itemAtualDBData.descricao;
     const sBox=document.getElementById('mod-stats-box'); sBox.innerHTML='';
-    if(itemAtualDBData.mods) Object.keys(attrNames).forEach(k=>{if(itemAtualDBData.mods[k]>0) sBox.innerHTML+=`<span class="mod-tag">${attrNames[k]} +${itemAtualDBData.mods[k]}</span>`;});
+    if(itemAtualDBData.mods) Object.keys(itemAtualDBData.mods).forEach(k=>{const val=itemAtualDBData.mods[k]; if(!val) return; const sep=k.indexOf('_'); if(sep>0){const main=k.slice(0,sep),sub=k.slice(sep+1); sBox.innerHTML+=`<span class="mod-tag">${attrNames[main]||main}·${SUB_DISPLAY[sub]||sub} +${val}</span>`;} else if(attrNames[k]) sBox.innerHTML+=`<span class="mod-tag">${attrNames[k]} +${val}</span>`;});
     if(itemAtualDBData.effects){
         Object.entries(itemAtualDBData.effects).forEach(([key,val])=>{if(typeof val==='number'&&val>0) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Recupera ${key.toUpperCase()} +${val}</span>`});
         if(itemAtualDBData.effects.hp_full) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Cura HP total</span>`;
