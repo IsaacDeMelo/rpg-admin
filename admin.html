@@ -2003,7 +2003,7 @@ function renderAdminEquipGrid(charData){
     ?`<div class="equip-slot filled" onclick="adminUnequipItem('${data.key}')" title="${data.idb.nome} — Clique para desequipar"><img src="${data.idb.imagem}"></div>`
     :`<div class="equip-slot" onclick="adminEquipFromSlot('${type}')" title="Equipar ${type}"><i class="fas ${icon}"></i></div>`;
   const grid=document.getElementById('cp-equip-grid');
-  if(grid) grid.innerHTML=`${rs(sl.cabeca,'fa-hat-wizard','cabeca')}${rs(sl.peitoral,'fa-tshirt','peitoral')}${rs(sl.pernas,'fa-shoe-prints','pernas')}${rs(sl.arma1,'fa-sword','arma1')}${rs(sl.arma2,'fa-sword','arma2')}${rs(sl.acessorio,'fa-ring','acessorio')}`;
+  if(grid) grid.innerHTML=`${rs(sl.cabeca,'fa-hat-wizard','cabeca')}${rs(sl.peitoral,'fa-tshirt','peitoral')}${rs(sl.pernas,'fa-shoe-prints','pernas')}${rs(sl.arma1,'fa-hand-fist','arma1')}${rs(sl.arma2,'fa-hand-fist','arma2')}${rs(sl.acessorio,'fa-ring','acessorio')}`;
 }
 function adminEquipFromSlot(slotType){
   const pg=document.getElementById('picker-grid'); pg.innerHTML=''; let found=false;
@@ -2700,8 +2700,11 @@ function exportarCardImagem(){
   if(!el || !cardCtx) return;
   const btn=document.getElementById('card-download-btn');
   const label='<i class="fas fa-download"></i> Baixar PNG';
-  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gerando…'; }
-  html2canvas(el,{scale:2,backgroundColor:null,useCORS:true,logging:false}).then(canvas=>{
+  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Carregando imagens…'; }
+  prepararImagensCard(el).then(()=>{
+    if(btn) btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gerando imagem…';
+    return html2canvas(el,{scale:2,backgroundColor:null,useCORS:false,logging:false});
+  }).then(canvas=>{
     const name=cardCtx.tipo==='char'?(DB_CHARS[cardCtx.id]?.nome||'card'):(DB_SKILLS[cardCtx.id]?.nome||'skill');
     const link=document.createElement('a');
     link.download=`card_${String(name).replace(/\s+/g,'_')}.png`;
@@ -2713,6 +2716,55 @@ function exportarCardImagem(){
     if(btn){ btn.disabled=false; btn.innerHTML=label; }
     showToast('Erro ao gerar a imagem.','error');
   });
+}
+
+const CORS_PROXIES=[
+  'https://images.weserv.nl/?url=',
+  'https://corsproxy.io/?url=',
+  'https://api.allorigins.win/raw?url='
+];
+function blobToDataURL(blob){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onload=()=>res(fr.result);
+    fr.onerror=rej;
+    fr.readAsDataURL(blob);
+  });
+}
+function makePlaceholderDataURL(w,h,label){
+  const c=document.createElement('canvas'); c.width=w; c.height=h;
+  const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,w,h);
+  g.addColorStop(0,'#1a0f2e'); g.addColorStop(1,'#0e0719');
+  x.fillStyle=g; x.fillRect(0,0,w,h);
+  x.fillStyle='#c8a030'; x.font='700 44px Raleway, sans-serif'; x.textAlign='center'; x.textBaseline='middle';
+  x.fillText(label||'?', w/2, h/2);
+  return c.toDataURL('image/png');
+}
+async function fetchImageDataURL(src){
+  for(const p of CORS_PROXIES){
+    try{
+      const r=await fetch(p+encodeURIComponent(src),{mode:'cors'});
+      if(!r.ok) continue;
+      const blob=await r.blob();
+      if(blob.type.startsWith('image/')) return await blobToDataURL(blob);
+    }catch(e){}
+  }
+  return null;
+}
+async function prepararImagensCard(container){
+  const imgs=[...(container.querySelectorAll('img'))];
+  await Promise.all(imgs.map(async img=>{
+    const src=img.getAttribute('src')||'';
+    if(!src || src.startsWith('data:')) return;
+    let data=null;
+    try{
+      const r=await fetch(src,{mode:'cors'});
+      if(r.ok){ const blob=await r.blob(); if(blob.type.startsWith('image/')) data=await blobToDataURL(blob); }
+    }catch(e){}
+    if(!data) data=await fetchImageDataURL(src);
+    img.setAttribute('src', data || makePlaceholderDataURL(img.width||400, img.height||210, ''));
+  }));
 }
 
 /* ══ MODAIS ═══════════════════════════════════════════════════════════════ */
