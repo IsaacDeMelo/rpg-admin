@@ -6,8 +6,9 @@
 <title>O Mestre — Painel</title>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800;900&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
 /* ── RESET ───────────────────────────────────────────────────────────── */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -397,6 +398,116 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
 #i-subcat-wrapper, #e-i-subcat-wrapper,
 #i-consumable-wrapper, #e-i-consumable-wrapper { display:none; }
 
+/* ── CARD EXPORT ─────────────────────────────────────────────────────── */
+.card-export-btn {
+  position:absolute; top:8px; right:8px; width:28px; height:28px;
+  background:rgba(0,0,0,.62); border:1px solid rgba(212,150,58,.45); border-radius:7px;
+  color:var(--gold2); font-size:.72rem; cursor:pointer; z-index:6;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity .2s, background .2s; backdrop-filter:blur(4px);
+}
+.card:hover .card-export-btn { opacity:1; }
+.card-export-btn:hover { background:rgba(212,150,58,.22); color:var(--gold); }
+.profile-cerne { text-align:center; color:var(--gold2); font-size:.78rem; font-weight:600; margin-bottom:10px; font-style:italic; }
+.profile-cerne i { margin-right:5px; opacity:.85; }
+
+#card-modal .modal-box { max-width:860px; }
+.card-toolbar { display:flex; flex-wrap:wrap; gap:7px; }
+.card-check {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:.7rem; color:var(--muted); background:rgba(0,0,0,.25);
+  border:1px solid var(--border); border-radius:8px; padding:5px 9px;
+  cursor:pointer; user-select:none; transition:border-color .2s, color .2s;
+}
+.card-check:hover { border-color:var(--gold); color:var(--text); }
+.card-check input { accent-color:var(--gold2); cursor:pointer; }
+.card-check b { font-family:var(--font-head); letter-spacing:.04em; }
+.card-preview-scroll {
+  max-height:62vh; overflow:auto; display:flex; justify-content:center; align-items:flex-start;
+  padding:12px; background:repeating-conic-gradient(rgba(255,255,255,.025) 0% 25%, transparent 0% 50%) 0 0/22px 22px;
+  border:1px solid var(--border); border-radius:12px;
+}
+.card-preview-scroll::-webkit-scrollbar { width:6px; }
+
+/* Card estilo carta */
+.rpg-card, .rpg-skill-card {
+  width:400px; background:linear-gradient(165deg,#170d28 0%, #0e0719 100%);
+  border:1px solid var(--border2); border-radius:16px; overflow:hidden;
+  box-shadow:0 22px 55px rgba(0,0,0,.55); font-family:var(--font-body);
+  color:var(--text); position:relative; flex-shrink:0; text-align:left;
+}
+.rpg-skill-card { width:360px; }
+.rpg-card::before, .rpg-skill-card::before {
+  content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 90% 42% at 50% 0%, rgba(212,150,58,.14), transparent 62%),
+    radial-gradient(ellipse 60% 45% at 100% 100%, rgba(90,26,138,.18), transparent 60%);
+}
+.rpg-card-head { position:relative; height:215px; background:var(--bg); }
+.rpg-skill-card .rpg-card-head { height:185px; }
+.rpg-card-head img { width:100%; height:100%; object-fit:cover; object-position:center top; display:block; }
+.rpg-card-head::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:62%;
+  background:linear-gradient(to top, #150b24, transparent);
+}
+.rpg-card-badge {
+  position:absolute; top:10px; left:10px; padding:4px 11px; border-radius:6px;
+  font-family:var(--font-head); font-size:.58rem; font-weight:800; letter-spacing:.1em;
+  backdrop-filter:blur(6px); z-index:3;
+}
+.rpg-card-nameplate {
+  position:absolute; bottom:0; left:0; right:0; z-index:2;
+  text-align:center; padding:10px 14px 12px;
+  background:linear-gradient(to top, rgba(13,6,23,.96), transparent);
+}
+.rpg-card-name {
+  font-family:var(--font-head); font-size:1.35rem; font-weight:900;
+  color:var(--gold2); letter-spacing:.02em; text-shadow:0 3px 12px rgba(0,0,0,.75); line-height:1.1;
+}
+.rpg-card-sub {
+  font-family:var(--font-head); font-size:.6rem; font-weight:700; color:#c4a0d0;
+  letter-spacing:.16em; text-transform:uppercase; margin-top:2px;
+}
+.rpg-card-body { padding:14px 16px 16px; position:relative; z-index:1; }
+.rpg-cerne { text-align:center; font-style:italic; color:var(--gold2); font-size:.8rem; margin-bottom:11px; }
+.rpg-cerne i { margin-right:5px; }
+.rpg-cerne.muted { color:var(--muted); font-style:normal; font-size:.7rem; }
+.rpg-vitals { display:flex; gap:8px; justify-content:center; margin-bottom:12px; }
+.rpg-vital { flex:1; text-align:center; background:rgba(0,0,0,.35); border:1px solid var(--border); border-radius:10px; padding:7px 4px 5px; }
+.rpg-vital .v { font-family:var(--font-head); font-weight:900; font-size:.92rem; }
+.rpg-vital .l { font-size:.5rem; color:var(--muted); letter-spacing:.14em; font-weight:700; margin-top:2px; }
+.rpg-section { margin-bottom:12px; }
+.rpg-section-title {
+  font-family:var(--font-head); font-size:.56rem; font-weight:800; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--border);
+  padding-bottom:4px; margin-bottom:8px; display:flex; align-items:center; gap:6px;
+}
+.rpg-attr { background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin-bottom:6px; }
+.rpg-attr-top { display:flex; align-items:center; justify-content:space-between; }
+.rpg-attr-name { font-family:var(--font-head); font-weight:800; font-size:.74rem; letter-spacing:.1em; }
+.rpg-attr-val { font-family:var(--font-head); font-weight:900; font-size:1.1rem; }
+.rpg-attr-val small { font-size:.58rem; color:var(--green); font-weight:700; vertical-align:super; }
+.rpg-subs { display:flex; flex-wrap:wrap; gap:4px; margin-top:7px; }
+.rpg-sub { background:rgba(0,0,0,.32); border:1px solid var(--border); border-radius:6px; padding:2px 7px; font-size:.6rem; color:var(--muted); }
+.rpg-sub b { color:var(--text); font-weight:700; }
+.rpg-sub .plus { color:var(--green); font-weight:700; }
+.rpg-chips { display:flex; flex-wrap:wrap; gap:5px; }
+.rpg-chip {
+  background:rgba(0,0,0,.32); border:1px solid var(--border); border-radius:7px;
+  padding:4px 9px; font-size:.62rem; color:var(--text);
+  display:inline-flex; align-items:center; gap:6px;
+}
+.rpg-chip b { color:var(--gold2); font-weight:800; }
+.rpg-chip img { width:20px; height:20px; border-radius:4px; object-fit:cover; }
+.rpg-equip { display:flex; flex-wrap:wrap; gap:6px; }
+.rpg-equip img { width:34px; height:34px; border-radius:7px; border:1px solid var(--border2); object-fit:cover; background:var(--bg); }
+.rpg-lore { font-size:.68rem; color:var(--muted); font-style:italic; line-height:1.55; border-left:2px solid var(--border2); padding-left:10px; }
+.rpg-footer {
+  position:relative; z-index:1; padding:10px 16px 12px; text-align:center;
+  font-family:var(--font-head); font-size:.5rem; letter-spacing:.24em;
+  color:#4a3a5e; border-top:1px solid var(--border);
+}
+
 @media (max-width:900px) {
   .sidebar { width:210px; min-width:210px; }
   .main-content { padding:20px; }
@@ -544,6 +655,8 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <input type="text" id="c-nome" placeholder="Nome verdadeiro">
         <label class="field-label">Classe</label>
         <input type="text" id="c-classe" placeholder="Ex: Guerreiro, Besta, Arquimago…">
+        <label class="field-label">Cerne</label>
+        <input type="text" id="c-cerne" placeholder="Ex: Alma de Fogo, Essência Ártica…">
         <label class="field-label">Descrição / Lore</label>
         <textarea id="c-desc" rows="3" placeholder="Visível para jogadores no combate…"></textarea>
         <label class="field-label">Imagem</label>
@@ -1050,6 +1163,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <div><label class="field-label">Nome</label><input id="ec-nome" placeholder="Nome verdadeiro"></div>
         <div><label class="field-label">Classe</label><input id="ec-classe" placeholder="Classe"></div>
       </div>
+      <label class="field-label">Cerne</label><input id="ec-cerne" placeholder="Ex: Alma de Fogo, Essência Ártica…">
       <label class="field-label">Imagem</label>
       <div style="display:flex; gap:8px; margin-bottom:12px;">
         <input id="ec-img" placeholder="URL ou clique para enviar" style="flex:1;">
@@ -1206,7 +1320,10 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
   <div class="modal-box" style="max-width:800px;">
     <div class="modal-header">
       <div class="modal-title"><i class="fas fa-book-dead" style="color:var(--green2); margin-right:7px;"></i> Editar Habilidade</div>
-      <div class="modal-close" onclick="closeModal('edit-skill-modal')"><i class="fas fa-times"></i></div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="inline-btn gold" onclick="abrirCardExport('skill', document.getElementById('e-s-id').value)"><i class="fas fa-id-card"></i> Exportar Card</button>
+        <div class="modal-close" onclick="closeModal('edit-skill-modal')"><i class="fas fa-times"></i></div>
+      </div>
     </div>
     <div class="modal-body">
       <div class="two-col">
@@ -1339,6 +1456,30 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
     <div class="modal-body">
       <textarea id="export-content" style="width:100%;height:320px;font-family:monospace;font-size:.78rem;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:14px;resize:none;margin-bottom:10px;outline:none;" readonly></textarea>
       <button class="btn btn-cyan" onclick="copiarExport()"><i class="fas fa-copy"></i> Copiar para Área de Transferência</button>
+    </div>
+  </div>
+</div>
+
+<!-- Exportar Card (Imagem) -->
+<div class="modal" id="card-modal">
+  <div class="modal-box" style="max-width:860px;">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-id-card" style="color:var(--gold); margin-right:7px;"></i> Exportar Card</div>
+      <div class="modal-close" onclick="closeModal('card-modal')"><i class="fas fa-times"></i></div>
+    </div>
+    <div class="modal-body">
+      <div class="two-col" style="grid-template-columns:240px 1fr;">
+        <div>
+          <label class="field-label">Elementos do Card</label>
+          <div id="card-options"></div>
+        </div>
+        <div>
+          <div class="card-preview-scroll">
+            <div id="card-render"></div>
+          </div>
+          <button class="btn btn-gold mt-8" id="card-download-btn" onclick="exportarCardImagem()"><i class="fas fa-download"></i> Baixar PNG</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1617,7 +1758,7 @@ function criarEntidade(){
   });
   db.ref('characters/'+id).set({
     tipo:document.getElementById('c-tipo').value, senha:document.getElementById('c-pass').value,
-    nome, classe, imagem:document.getElementById('c-img').value||PLACEHOLDER_IMG,
+    nome, classe, cerne:document.getElementById('c-cerne').value.trim(), imagem:document.getElementById('c-img').value||PLACEHOLDER_IMG,
     pontos:toNumber(document.getElementById('c-pts').value),
     gold:toNumber(document.getElementById('c-gold').value),
     description:document.getElementById('c-desc').value||'',
@@ -1636,14 +1777,29 @@ function getBaseVal(attrObj, key){
   const v=attrObj[key];
   return typeof v==='object'?(v.total||0):(typeof v==='number'?v:0);
 }
-function renderProfileStats(c, bonus, showSub){
+function renderProfileStats(c, bonus, showSub, subBonus){
   const base=c.atributos_base||{};
   let html='<div class="stat-grid-2">';
   Object.keys(attrNames).forEach(main=>{
     const val=getBaseVal(base,main)+(bonus[main]||0);
-    html+=`<div class="stat-cell">${attrNamesDisp[main].label}<strong style="color:${attrNamesDisp[main].color};">${val}</strong></div>`;
+    const bStr=(bonus[main]||0)>0?` <small style="color:var(--green2);font-size:.6em;">(+${bonus[main]})</small>`:'';
+    html+=`<div class="stat-cell">${attrNamesDisp[main].label}<strong style="color:${attrNamesDisp[main].color};">${val}${bStr}</strong></div>`;
   });
   html+='</div>';
+  if(showSub){
+    html+='<div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px;">';
+    Object.keys(attrNames).forEach(main=>{
+      Object.keys(attrNamesDisp[main].subs).forEach(sub=>{
+        const sv=typeof base[main]==='object'?(base[main][sub]||0):0;
+        const sb=(subBonus&&subBonus[main])?subBonus[main][sub]||0:0;
+        const sbHtml=sb?` <span style="color:var(--green2);font-size:.52rem;">(+${sb})</span>`:'';
+        html+=`<div style="font-size:.62rem;color:var(--muted);background:rgba(0,0,0,.15);border-radius:4px;padding:2px 6px;display:flex;justify-content:space-between;align-items:center;">
+          <span>${attrNamesDisp[main].subs[sub]}</span><span style="color:${attrNamesDisp[main].color};font-weight:700;">${sv+sb}${sbHtml}</span>
+        </div>`;
+      });
+    });
+    html+='</div>';
+  }
   return html;
 }
 
@@ -1661,6 +1817,7 @@ function renderChars(){
     grid.innerHTML+=`<div class="card" onclick="abrirPerfilChar('${id}')">
       <div class="card-img-wrap">
         <span class="card-badge ${badgeClass(c.tipo)}">${c.tipo}</span>
+        <button class="card-export-btn" onclick="event.stopPropagation(); abrirCardExport('char','${id}')" title="Exportar card"><i class="fas fa-id-card"></i></button>
         <img src="${c.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'" alt="${c.nome||''}">
       </div>
       <div class="card-body">
@@ -1681,11 +1838,14 @@ let activeCharId=null;
 function abrirPerfilChar(charId){
   activeCharId=charId; const c=DB_CHARS[charId]; if(!c) return closeModal('char-modal');
   let bonus={fis:0,res:0,vel:0,sub:0};
+  let subBonus={};
+  Object.keys(attrSub).forEach(m=>{ subBonus[m]={}; attrSub[m].forEach(s=>subBonus[m][s]=0); });
+  const applyMods=(mods)=>{ if(!mods) return; Object.keys(mods).forEach(k=>{ const sep=k.indexOf('_'); if(sep>0){ const main=k.slice(0,sep), sub=k.slice(sep+1); if(subBonus[main]&&subBonus[main][sub]!==undefined) subBonus[main][sub]+=mods[k]; } else if(bonus[k]!==undefined) bonus[k]+=mods[k]; }); };
   if(c.tipo!=='Criatura'){
-    if(c.inventario) Object.values(c.inventario).forEach(item=>{ if(item.equipado && DB_ITEMS[item.item_id]?.mods) Object.keys(bonus).forEach(k=>bonus[k]+=(DB_ITEMS[item.item_id].mods[k]||0)); });
-    if(c.skills) Object.keys(c.skills).forEach(sId=>{ if(DB_SKILLS[sId]?.buffs) Object.keys(bonus).forEach(k=>bonus[k]+=(DB_SKILLS[sId].buffs[k]||0)); });
+    if(c.inventario) Object.values(c.inventario).forEach(item=>{ if(item.equipado && DB_ITEMS[item.item_id]?.mods) applyMods(DB_ITEMS[item.item_id].mods); });
+    if(c.skills) Object.keys(c.skills).forEach(sId=>{ const sk=DB_SKILLS[sId]; if(sk) applyMods(sk.buffs); });
   }
-  const statsHtml = renderProfileStats(c, bonus, true);
+  const statsHtml = renderProfileStats(c, bonus, true, subBonus);
   const vitals=`
     <div class="vital-chip" style="color:var(--crimson2); border-color:rgba(160,32,32,.25);">❤️ ${c.hp||0}/${c.hp_max||0}</div>
     ${(c.mp_max||0)>0?`<div class="vital-chip" style="color:var(--teal2); border-color:rgba(16,96,106,.25);">💧 ${c.mp||0}/${c.mp_max||0}</div>`:''}
@@ -1738,7 +1898,9 @@ function abrirPerfilChar(charId){
       <img class="profile-avatar" src="${c.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'" alt="${c.nome||''}">
       <div class="profile-name">${c.nome||'Sem Nome'}</div>
       <div class="profile-class">${c.classe||'—'} · ${c.pontos||0} pts livres</div>
+      ${c.cerne?`<div class="profile-cerne"><i class="fas fa-gem"></i>${c.cerne}</div>`:''}
       <div class="vitals-row" style="justify-content:center;">${vitals}</div>
+      <button class="btn btn-gold" style="margin-bottom:12px;" onclick="abrirCardExport('char','${charId}')"><i class="fas fa-id-card"></i> Exportar Card</button>
       <button class="btn btn-ghost" style="margin-bottom:12px;" onclick="abrirEditChar('${charId}')"><i class="fas fa-edit"></i> Editar</button>
       <div class="profile-section-title" style="margin-top:0;">Ajuste Rapido de HP</div>
       <div class="hp-quick">
@@ -1778,6 +1940,7 @@ function ajustarHp(charId, direction){
 function abrirEditChar(charId){
   const c=DB_CHARS[charId]; if(!c) return;
   ['nome','classe'].forEach(f=>document.getElementById('ec-'+f).value=c[f]||'');
+  document.getElementById('ec-cerne').value=c.cerne||'';
   document.getElementById('ec-img').value=c.imagem||'';
   document.getElementById('ec-pts').value=c.pontos||0;
   document.getElementById('ec-gold').value=c.gold||0;
@@ -1800,6 +1963,7 @@ function salvarEditChar(){
   });
   db.ref(`characters/${activeCharId}`).update({
     nome:document.getElementById('ec-nome').value, classe:document.getElementById('ec-classe').value,
+    cerne:document.getElementById('ec-cerne').value.trim(),
     imagem:document.getElementById('ec-img').value, pontos:Number(document.getElementById('ec-pts').value),
     gold:Number(document.getElementById('ec-gold').value),
     description:document.getElementById('ec-desc').value,
@@ -1951,7 +2115,9 @@ function renderSkills(){
   if(!filtered.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fas fa-scroll"></i><p>Nenhuma habilidade encontrada.</p></div>'; return; }
   filtered.forEach(id=>{ const s=DB_SKILLS[id]; grid.innerHTML+=`<div class="card" onclick="abrirPerfilSkill('${id}')" style="display:flex; align-items:center; padding:11px; gap:12px;">
     <img src="${s.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'" style="width:46px; height:46px; border-radius:8px; object-fit:cover; border:1px solid var(--border); background:var(--bg); flex-shrink:0;">
-    <div class="card-name" style="margin:0;">${s.nome||'Sem Nome'}</div></div>`; });
+    <div class="card-name" style="margin:0; flex:1;">${s.nome||'Sem Nome'}</div>
+    <button class="card-export-btn" style="opacity:1; position:static; width:30px; height:30px;" onclick="event.stopPropagation(); abrirCardExport('skill','${id}')" title="Exportar card"><i class="fas fa-id-card"></i></button>
+  </div>`; });
 }
 function abrirPerfilSkill(skillId){
   const sk=DB_SKILLS[skillId]; if(!sk) return;
@@ -2357,6 +2523,196 @@ function copiarExport(){
   const el=document.getElementById('export-content');
   el.select(); document.execCommand('copy');
   showToast('Copiado para a área de transferência!');
+}
+
+/* ══ EXPORTAR CARDS (IMAGEM) ═══════════════════════════════════════════════ */
+let cardCtx=null;
+function escHtml(str){ return String(str==null?'':str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function abrirCardExport(tipo, id){
+  if(tipo==='char' && !DB_CHARS[id]) return;
+  if(tipo==='skill' && !DB_SKILLS[id]) return;
+  cardCtx={tipo, id};
+  if(tipo==='char') buildCardOptions(DB_CHARS[id]);
+  else buildSkillCardOptions(DB_SKILLS[id]);
+  renderCardPreview();
+  document.getElementById('card-modal').classList.add('active');
+}
+function cardOptState(k){
+  const el=document.getElementById('card-opt-'+k);
+  return !el || el.checked;
+}
+function buildCardOptions(c){
+  const box=document.getElementById('card-options');
+  let h='<div class="card-toolbar">';
+  const generic=[['cerne','Cerne'],['vitals','Vida / Mana / Energia'],['gold','Ouro'],['pontos','Pontos Livres'],['hab','Perícias'],['magias','Magias'],['equip','Equipamentos'],['lore','Descrição / Lore']];
+  generic.forEach(([k,label])=>{
+    h+=`<label class="card-check"><input type="checkbox" id="card-opt-${k}" checked onchange="renderCardPreview()"> ${label}</label>`;
+  });
+  Object.keys(attrNames).forEach(m=>{
+    const info=attrNamesDisp[m];
+    h+=`<label class="card-check" style="border-color:${info.color}55;"><input type="checkbox" id="card-opt-attr_${m}" checked onchange="renderCardPreview()"> <b style="color:${info.color};">${info.label}</b></label>`;
+    Object.keys(info.subs).forEach(s=>{
+      h+=`<label class="card-check"><input type="checkbox" id="card-opt-sub_${m}_${s}" checked onchange="renderCardPreview()"> · ${info.subs[s]}</label>`;
+    });
+  });
+  h+='</div><p class="hint mt-8 mb-0" style="font-size:.62rem;">Desmarque um item para ocultá-lo do card.</p>';
+  box.innerHTML=h;
+}
+function buildSkillCardOptions(s){
+  const box=document.getElementById('card-options');
+  box.innerHTML=`<div class="card-toolbar">
+    <label class="card-check"><input type="checkbox" id="card-opt-desc" checked onchange="renderCardPreview()"> Descrição / Efeito</label>
+    <label class="card-check"><input type="checkbox" id="card-opt-buffs" checked onchange="renderCardPreview()"> Buffs Passivos</label>
+  </div><p class="hint mt-8 mb-0" style="font-size:.62rem;">Desmarque um item para ocultá-lo do card.</p>`;
+}
+function renderCardPreview(){
+  const wrap=document.getElementById('card-render');
+  if(!wrap || !cardCtx) return;
+  const data=cardCtx.tipo==='char'?DB_CHARS[cardCtx.id]:DB_SKILLS[cardCtx.id];
+  if(!data){ wrap.innerHTML='<p class="hint">Dados não encontrados.</p>'; return; }
+  wrap.innerHTML = cardCtx.tipo==='char' ? buildCharCard(data) : buildSkillCard(data);
+}
+function buffLabel(k){
+  const sep=k.indexOf('_');
+  if(sep>0){
+    const main=k.slice(0,sep), sub=k.slice(sep+1);
+    const mainLbl=attrNames[main]||main;
+    const subLbl=(attrNamesDisp[main]&&attrNamesDisp[main].subs[sub])||sub;
+    return `${mainLbl}·${subLbl}`;
+  }
+  return attrNames[k]||k;
+}
+function buildSkillCard(s){
+  const show=(k)=>cardOptState(k);
+  const desc=show('desc')&&s.descricao?`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-scroll"></i> Efeito</div><div class="rpg-lore">${escHtml(s.descricao)}</div></div>`:'';
+  let buffs='';
+  if(show('buffs')&&s.buffs){
+    const entries=Object.entries(s.buffs).filter(([,v])=>v);
+    if(entries.length) buffs=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-bolt"></i> Buffs Passivos</div><div class="rpg-chips">${entries.map(([k,v])=>`<span class="rpg-chip">${escHtml(buffLabel(k))} <b>+${v}</b></span>`).join('')}</div></div>`;
+  }
+  return `<div class="rpg-skill-card">
+    <div class="rpg-card-head">
+      <span class="card-badge badge-generic">Habilidade</span>
+      <img src="${s.imagem||PLACEHOLDER_IMG}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">
+      <div class="rpg-card-nameplate">
+        <div class="rpg-card-name">${escHtml(s.nome||'Habilidade')}</div>
+        <div class="rpg-card-sub">Magia · Dom · Técnica</div>
+      </div>
+    </div>
+    <div class="rpg-card-body">${desc}${buffs}</div>
+    <div class="rpg-footer">✦ CRÔNICAS DO REINO ✦</div>
+  </div>`;
+}
+function buildCharCard(c){
+  const show=(k)=>cardOptState(k);
+  const base=c.atributos_base||{};
+  let bonus={fis:0,res:0,vel:0,sub:0}, subBonus={};
+  Object.keys(attrSub).forEach(m=>{ subBonus[m]={}; attrSub[m].forEach(s=>subBonus[m][s]=0); });
+  const applyMods=(mods)=>{ if(!mods) return; Object.keys(mods).forEach(k=>{ const sep=k.indexOf('_'); if(sep>0){ const main=k.slice(0,sep), sub=k.slice(sep+1); if(subBonus[main]&&subBonus[main][sub]!==undefined) subBonus[main][sub]+=mods[k]; } else if(bonus[k]!==undefined) bonus[k]+=mods[k]; }); };
+  if(c.tipo!=='Criatura'){
+    if(c.inventario) Object.values(c.inventario).forEach(it=>{ if(it.equipado&&DB_ITEMS[it.item_id]?.mods) applyMods(DB_ITEMS[it.item_id].mods); });
+    if(c.skills) Object.keys(c.skills).forEach(sId=>{ const sk=DB_SKILLS[sId]; if(sk) applyMods(sk.buffs); });
+  }
+
+  let head=`<div class="rpg-card-head">
+      <span class="card-badge ${badgeClass(c.tipo)}">${c.tipo||'?'}</span>
+      <img src="${c.imagem||PLACEHOLDER_IMG}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">
+      <div class="rpg-card-nameplate">
+        <div class="rpg-card-name">${escHtml(c.nome||'Sem Nome')}</div>
+        ${c.classe?`<div class="rpg-card-sub">${escHtml(c.classe)}</div>`:''}
+      </div>
+    </div>`;
+
+  let extras='';
+  if(show('cerne')&&c.cerne) extras+=`<div class="rpg-cerne"><i class="fas fa-gem"></i>${escHtml(c.cerne)}</div>`;
+  if(show('pontos')&&c.pontos) extras+=`<div class="rpg-cerne muted"><i class="fas fa-star"></i>${c.pontos} pontos livres</div>`;
+  if(show('gold')&&c.gold) extras+=`<div class="rpg-cerne muted"><i class="fas fa-coins"></i>${c.gold} de ouro</div>`;
+
+  let vitals='';
+  if(show('vitals')){
+    const v=[['❤️','VIDA',c.hp,c.hp_max],['💧','MANA',c.mp,c.mp_max],['⚡','ENERGIA',c.sp,c.sp_max]];
+    const cells=v.filter(x=>x[3]>0).map(x=>`<div class="rpg-vital"><div class="v">${x[0]} ${x[2]||0}/${x[3]}</div><div class="l">${x[1]}</div></div>`).join('');
+    if(cells) vitals=`<div class="rpg-vitals">${cells}</div>`;
+  }
+
+  let attrs='';
+  const hasAttr=Object.keys(attrNames).some(m=>show('attr_'+m));
+  if(hasAttr){
+    attrs=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-crown"></i> Atributos</div>`;
+    Object.keys(attrNames).forEach(m=>{
+      if(!show('attr_'+m)) return;
+      const info=attrNamesDisp[m];
+      const total=getBaseVal(base,m)+(bonus[m]||0);
+      const bStr=(bonus[m]||0)>0?`<small>+${bonus[m]}</small>`:'';
+      let subsHtml='';
+      Object.keys(info.subs).forEach(s=>{
+        if(!show(`sub_${m}_${s}`)) return;
+        const sv=typeof base[m]==='object'?(base[m][s]||0):0;
+        const sb=subBonus[m]?subBonus[m][s]||0:0;
+        subsHtml+=`<span class="rpg-sub">${info.subs[s]} <b>${sv+sb}</b>${sb?` <span class="plus">+${sb}</span>`:''}</span>`;
+      });
+      attrs+=`<div class="rpg-attr">
+        <div class="rpg-attr-top"><span class="rpg-attr-name" style="color:${info.color};">${info.label}</span><span class="rpg-attr-val" style="color:${info.color};">${total}${bStr}</span></div>
+        ${subsHtml?`<div class="rpg-subs">${subsHtml}</div>`:''}
+      </div>`;
+    });
+    attrs+='</div>';
+  }
+
+  let equip='';
+  if(show('equip')&&c.tipo!=='Criatura'){
+    const eq=[];
+    if(c.inventario) Object.values(c.inventario).forEach(it=>{ if(it.equipado&&DB_ITEMS[it.item_id]) eq.push(DB_ITEMS[it.item_id]); });
+    if(eq.length) equip=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-tshirt"></i> Build</div><div class="rpg-equip">${eq.slice(0,8).map(it=>`<img src="${it.imagem}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'" title="${escHtml(it.nome)}">`).join('')}</div></div>`;
+  }
+
+  let hab='';
+  if(show('hab')&&c.habilidades){
+    const entries=Object.entries(c.habilidades);
+    if(entries.length) hab=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-fire"></i> Perícias</div><div class="rpg-chips">${entries.map(([n,lvl])=>`<span class="rpg-chip">${escHtml(n)} <b>Nv.${lvl}</b></span>`).join('')}</div></div>`;
+  }
+
+  let magias='';
+  if(show('magias')&&c.skills){
+    const ids=Object.keys(c.skills).filter(sId=>DB_SKILLS[sId]);
+    if(ids.length) magias=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-book-dead"></i> Magias</div><div class="rpg-chips">${ids.map(sId=>{ const sk=DB_SKILLS[sId]; return `<span class="rpg-chip"><img src="${sk.imagem}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">${escHtml(sk.nome)}</span>`; }).join('')}</div></div>`;
+  }
+
+  let lore=show('lore')&&c.description?`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-scroll"></i> Lore</div><div class="rpg-lore">${escHtml(c.description)}</div></div>`:'';
+
+  return `<div class="rpg-card">
+    ${head}
+    <div class="rpg-card-body">
+      ${extras}
+      ${vitals}
+      ${attrs}
+      ${equip}
+      ${hab}
+      ${magias}
+      ${lore}
+    </div>
+    <div class="rpg-footer">✦ CRÔNICAS DO REINO ✦</div>
+  </div>`;
+}
+function exportarCardImagem(){
+  const el=document.getElementById('card-render');
+  if(!el || !cardCtx) return;
+  const btn=document.getElementById('card-download-btn');
+  const label='<i class="fas fa-download"></i> Baixar PNG';
+  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gerando…'; }
+  html2canvas(el,{scale:2,backgroundColor:null,useCORS:true,logging:false}).then(canvas=>{
+    const name=cardCtx.tipo==='char'?(DB_CHARS[cardCtx.id]?.nome||'card'):(DB_SKILLS[cardCtx.id]?.nome||'skill');
+    const link=document.createElement('a');
+    link.download=`card_${String(name).replace(/\s+/g,'_')}.png`;
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+    if(btn){ btn.disabled=false; btn.innerHTML=label; }
+    showToast('Card exportado!');
+  }).catch(()=>{
+    if(btn){ btn.disabled=false; btn.innerHTML=label; }
+    showToast('Erro ao gerar a imagem.','error');
+  });
 }
 
 /* ══ MODAIS ═══════════════════════════════════════════════════════════════ */
