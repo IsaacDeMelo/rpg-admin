@@ -443,9 +443,8 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
     radial-gradient(ellipse 90% 42% at 50% 0%, rgba(212,150,58,.14), transparent 62%),
     radial-gradient(ellipse 60% 45% at 100% 100%, rgba(90,26,138,.18), transparent 60%);
 }
-.rpg-card-head { position:relative; height:215px; background:var(--bg); }
+.rpg-card-head { position:relative; height:215px; background-color:var(--bg); background-size:cover; background-position:center top; background-repeat:no-repeat; }
 .rpg-skill-card .rpg-card-head { height:185px; }
-.rpg-card-head img { width:100%; height:100%; object-fit:cover; object-position:center top; display:block; }
 .rpg-card-head::after {
   content:''; position:absolute; bottom:0; left:0; right:0; height:62%;
   background:linear-gradient(to top, #150b24, transparent);
@@ -498,9 +497,9 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
   display:inline-flex; align-items:center; gap:6px;
 }
 .rpg-chip b { color:var(--gold2); font-weight:800; }
-.rpg-chip img { width:20px; height:20px; border-radius:4px; object-fit:cover; }
+.rpg-chip-img { width:20px; height:20px; border-radius:4px; flex-shrink:0; background:var(--bg) center/cover no-repeat; }
 .rpg-equip { display:flex; flex-wrap:wrap; gap:6px; }
-.rpg-equip img { width:34px; height:34px; border-radius:7px; border:1px solid var(--border2); object-fit:cover; background:var(--bg); }
+.rpg-equip-item { width:34px; height:34px; border-radius:7px; border:1px solid var(--border2); background:var(--bg) center/cover no-repeat; }
 .rpg-lore { font-size:.68rem; color:var(--muted); font-style:italic; line-height:1.55; border-left:2px solid var(--border2); padding-left:10px; }
 .rpg-footer {
   position:relative; z-index:1; padding:10px 16px 12px; text-align:center;
@@ -2583,6 +2582,7 @@ function buffLabel(k){
   }
   return attrNames[k]||k;
 }
+function bgImg(src){ return `url("${(src||PLACEHOLDER_IMG).replace(/"/g,'%22')}")`; }
 function buildSkillCard(s){
   const show=(k)=>cardOptState(k);
   const desc=show('desc')&&s.descricao?`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-scroll"></i> Efeito</div><div class="rpg-lore">${escHtml(s.descricao)}</div></div>`:'';
@@ -2592,9 +2592,8 @@ function buildSkillCard(s){
     if(entries.length) buffs=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-bolt"></i> Buffs Passivos</div><div class="rpg-chips">${entries.map(([k,v])=>`<span class="rpg-chip">${escHtml(buffLabel(k))} <b>+${v}</b></span>`).join('')}</div></div>`;
   }
   return `<div class="rpg-skill-card">
-    <div class="rpg-card-head">
+    <div class="rpg-card-head" style="background-image:${bgImg(s.imagem)}">
       <span class="card-badge badge-generic">Habilidade</span>
-      <img src="${s.imagem||PLACEHOLDER_IMG}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">
       <div class="rpg-card-nameplate">
         <div class="rpg-card-name">${escHtml(s.nome||'Habilidade')}</div>
         <div class="rpg-card-sub">Magia · Dom · Técnica</div>
@@ -2615,9 +2614,8 @@ function buildCharCard(c){
     if(c.skills) Object.keys(c.skills).forEach(sId=>{ const sk=DB_SKILLS[sId]; if(sk) applyMods(sk.buffs); });
   }
 
-  let head=`<div class="rpg-card-head">
+  let head=`<div class="rpg-card-head" style="background-image:${bgImg(c.imagem)}">
       <span class="card-badge ${badgeClass(c.tipo)}">${c.tipo||'?'}</span>
-      <img src="${c.imagem||PLACEHOLDER_IMG}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">
       <div class="rpg-card-nameplate">
         <div class="rpg-card-name">${escHtml(c.nome||'Sem Nome')}</div>
         ${c.classe?`<div class="rpg-card-sub">${escHtml(c.classe)}</div>`:''}
@@ -2664,7 +2662,7 @@ function buildCharCard(c){
   if(show('equip')&&c.tipo!=='Criatura'){
     const eq=[];
     if(c.inventario) Object.values(c.inventario).forEach(it=>{ if(it.equipado&&DB_ITEMS[it.item_id]) eq.push(DB_ITEMS[it.item_id]); });
-    if(eq.length) equip=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-tshirt"></i> Build</div><div class="rpg-equip">${eq.slice(0,8).map(it=>`<img src="${it.imagem}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'" title="${escHtml(it.nome)}">`).join('')}</div></div>`;
+    if(eq.length) equip=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-tshirt"></i> Build</div><div class="rpg-equip">${eq.slice(0,8).map(it=>`<div class="rpg-equip-item" style="background-image:${bgImg(it.imagem)}" title="${escHtml(it.nome)}"></div>`).join('')}</div></div>`;
   }
 
   let hab='';
@@ -2676,7 +2674,7 @@ function buildCharCard(c){
   let magias='';
   if(show('magias')&&c.skills){
     const ids=Object.keys(c.skills).filter(sId=>DB_SKILLS[sId]);
-    if(ids.length) magias=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-book-dead"></i> Magias</div><div class="rpg-chips">${ids.map(sId=>{ const sk=DB_SKILLS[sId]; return `<span class="rpg-chip"><img src="${sk.imagem}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">${escHtml(sk.nome)}</span>`; }).join('')}</div></div>`;
+    if(ids.length) magias=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-book-dead"></i> Magias</div><div class="rpg-chips">${ids.map(sId=>{ const sk=DB_SKILLS[sId]; return `<span class="rpg-chip"><span class="rpg-chip-img" style="background-image:${bgImg(sk.imagem)}"></span>${escHtml(sk.nome)}</span>`; }).join('')}</div></div>`;
   }
 
   let lore=show('lore')&&c.description?`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-scroll"></i> Lore</div><div class="rpg-lore">${escHtml(c.description)}</div></div>`:'';
@@ -2752,10 +2750,18 @@ async function fetchImageDataURL(src){
   }
   return null;
 }
+function extractBgUrl(el){
+  const bg=el.style.backgroundImage||'';
+  const m=bg.match(/url\((["']?)(.*?)\1\)/);
+  return m?m[2]:null;
+}
 async function prepararImagensCard(container){
-  const imgs=[...(container.querySelectorAll('img'))];
-  await Promise.all(imgs.map(async img=>{
-    const src=img.getAttribute('src')||'';
+  const targets=[
+    ...[...container.querySelectorAll('img')].map(img=>({el:img,get:()=>img.getAttribute('src')||'',set:d=>img.setAttribute('src',d)})),
+    ...[...container.querySelectorAll('[style*="background-image"]')].map(el=>({el,get:()=>extractBgUrl(el)||'',set:d=>{ el.style.backgroundImage=`url("${d}")`; }}))
+  ];
+  await Promise.all(targets.map(async t=>{
+    const src=t.get();
     if(!src || src.startsWith('data:')) return;
     let data=null;
     try{
@@ -2763,7 +2769,8 @@ async function prepararImagensCard(container){
       if(r.ok){ const blob=await r.blob(); if(blob.type.startsWith('image/')) data=await blobToDataURL(blob); }
     }catch(e){}
     if(!data) data=await fetchImageDataURL(src);
-    img.setAttribute('src', data || makePlaceholderDataURL(img.width||400, img.height||210, ''));
+    const w=t.el.offsetWidth||t.el.clientWidth||400, h=t.el.offsetHeight||t.el.clientHeight||210;
+    t.set(data || makePlaceholderDataURL(w,h,''));
   }));
 }
 
