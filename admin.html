@@ -2755,10 +2755,29 @@ function extractBgUrl(el){
   const m=bg.match(/url\((["']?)(.*?)\1\)/);
   return m?m[2]:null;
 }
+function cropCover(src,w,h,pos){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const iw=img.naturalWidth, ih=img.naturalHeight;
+      const ir=iw/ih, tr=w/h;
+      let sw,sh;
+      if(ir>tr){ sh=ih; sw=ih*tr; } else { sw=iw; sh=iw/tr; }
+      const horizontal=pos.includes('left')?0:pos.includes('right')?iw-sw:(iw-sw)/2;
+      const vertical=pos.includes('top')?0:pos.includes('bottom')?ih-sh:(ih-sh)/2;
+      const c=document.createElement('canvas'); c.width=w; c.height=h;
+      const x=c.getContext('2d');
+      x.drawImage(img,horizontal,vertical,sw,sh,0,0,w,h);
+      res(c.toDataURL('image/png'));
+    };
+    img.onerror=()=>res(null);
+    img.src=src;
+  });
+}
 async function prepararImagensCard(container){
   const targets=[
     ...[...container.querySelectorAll('img')].map(img=>({el:img,get:()=>img.getAttribute('src')||'',set:d=>img.setAttribute('src',d)})),
-    ...[...container.querySelectorAll('[style*="background-image"]')].map(el=>({el,get:()=>extractBgUrl(el)||'',set:d=>{ el.style.backgroundImage=`url("${d}")`; }}))
+    ...[...container.querySelectorAll('[style*="background-image"]')].map(el=>({el,get:()=>extractBgUrl(el)||'',set:d=>{ el.style.backgroundImage=`url('${d}')`; }}))
   ];
   await Promise.all(targets.map(async t=>{
     const src=t.get();
@@ -2769,8 +2788,14 @@ async function prepararImagensCard(container){
       if(r.ok){ const blob=await r.blob(); if(blob.type.startsWith('image/')) data=await blobToDataURL(blob); }
     }catch(e){}
     if(!data) data=await fetchImageDataURL(src);
+    if(!data){ data=makePlaceholderDataURL(400,215,''); }
     const w=t.el.offsetWidth||t.el.clientWidth||400, h=t.el.offsetHeight||t.el.clientHeight||210;
-    t.set(data || makePlaceholderDataURL(w,h,''));
+    if(data){
+      const pos=t.el.classList.contains('rpg-card-head')?'center top':'center';
+      const cropped=await cropCover(data,w,h,pos);
+      if(cropped) data=cropped;
+    }
+    t.set(data);
   }));
 }
 
