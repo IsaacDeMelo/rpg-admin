@@ -2582,7 +2582,7 @@ function buffLabel(k){
   }
   return attrNames[k]||k;
 }
-function bgImg(src){ return `url("${(src||PLACEHOLDER_IMG).replace(/"/g,'%22')}")`; }
+function bgImg(src){ return `url('${(src||PLACEHOLDER_IMG).replace(/'/g,'%27')}')`; }
 function buildSkillCard(s){
   const show=(k)=>cardOptState(k);
   const desc=show('desc')&&s.descricao?`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-scroll"></i> Efeito</div><div class="rpg-lore">${escHtml(s.descricao)}</div></div>`:'';
