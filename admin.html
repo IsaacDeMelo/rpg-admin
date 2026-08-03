@@ -522,7 +522,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
 .crop-area.dragging { cursor:grabbing; }
 .crop-img {
   position:absolute; left:0; top:0; max-width:none; max-height:none;
-  transform-origin:center center; user-select:none; -webkit-user-drag:none; pointer-events:none;
+  transform-origin:0 0; user-select:none; -webkit-user-drag:none; pointer-events:none;
 }
 .crop-guide { position:absolute; background:rgba(255,255,255,.12); pointer-events:none; }
 .crop-guide.h1 { left:0; right:0; top:33.333%; height:1px; }
@@ -533,6 +533,10 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
 .crop-controls input[type=range] { flex:1; max-width:220px; margin:0; accent-color:var(--gold2); }
 .crop-btns { display:flex; gap:10px; justify-content:center; margin-top:14px; }
 .crop-btns .btn { width:auto; padding:10px 22px; }
+.img-preview { display:none; align-items:center; gap:10px; margin:-4px 0 12px; }
+.img-preview.show { display:flex; }
+.img-preview img { width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid var(--gold); background:var(--bg); box-shadow:0 0 0 3px rgba(212,150,58,.12); flex-shrink:0; }
+.img-preview span { font-size:.68rem; color:var(--muted); line-height:1.4; }
 
 @media (max-width:1100px) {
   .two-col-280 { grid-template-columns:1fr; }
@@ -729,10 +733,14 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <textarea id="c-desc" rows="3" placeholder="Visível para jogadores no combate…"></textarea>
         <label class="field-label">Imagem</label>
         <div style="display:flex; gap:8px; margin-bottom:12px;">
-          <input type="text" id="c-img" placeholder="URL ou clique para enviar" style="flex:1;">
+          <input type="text" id="c-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="updateImgPreview('c-img','c-img-preview-box','c-img-preview')">
           <input type="file" id="c-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'c-img')">
           <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('c-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
           <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('c-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
+        </div>
+        <div class="img-preview" id="c-img-preview-box">
+          <img id="c-img-preview" alt="Prévia">
+          <span>Prévia atual da imagem.</span>
         </div>
         <label class="field-label">Pontos de Atributo Livres</label>
         <input type="number" id="c-pts" value="0">
@@ -1235,11 +1243,15 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
       <label class="field-label">Cerne</label><input id="ec-cerne" placeholder="Ex: Alma de Fogo, Essência Ártica…">
       <label class="field-label">Imagem</label>
       <div style="display:flex; gap:8px; margin-bottom:12px;">
-        <input id="ec-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="togglePinBtn()">
+        <input id="ec-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="togglePinBtn(); updateImgPreview('ec-img','ec-img-preview-box','ec-img-preview')">
         <input type="file" id="ec-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'ec-img')">
         <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('ec-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
         <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('ec-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
         <button type="button" class="btn btn-ghost w-auto" id="ec-pin-btn" onclick="abrirLinkEditImg()" title="Abrir link no Pinterest" style="padding:8px 12px; display:none;"><i class="fab fa-pinterest"></i></button>
+      </div>
+      <div class="img-preview" id="ec-img-preview-box">
+        <img id="ec-img-preview" alt="Prévia">
+        <span>Prévia atual da imagem.</span>
       </div>
       <div class="three-col" style="margin-bottom:10px;">
         <div><label class="field-label">HP Atual</label><input type="number" id="ec-hp" class="mb-0"></div>
@@ -1623,6 +1635,15 @@ function ensureId(v,lbl){ v=(v||'').trim(); if(!v){showToast(`${lbl} é obrigat�
 function ensureRequired(v,lbl){ v=(v||'').trim(); if(!v){showToast(`${lbl} é obrigatório.`,'error');return null;} return v; }
 function badgeClass(tipo){ return tipo==='Jogador'?'badge-jogador':tipo==='NPC'?'badge-npc':'badge-criatura'; }
 
+function updateImgPreview(inputId, boxId, imgId){
+  const box=document.getElementById(boxId);
+  const img=document.getElementById(imgId);
+  const v=(document.getElementById(inputId).value||'').trim();
+  if(box) box.classList.toggle('show', !!v);
+  if(!img) return;
+  img.onerror=()=>{ if(box) box.classList.remove('show'); };
+  if(v) img.src=v;
+}
 function handleFileUpload(input, targetId){
   const file = input.files[0];
   if(!file) return;
@@ -1630,6 +1651,7 @@ function handleFileUpload(input, targetId){
   const reader = new FileReader();
   reader.onload = function(e){
     document.getElementById(targetId).value = e.target.result;
+    updateImgPreview(targetId, targetId+'-preview-box', targetId+'-preview');
     showToast('Imagem carregada!','success');
   };
   reader.onerror = function(){ showToast('Erro ao ler arquivo.','error'); };
@@ -2065,6 +2087,7 @@ function abrirEditChar(charId){
   document.getElementById('ec-cerne').value=c.cerne||'';
   document.getElementById('ec-img').value=c.imagem||'';
   togglePinBtn();
+  updateImgPreview('ec-img','ec-img-preview-box','ec-img-preview');
   document.getElementById('ec-pts').value=c.pontos||0;
   document.getElementById('ec-gold').value=c.gold||0;
   document.getElementById('ec-desc').value=c.description||'';
@@ -2941,17 +2964,19 @@ function cropFit(){
   const iw=cropState.img.naturalWidth, ih=cropState.img.naturalHeight;
   cropState.fit=Math.max(W/iw, H/ih);
   cropState.scale=cropState.fit;
-  cropState.tx=0; cropState.ty=0; cropState.rot=0;
+  cropState.rot=0;
+  cropState.tx=(W-iw*cropState.fit)/2;
+  cropState.ty=(H-ih*cropState.fit)/2;
   document.getElementById('crop-zoom').value=1;
   cropApply();
 }
 function cropReset(){
   if(!cropState.img) return;
   const area=document.getElementById('crop-area');
-  const W=area.clientWidth/2, H=area.clientHeight/2;
+  const W=area.clientWidth, H=area.clientHeight;
   const iw=cropState.img.naturalWidth, ih=cropState.img.naturalHeight;
-  cropState.tx=W - (iw*cropState.scale)/2;
-  cropState.ty=H - (ih*cropState.scale)/2;
+  cropState.tx=(W-iw*cropState.scale)/2;
+  cropState.ty=(H-ih*cropState.scale)/2;
   cropApply();
 }
 function cropZoom(delta){
@@ -2987,21 +3012,20 @@ function cropSave(){
   const img=cropState.img, area=document.getElementById('crop-area');
   if(!img) return;
   const W=area.clientWidth, H=area.clientHeight;
-  const OUT=512, c=document.createElement('canvas');
+  const OUT=512, k=OUT/W, c=document.createElement('canvas');
   c.width=OUT; c.height=OUT;
   const x=c.getContext('2d');
   x.fillStyle='#0a0510';
   x.fillRect(0,0,OUT,OUT);
-  x.save();
-  x.translate(OUT/2, OUT/2);
+  x.translate(cropState.tx*k, cropState.ty*k);
   x.rotate(cropState.rot*Math.PI/180);
-  x.scale(cropState.scale*(OUT/W), cropState.scale*(OUT/W));
-  x.drawImage(img, -img.naturalWidth/2, -img.naturalHeight/2);
-  x.restore();
+  x.scale(cropState.scale*k, cropState.scale*k);
+  x.drawImage(img, 0, 0);
   const png=img.src.indexOf('image/png')>-1 || /\.png($|\?)/i.test(cropState.src||'');
   const data=png?c.toDataURL('image/png'):c.toDataURL('image/jpeg',0.92);
   const input=document.getElementById(cropState.target);
   if(input) input.value=data;
+  updateImgPreview(cropState.target, cropState.target+'-preview-box', cropState.target+'-preview');
   if(cropState.target==='ec-img') togglePinBtn();
   closeModal('crop-modal');
   showToast('Imagem cortada!');
@@ -3049,8 +3073,8 @@ async function abrirCropper(inputId){
   const img=new Image();
   img.onload=()=>{
     cropState.img=img; cropState.src=src;
-    cropFit();
     cropSetLoading(false);
+    cropFit();
   };
   img.onerror=()=>{ cropSetLoading(false); showToast('Imagem inválida.','error'); };
   img.src=data;
