@@ -3011,10 +3011,21 @@ function cropApply(){
   el.style.width=iw+'px'; el.style.height=ih+'px';
   el.style.transform=`translate(${cropState.tx}px, ${cropState.ty}px) rotate(${cropState.rot}deg) scale(${cropState.scale})`;
 }
-function cropSave(){
+async function cropSave(){
   const img=cropState.img, area=document.getElementById('crop-area');
   if(!img) return;
-  const W=area.clientWidth, H=area.clientHeight;
+  let clean=null;
+  if(cropState.isData) clean=cropState.rawSrc;
+  else clean=await resolveImageDataURL(cropState.rawSrc);
+  if(!clean){ showToast('Não foi possível processar a imagem (CORS). Verifique a URL.','error'); return; }
+  const srcImg=await new Promise(res=>{
+    const i=new Image();
+    i.onload=()=>res(i);
+    i.onerror=()=>res(null);
+    i.src=clean;
+  });
+  if(!srcImg){ showToast('Imagem inválida.','error'); return; }
+  const W=area.clientWidth||340, H=area.clientHeight||340;
   const OUT=512, k=OUT/W, c=document.createElement('canvas');
   c.width=OUT; c.height=OUT;
   const x=c.getContext('2d');
@@ -3023,8 +3034,8 @@ function cropSave(){
   x.translate(cropState.tx*k, cropState.ty*k);
   x.rotate(cropState.rot*Math.PI/180);
   x.scale(cropState.scale*k, cropState.scale*k);
-  x.drawImage(img, 0, 0);
-  const png=img.src.indexOf('image/png')>-1 || /\.png($|\?)/i.test(cropState.src||'');
+  x.drawImage(srcImg, 0, 0);
+  const png=clean.indexOf('image/png')>-1 || /\.png($|\?)/i.test(cropState.rawSrc||'');
   const data=png?c.toDataURL('image/png'):c.toDataURL('image/jpeg',0.92);
   const input=document.getElementById(cropState.target);
   if(input) input.value=data;
@@ -3069,20 +3080,33 @@ async function abrirCropper(inputId){
   const src=(input?input.value:'').trim();
   if(!src) return showToast('Defina uma imagem primeiro.','warn');
   cropState.target=inputId;
+  cropState.rawSrc=src;
+  cropState.isData=src.startsWith('data:');
   document.getElementById('crop-modal').classList.add('active');
   cropSetLoading(true);
-  const data=await resolveImageDataURL(src);
-  if(!data){ cropSetLoading(false); showToast('Não foi possível carregar a imagem.','error'); return; }
-  const img=new Image();
-  img.onload=()=>{
-    cropState.img=img; cropState.src=src;
-    cropSetLoading(false);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      cropFit();
-    }));
+  const setup=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      cropState.img=img;
+      cropSetLoading(false);
+      requestAnimationFrame(()=>requestAnimationFrame(cropFit));
+    };
+    return img;
   };
-  img.onerror=()=>{ cropSetLoading(false); showToast('Imagem inválida.','error'); };
-  img.src=data;
+  const img=setup();
+  img.onerror=()=>{
+    if(!cropState.isData){
+      resolveImageDataURL(src).then(d=>{
+        if(!d){ cropSetLoading(false); showToast('Não foi possível carregar a imagem.','error'); return; }
+        const img2=setup();
+        img2.onerror=()=>{ cropSetLoading(false); showToast('Imagem inválida.','error'); };
+        img2.src=d;
+      });
+    } else {
+      cropSetLoading(false); showToast('Imagem inválida.','error');
+    }
+  };
+  img.src=src;
 }
 initCropper();
 
