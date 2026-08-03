@@ -443,21 +443,23 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
     radial-gradient(ellipse 90% 42% at 50% 0%, rgba(212,150,58,.14), transparent 62%),
     radial-gradient(ellipse 60% 45% at 100% 100%, rgba(90,26,138,.18), transparent 60%);
 }
-.rpg-card-head { position:relative; height:215px; background-color:var(--bg); background-size:cover; background-position:center top; background-repeat:no-repeat; }
-.rpg-skill-card .rpg-card-head { height:185px; }
+.rpg-card-head { position:relative; padding:28px 16px 18px; text-align:center; background:var(--bg); overflow:hidden; }
+.rpg-skill-card .rpg-card-head { padding:24px 16px 16px; }
 .rpg-card-head::after {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:62%;
-  background:linear-gradient(to top, #150b24, transparent);
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 75% 60% at 50% 0%, rgba(212,150,58,.12), transparent 66%);
 }
-.rpg-card-badge {
-  position:absolute; top:10px; left:10px; padding:4px 11px; border-radius:6px;
-  font-family:var(--font-head); font-size:.58rem; font-weight:800; letter-spacing:.1em;
-  backdrop-filter:blur(6px); z-index:3;
+.rpg-card-head .card-badge { top:12px; left:50%; transform:translateX(-50%); }
+.rpg-avatar {
+  position:relative; z-index:1; width:150px; height:150px; margin:0 auto;
+  border-radius:50%; border:3px solid #c8a030;
+  box-shadow:0 0 0 4px rgba(200,160,48,.2), 0 14px 38px rgba(0,0,0,.55);
+  background:var(--bg) center top/cover no-repeat;
 }
+.rpg-skill-card .rpg-avatar { width:128px; height:128px; }
 .rpg-card-nameplate {
-  position:absolute; bottom:0; left:0; right:0; z-index:2;
-  text-align:center; padding:10px 14px 12px;
-  background:linear-gradient(to top, rgba(13,6,23,.96), transparent);
+  position:relative; z-index:1; margin-top:16px; padding:0 14px; text-align:center;
+  background:none;
 }
 .rpg-card-name {
   font-family:var(--font-head); font-size:1.35rem; font-weight:900;
@@ -507,36 +509,103 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
   color:#4a3a5e; border-top:1px solid var(--border);
 }
 
+/* ── CROP ─────────────────────────────────────────────────────────────── */
+#crop-modal .modal-box { max-width:520px; }
+.crop-area {
+  position:relative; width:100%; aspect-ratio:1/1; max-width:340px; margin:0 auto;
+  background:var(--bg);
+  background-image:repeating-conic-gradient(rgba(255,255,255,.045) 0% 25%, transparent 0% 50%);
+  background-size:20px 20px;
+  border:1px solid var(--border2); border-radius:12px; overflow:hidden;
+  touch-action:none; cursor:grab;
+}
+.crop-area.dragging { cursor:grabbing; }
+.crop-img {
+  position:absolute; left:0; top:0; max-width:none; max-height:none;
+  transform-origin:center center; user-select:none; -webkit-user-drag:none; pointer-events:none;
+}
+.crop-guide { position:absolute; background:rgba(255,255,255,.12); pointer-events:none; }
+.crop-guide.h1 { left:0; right:0; top:33.333%; height:1px; }
+.crop-guide.h2 { left:0; right:0; top:66.666%; height:1px; }
+.crop-guide.v1 { top:0; bottom:0; left:33.333%; width:1px; }
+.crop-guide.v2 { top:0; bottom:0; left:66.666%; width:1px; }
+.crop-controls { display:flex; gap:10px; align-items:center; justify-content:center; margin:14px 0 4px; }
+.crop-controls input[type=range] { flex:1; max-width:220px; margin:0; accent-color:var(--gold2); }
+.crop-btns { display:flex; gap:10px; justify-content:center; margin-top:14px; }
+.crop-btns .btn { width:auto; padding:10px 22px; }
+
+@media (max-width:1100px) {
+  .two-col-280 { grid-template-columns:1fr; }
+}
+
 @media (max-width:900px) {
   .sidebar { width:210px; min-width:210px; }
   .main-content { padding:20px; }
   .two-col, .profile-layout { grid-template-columns:1fr; }
   .profile-left { border-right:none; border-bottom:1px solid var(--border); padding:0 0 18px; }
   .combat-layout { grid-template-columns:1fr; }
+  .combat-list { border-right:none; padding-right:0; margin-bottom:14px; }
 }
 
 @media (max-width:768px) {
-  body { flex-direction:column; height:auto; min-height:100vh; }
-  .sidebar { width:100%; min-width:100%; height:auto; border-right:none; border-bottom:1px solid var(--border); }
-  .main-content { padding:16px; flex:1; }
+  body { flex-direction:column; height:auto; min-height:100vh; overflow:auto; }
+  body::before { display:none; }
+  .sidebar {
+    width:100%; min-width:100%; height:auto; max-height:none;
+    border-right:none; border-bottom:1px solid var(--border);
+    position:sticky; top:0; z-index:50; overflow:visible;
+  }
+  .sidebar-header { padding:12px 16px; }
+  .sidebar-header .logo-sub { display:none; }
+  .sidebar > nav { display:flex; flex-direction:row; overflow-x:auto; gap:6px; padding:8px 10px; }
+  .nav-group { display:flex; flex-direction:row; gap:6px; padding:0; margin:0 !important; }
+  .nav-label { display:none; }
+  .menu-btn {
+    flex-direction:column; min-width:74px; padding:8px 10px; margin:0;
+    text-align:center; gap:4px; font-size:.62rem; white-space:nowrap;
+  }
+  .menu-btn .icon { width:24px; height:24px; }
+  .menu-btn.active::before { display:none; }
+  .sidebar-footer { display:none; }
+  .main-content { padding:16px; flex:1; overflow:visible; }
   .visual-grid { grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:12px; }
-  .modal-content { width:95vw; margin:20px auto; max-width:none; }
-  .btn { padding:11px; font-size:.85rem; }
-  .attr-setup { grid-template-columns:repeat(2, 1fr); }
+  .btn { padding:12px; font-size:.8rem; }
+  .attr-grid { grid-template-columns:repeat(2,1fr); }
+  .three-col { grid-template-columns:1fr; gap:0; }
+  .teams-grid { grid-template-columns:1fr; }
+  .skill-list { grid-template-columns:1fr; }
+  .modal { padding:0; align-items:flex-end; }
+  .modal-box { max-height:93vh; border-radius:18px 18px 0 0; }
+  .modal-header { padding:16px 16px 14px; }
+  .modal-body { padding:16px; }
+  .card-export-btn { opacity:1; }
 }
 
 @media (max-width:600px) {
   :root { font-size:12px; }
-  .sidebar { border:none; margin-bottom:8px; }
-  .sidebar-nav { flex-direction:row; overflow-x:auto; gap:8px; }
-  .nav-item { min-width:80px; justify-content:center; padding:8px; font-size:.7rem; }
+  .main-content { padding:12px; }
+  .page-header { margin-bottom:16px; padding-bottom:12px; }
+  .page-title { font-size:1.2rem; }
+  .toolbar { gap:8px; }
+  .search-wrap { max-width:none; flex-basis:100%; }
+  .pill-count { margin-left:0; }
+  .glass { padding:16px; }
   .visual-grid { grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:8px; }
-  .two-col, .profile-layout, .combat-layout { grid-template-columns:1fr !important; }
-  .attr-setup { grid-template-columns:1fr; }
-  .modal-card, .modal-content { padding:16px; }
-  .craft-slot, .craft-result-slot { width:50px; height:50px; }
-  .token-card { min-width:56px; }
-  .token-card img { width:50px; height:50px; }
+  .card-img-wrap { height:120px; }
+  .card-export-btn { width:26px; height:26px; font-size:.66rem; }
+  .card-preview-scroll { justify-content:flex-start; }
+  .craft-bench { flex-direction:column; gap:16px; }
+  .craft-grid-9 { grid-template-columns:repeat(3,56px); grid-template-rows:repeat(3,56px); }
+  .craft-result { width:72px; height:72px; }
+  .profile-avatar { width:96px; height:96px; }
+  .hp-quick { grid-template-columns:1fr; }
+  .hp-quick input { text-align:center; }
+  .dice-result-big { font-size:2.8rem; }
+  .equip-slot { width:56px; height:56px; }
+  .rpg-card { width:340px; }
+  .rpg-skill-card { width:320px; }
+  #toast-container { left:12px; right:12px; bottom:12px; }
+  .toast { min-width:0; width:100%; }
 }
 </style>
 </head>
@@ -663,6 +732,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <input type="text" id="c-img" placeholder="URL ou clique para enviar" style="flex:1;">
           <input type="file" id="c-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'c-img')">
           <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('c-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+          <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('c-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
         </div>
         <label class="field-label">Pontos de Atributo Livres</label>
         <input type="number" id="c-pts" value="0">
@@ -1165,9 +1235,11 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
       <label class="field-label">Cerne</label><input id="ec-cerne" placeholder="Ex: Alma de Fogo, Essência Ártica…">
       <label class="field-label">Imagem</label>
       <div style="display:flex; gap:8px; margin-bottom:12px;">
-        <input id="ec-img" placeholder="URL ou clique para enviar" style="flex:1;">
+        <input id="ec-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="togglePinBtn()">
         <input type="file" id="ec-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'ec-img')">
         <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('ec-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+        <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('ec-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
+        <button type="button" class="btn btn-ghost w-auto" id="ec-pin-btn" onclick="abrirLinkEditImg()" title="Abrir link no Pinterest" style="padding:8px 12px; display:none;"><i class="fab fa-pinterest"></i></button>
       </div>
       <div class="three-col" style="margin-bottom:10px;">
         <div><label class="field-label">HP Atual</label><input type="number" id="ec-hp" class="mb-0"></div>
@@ -1477,6 +1549,44 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
             <div id="card-render"></div>
           </div>
           <button class="btn btn-gold mt-8" id="card-download-btn" onclick="exportarCardImagem()"><i class="fas fa-download"></i> Baixar PNG</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cortar Imagem -->
+<div class="modal" id="crop-modal">
+  <div class="modal-box" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-crop" style="color:var(--gold); margin-right:7px;"></i> Cortar Imagem</div>
+      <div class="modal-close" onclick="closeModal('crop-modal')"><i class="fas fa-times"></i></div>
+    </div>
+    <div class="modal-body">
+      <div id="crop-loading" style="display:none; text-align:center; padding:40px 0; color:var(--muted);">
+        <i class="fas fa-spinner fa-spin" style="font-size:1.6rem; margin-bottom:10px; display:block; color:var(--gold);"></i>
+        Carregando imagem…
+      </div>
+      <div id="crop-wrap" style="display:none;">
+        <div class="crop-area" id="crop-area">
+          <img id="crop-img" class="crop-img" draggable="false" alt="">
+          <div class="crop-guide h1"></div><div class="crop-guide h2"></div>
+          <div class="crop-guide v1"></div><div class="crop-guide v2"></div>
+        </div>
+        <div class="crop-controls">
+          <button class="inline-btn" onclick="cropZoom(-0.15)"><i class="fas fa-search-minus"></i></button>
+          <input type="range" id="crop-zoom" min="0.2" max="6" step="0.01" value="1" oninput="cropZoomFromSlider(this.value)">
+          <button class="inline-btn" onclick="cropZoom(0.15)"><i class="fas fa-search-plus"></i></button>
+        </div>
+        <div class="crop-controls">
+          <button class="inline-btn" onclick="cropRotate()"><i class="fas fa-sync-alt"></i> Girar</button>
+          <button class="inline-btn" onclick="cropFit()"><i class="fas fa-expand-alt"></i> Ajustar</button>
+          <button class="inline-btn" onclick="cropReset()"><i class="fas fa-undo-alt"></i> Centralizar</button>
+        </div>
+        <p class="hint" style="text-align:center;">Arraste a imagem para reposicionar. O quadrado é o recorte final.</p>
+        <div class="crop-btns">
+          <button class="btn btn-ghost w-auto" onclick="closeModal('crop-modal')">Cancelar</button>
+          <button class="btn btn-gold w-auto" onclick="cropSave()"><i class="fas fa-check"></i> Salvar</button>
         </div>
       </div>
     </div>
@@ -1834,6 +1944,18 @@ function renderChars(){
 }
 
 let activeCharId=null;
+function isPinterestUrl(u){ return /pinterest\.com|pinimg\.com|pin\.it/i.test(u||''); }
+function escJs(s){ return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function abrirLink(u){ if(u) window.open(u,'_blank'); }
+function togglePinBtn(){
+  const btn=document.getElementById('ec-pin-btn');
+  if(btn) btn.style.display=isPinterestUrl(document.getElementById('ec-img').value)?'':'none';
+}
+function abrirLinkEditImg(){
+  const u=document.getElementById('ec-img').value;
+  if(!isPinterestUrl(u)) return showToast('A imagem não é um link do Pinterest.','error');
+  window.open(u,'_blank');
+}
 function abrirPerfilChar(charId){
   activeCharId=charId; const c=DB_CHARS[charId]; if(!c) return closeModal('char-modal');
   let bonus={fis:0,res:0,vel:0,sub:0};
@@ -1900,6 +2022,7 @@ function abrirPerfilChar(charId){
       ${c.cerne?`<div class="profile-cerne"><i class="fas fa-gem"></i>${c.cerne}</div>`:''}
       <div class="vitals-row" style="justify-content:center;">${vitals}</div>
       <button class="btn btn-gold" style="margin-bottom:12px;" onclick="abrirCardExport('char','${charId}')"><i class="fas fa-id-card"></i> Exportar Card</button>
+      ${isPinterestUrl(c.imagem)?`<button class="btn btn-ghost" style="margin-bottom:12px;" onclick="abrirLink('${escJs(c.imagem)}')"><i class="fab fa-pinterest"></i> Ver no Pinterest</button>`:''}
       <button class="btn btn-ghost" style="margin-bottom:12px;" onclick="abrirEditChar('${charId}')"><i class="fas fa-edit"></i> Editar</button>
       <div class="profile-section-title" style="margin-top:0;">Ajuste Rapido de HP</div>
       <div class="hp-quick">
@@ -1941,6 +2064,7 @@ function abrirEditChar(charId){
   ['nome','classe'].forEach(f=>document.getElementById('ec-'+f).value=c[f]||'');
   document.getElementById('ec-cerne').value=c.cerne||'';
   document.getElementById('ec-img').value=c.imagem||'';
+  togglePinBtn();
   document.getElementById('ec-pts').value=c.pontos||0;
   document.getElementById('ec-gold').value=c.gold||0;
   document.getElementById('ec-desc').value=c.description||'';
@@ -2592,8 +2716,9 @@ function buildSkillCard(s){
     if(entries.length) buffs=`<div class="rpg-section"><div class="rpg-section-title"><i class="fas fa-bolt"></i> Buffs Passivos</div><div class="rpg-chips">${entries.map(([k,v])=>`<span class="rpg-chip">${escHtml(buffLabel(k))} <b>+${v}</b></span>`).join('')}</div></div>`;
   }
   return `<div class="rpg-skill-card">
-    <div class="rpg-card-head" style="background-image:${bgImg(s.imagem)}">
+    <div class="rpg-card-head">
       <span class="card-badge badge-generic">Habilidade</span>
+      <div class="rpg-avatar" style="background-image:${bgImg(s.imagem)}"></div>
       <div class="rpg-card-nameplate">
         <div class="rpg-card-name">${escHtml(s.nome||'Habilidade')}</div>
         <div class="rpg-card-sub">Magia · Dom · Técnica</div>
@@ -2614,8 +2739,9 @@ function buildCharCard(c){
     if(c.skills) Object.keys(c.skills).forEach(sId=>{ const sk=DB_SKILLS[sId]; if(sk) applyMods(sk.buffs); });
   }
 
-  let head=`<div class="rpg-card-head" style="background-image:${bgImg(c.imagem)}">
+  let head=`<div class="rpg-card-head">
       <span class="card-badge ${badgeClass(c.tipo)}">${c.tipo||'?'}</span>
+      <div class="rpg-avatar" style="background-image:${bgImg(c.imagem)}"></div>
       <div class="rpg-card-nameplate">
         <div class="rpg-card-name">${escHtml(c.nome||'Sem Nome')}</div>
         ${c.classe?`<div class="rpg-card-sub">${escHtml(c.classe)}</div>`:''}
@@ -2750,6 +2876,14 @@ async function fetchImageDataURL(src){
   }
   return null;
 }
+async function resolveImageDataURL(src){
+  if(!src || src.startsWith('data:')) return src;
+  try{
+    const r=await fetch(src,{mode:'cors'});
+    if(r.ok){ const blob=await r.blob(); if(blob.type.startsWith('image/')) return await blobToDataURL(blob); }
+  }catch(e){}
+  return await fetchImageDataURL(src);
+}
 function extractBgUrl(el){
   const bg=el.style.backgroundImage||'';
   const m=bg.match(/url\((["']?)(.*?)\1\)/);
@@ -2782,22 +2916,146 @@ async function prepararImagensCard(container){
   await Promise.all(targets.map(async t=>{
     const src=t.get();
     if(!src || src.startsWith('data:')) return;
-    let data=null;
-    try{
-      const r=await fetch(src,{mode:'cors'});
-      if(r.ok){ const blob=await r.blob(); if(blob.type.startsWith('image/')) data=await blobToDataURL(blob); }
-    }catch(e){}
-    if(!data) data=await fetchImageDataURL(src);
+    let data=await resolveImageDataURL(src);
     if(!data){ data=makePlaceholderDataURL(400,215,''); }
     const w=t.el.offsetWidth||t.el.clientWidth||400, h=t.el.offsetHeight||t.el.clientHeight||210;
     if(data){
-      const pos=t.el.classList.contains('rpg-card-head')?'center top':'center';
+      const pos=t.el.classList.contains('rpg-avatar')?'center top':'center';
       const cropped=await cropCover(data,w,h,pos);
       if(cropped) data=cropped;
     }
     t.set(data);
   }));
 }
+
+/* ══ CROPPER ════════════════════════════════════════════════════════════ */
+const cropState={src:null,img:null,scale:1,rot:0,tx:0,ty:0,target:null,fit:1};
+function cropSetLoading(on){
+  document.getElementById('crop-loading').style.display=on?'block':'none';
+  document.getElementById('crop-wrap').style.display=on?'none':'block';
+}
+function cropFit(){
+  if(!cropState.img) return;
+  const area=document.getElementById('crop-area');
+  const W=area.clientWidth, H=area.clientHeight;
+  const iw=cropState.img.naturalWidth, ih=cropState.img.naturalHeight;
+  cropState.fit=Math.max(W/iw, H/ih);
+  cropState.scale=cropState.fit;
+  cropState.tx=0; cropState.ty=0; cropState.rot=0;
+  document.getElementById('crop-zoom').value=1;
+  cropApply();
+}
+function cropReset(){
+  if(!cropState.img) return;
+  const area=document.getElementById('crop-area');
+  const W=area.clientWidth/2, H=area.clientHeight/2;
+  const iw=cropState.img.naturalWidth, ih=cropState.img.naturalHeight;
+  cropState.tx=W - (iw*cropState.scale)/2;
+  cropState.ty=H - (ih*cropState.scale)/2;
+  cropApply();
+}
+function cropZoom(delta){
+  if(!cropState.img) return;
+  const slider=document.getElementById('crop-zoom');
+  const v=Math.min(6, Math.max(0.2, cropState.scale/cropState.fit + delta));
+  slider.value=v;
+  cropZoomFromSlider(v);
+}
+function cropZoomFromSlider(v){
+  if(!cropState.img) return;
+  const area=document.getElementById('crop-area');
+  const W=area.clientWidth/2, H=area.clientHeight/2;
+  const cx=(W - cropState.tx)/cropState.scale, cy=(H - cropState.ty)/cropState.scale;
+  cropState.scale=cropState.fit*v;
+  cropState.tx=W - cx*cropState.scale;
+  cropState.ty=H - cy*cropState.scale;
+  cropApply();
+}
+function cropRotate(){
+  cropState.rot=(cropState.rot+90)%360;
+  cropApply();
+}
+function cropApply(){
+  const img=cropState.img;
+  if(!img) return;
+  const el=document.getElementById('crop-img');
+  const iw=img.naturalWidth, ih=img.naturalHeight;
+  el.style.width=iw+'px'; el.style.height=ih+'px';
+  el.style.transform=`translate(${cropState.tx}px, ${cropState.ty}px) rotate(${cropState.rot}deg) scale(${cropState.scale})`;
+}
+function cropSave(){
+  const img=cropState.img, area=document.getElementById('crop-area');
+  if(!img) return;
+  const W=area.clientWidth, H=area.clientHeight;
+  const OUT=512, c=document.createElement('canvas');
+  c.width=OUT; c.height=OUT;
+  const x=c.getContext('2d');
+  x.fillStyle='#0a0510';
+  x.fillRect(0,0,OUT,OUT);
+  x.save();
+  x.translate(OUT/2, OUT/2);
+  x.rotate(cropState.rot*Math.PI/180);
+  x.scale(cropState.scale*(OUT/W), cropState.scale*(OUT/W));
+  x.drawImage(img, -img.naturalWidth/2, -img.naturalHeight/2);
+  x.restore();
+  const png=img.src.indexOf('image/png')>-1 || /\.png($|\?)/i.test(cropState.src||'');
+  const data=png?c.toDataURL('image/png'):c.toDataURL('image/jpeg',0.92);
+  const input=document.getElementById(cropState.target);
+  if(input) input.value=data;
+  if(cropState.target==='ec-img') togglePinBtn();
+  closeModal('crop-modal');
+  showToast('Imagem cortada!');
+}
+function cropStart(ev){
+  ev.preventDefault();
+  const area=document.getElementById('crop-area');
+  area.classList.add('dragging');
+  const sx=ev.touches?ev.touches[0].clientX:ev.clientX;
+  const sy=ev.touches?ev.touches[0].clientY:ev.clientY;
+  const tx0=cropState.tx, ty0=cropState.ty;
+  const move=e=>{
+    const mx=e.touches?e.touches[0].clientX:e.clientX;
+    const my=e.touches?e.touches[0].clientY:e.clientY;
+    cropState.tx=tx0+(mx-sx);
+    cropState.ty=ty0+(my-sy);
+    cropApply();
+  };
+  const end=()=>{
+    area.classList.remove('dragging');
+    window.removeEventListener('mousemove',move);
+    window.removeEventListener('mouseup',end);
+    window.removeEventListener('touchmove',move);
+    window.removeEventListener('touchend',end);
+  };
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',end);
+  window.addEventListener('touchmove',move,{passive:false});
+  window.addEventListener('touchend',end);
+}
+function initCropper(){
+  const area=document.getElementById('crop-area');
+  area.addEventListener('mousedown',cropStart);
+  area.addEventListener('touchstart',cropStart,{passive:false});
+}
+async function abrirCropper(inputId){
+  const input=document.getElementById(inputId);
+  const src=(input?input.value:'').trim();
+  if(!src) return showToast('Defina uma imagem primeiro.','warn');
+  cropState.target=inputId;
+  document.getElementById('crop-modal').classList.add('active');
+  cropSetLoading(true);
+  const data=await resolveImageDataURL(src);
+  if(!data){ cropSetLoading(false); showToast('Não foi possível carregar a imagem.','error'); return; }
+  const img=new Image();
+  img.onload=()=>{
+    cropState.img=img; cropState.src=src;
+    cropFit();
+    cropSetLoading(false);
+  };
+  img.onerror=()=>{ cropSetLoading(false); showToast('Imagem inválida.','error'); };
+  img.src=data;
+}
+initCropper();
 
 /* ══ MODAIS ═══════════════════════════════════════════════════════════════ */
 function closeModal(id){ document.getElementById(id).classList.remove('active'); if(id==='char-modal') activeCharId=null; }
