@@ -2960,8 +2960,11 @@ function cropSetLoading(on){
 function cropFit(){
   if(!cropState.img) return;
   const area=document.getElementById('crop-area');
-  const W=area.clientWidth, H=area.clientHeight;
-  const iw=cropState.img.naturalWidth, ih=cropState.img.naturalHeight;
+  const iw=cropState.img.naturalWidth||cropState.img.width||1;
+  const ih=cropState.img.naturalHeight||cropState.img.height||1;
+  let W=area.clientWidth, H=area.clientHeight;
+  if(!W||!H){ W=area.offsetWidth; H=area.offsetHeight; }
+  if(!W||!H){ W=H=340; }
   cropState.fit=Math.max(W/iw, H/ih);
   cropState.scale=cropState.fit;
   cropState.rot=0;
@@ -3074,7 +3077,9 @@ async function abrirCropper(inputId){
   img.onload=()=>{
     cropState.img=img; cropState.src=src;
     cropSetLoading(false);
-    cropFit();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      cropFit();
+    }));
   };
   img.onerror=()=>{ cropSetLoading(false); showToast('Imagem inválida.','error'); };
   img.src=data;
