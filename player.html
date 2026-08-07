@@ -687,7 +687,8 @@ function renderStatusEInv() {
         const values = keys.map(k => getBaseVal(atributosBase, k) + (bonus[k]||0));
         const colors = { fis: '#dc143c', res: '#2dd4bf', vel: '#34d399', sub: '#e8c878' };
         const totalPts = values.reduce((a,b)=>a+b, 0);
-        const max = totalPts > 50 ? 100 : 50;
+        const peak = Math.max(...values, 1);
+        const max = totalPts > 50 ? Math.max(peak * 1.3, 60) : Math.max(peak * 1.3, 20);
         const size = 220;
         const cx = size / 2;
         const cy = size / 2;
