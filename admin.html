@@ -1116,11 +1116,10 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <div style="display:flex; flex-direction:column; gap:8px;">
             <select id="social-npc-select"></select>
             <div style="display:flex; gap:8px; align-items:center;">
-              <input type="number" id="social-level" value="1" min="1" max="10" style="width:80px; text-align:center;">
               <button class="btn btn-green" onclick="adicionarSocialLink()"><i class="fas fa-heart"></i> Vincular</button>
             </div>
           </div>
-          <div class="hint mt-8">Escolha um NPC do mundo e o nível inicial do vínculo.</div>
+          <div class="hint mt-8">Escolha um NPC do mundo para criar o vínculo.</div>
         </div>
       </div>
     </div>
@@ -1550,11 +1549,6 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
       <div class="modal-close" onclick="closeModal('social-reveal-modal')"><i class="fas fa-times"></i></div>
     </div>
     <div class="modal-body">
-      <label class="field-label">Nível</label>
-      <div style="display:flex; gap:8px; align-items:center; margin-bottom:14px;">
-        <input type="number" id="sr-level" value="1" min="1" max="10" style="width:80px; text-align:center;">
-        <button class="btn btn-ghost w-auto" onclick="copiarRevealNivelAnterior()"><i class="fas fa-copy"></i> Copiar do nível anterior</button>
-      </div>
       <div id="sr-fields" style="display:flex; flex-direction:column; gap:8px;"></div>
       <div style="display:flex; gap:8px; margin-top:16px;">
         <button class="btn btn-green" onclick="salvarSocialReveal()"><i class="fas fa-save"></i> Salvar</button>
@@ -3189,21 +3183,18 @@ function renderSocialLinks(){
   list.innerHTML='';
   entries.forEach(([npcId,link])=>{
     const npc=DB_CHARS[npcId];
-    const lvl=Math.min(10, Math.max(1, link.level||1));
     const r=Object.assign({}, link.reveal||{});
-    const visibleAtLevel = r[lvl]||{};
-    const nameVisible = !!visibleAtLevel.nome || Object.values(r).some(x=>x&&x.nome);
-    const imgVisible = !!visibleAtLevel.foto || Object.values(r).some(x=>x&&x.foto);
+    const nameVisible = !!r.nome;
+    const imgVisible = !!r.foto;
     list.innerHTML+=`<div class="card" onclick="abrirSocialReveal('${escJs(playerId)}','${escJs(npcId)}')">
       <div class="card-img-wrap">
-        <span class="card-badge badge-npc">SL ${lvl}</span>
-        <button class="card-export-btn" onclick="event.stopPropagation(); subirSocialLevel('${escJs(playerId)}','${escJs(npcId)}')" title="Subir nível"><i class="fas fa-plus"></i></button>
+        <span class="card-badge badge-npc">Vínculo</span>
         <img src="${npc?.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'" alt="${npc?.nome||''}">
       </div>
       <div class="card-body">
-        <div class="card-name">${nameVisible?(npc?.nome||'?')+' ('+lvl+')':'???'}</div>
+        <div class="card-name">${nameVisible?(npc?.nome||'?'):'???'}</div>
         <div class="card-sub">${npc?.classe||'—'}</div>
-        <div class="card-stats"><span><i class="fas fa-heart" style="color:var(--crimson2)"></i> Nv ${lvl}/10</span></div>
+        <div class="card-stats"><span><i class="fas fa-eye" style="color:var(--gold2)"></i> ${imgVisible?'Foto':'Foto oculta'}</span></div>
       </div>
     </div>`;
   });
@@ -3211,16 +3202,10 @@ function renderSocialLinks(){
 function adicionarSocialLink(){
   const playerId=document.getElementById('social-player-select').value;
   const npcId=document.getElementById('social-npc-select').value;
-  const level=Math.min(10, Math.max(1, toNumber(document.getElementById('social-level').value)||1));
   if(!playerId) return showToast('Selecione um jogador.','error');
   if(!npcId) return showToast('Selecione um NPC.','error');
   if(playerId===npcId) return showToast('O NPC não pode ser o próprio jogador.','error');
-  db.ref(`social_links/${playerId}/${npcId}`).set({ level }).then(()=>showToast('Vínculo criado!'));
-}
-function subirSocialLevel(playerId, npcId){
-  const link=DB_SOCIAL[playerId]?.[npcId]; if(!link) return;
-  const lvl=Math.min(10, (link.level||1)+1);
-  db.ref(`social_links/${playerId}/${npcId}/level`).set(lvl).then(()=>showToast(`Vínculo agora é nível ${lvl}!`));
+  db.ref(`social_links/${playerId}/${npcId}`).set({ reveal:{} }).then(()=>showToast('Vínculo criado!'));
 }
 function removerSocialLink(playerId, npcId){
   if(!confirm('Remover este vínculo?')) return;
@@ -3229,35 +3214,23 @@ function removerSocialLink(playerId, npcId){
 function abrirSocialReveal(playerId, npcId){
   socialEdit={playerId, npcId};
   const npc=DB_CHARS[npcId]; if(!npc) return;
-  const link=DB_SOCIAL[playerId]?.[npcId]||{};
-  const lvl=Math.min(10, Math.max(1, link.level||1));
-  document.getElementById('social-reveal-title').textContent=`${npc.nome||npcId} — Nv ${lvl}/10`;
-  document.getElementById('sr-level').value=lvl;
-  renderSocialRevealFields(lvl);
+  document.getElementById('social-reveal-title').textContent=`${npc.nome||npcId}`;
+  renderSocialRevealFields();
   document.getElementById('social-reveal-modal').classList.add('active');
 }
-function renderSocialRevealFields(lvl){
+function renderSocialRevealFields(){
   const link=DB_SOCIAL[socialEdit.playerId]?.[socialEdit.npcId]||{};
-  const r=link.reveal||{};
-  const cur=r[lvl]||{};
+  const cur=link.reveal||{};
   const box=document.getElementById('sr-fields');
   box.innerHTML=SOCIAL_REVEAL_FIELDS.map(f=>`
     <label class="check-line"><input type="checkbox" id="srf-${f}" ${cur[f]?'checked':''}> ${SOCIAL_REVEAL_LABELS[f]||f}</label>
   `).join('');
 }
-function copiarRevealNivelAnterior(){
-  const lvl=Math.min(10, Math.max(1, toNumber(document.getElementById('sr-level').value)||1));
-  if(lvl<=1){ showToast('Já é o nível 1.','warn'); return; }
-  const link=DB_SOCIAL[socialEdit.playerId]?.[socialEdit.npcId]||{};
-  const prev=(link.reveal||{})[lvl-1]||{};
-  SOCIAL_REVEAL_FIELDS.forEach(f=>{ const el=document.getElementById('srf-'+f); if(el) el.checked=!!prev[f]; });
-}
 function salvarSocialReveal(){
   if(!socialEdit.playerId||!socialEdit.npcId) return;
-  const lvl=Math.min(10, Math.max(1, toNumber(document.getElementById('sr-level').value)||1));
   const data={};
   SOCIAL_REVEAL_FIELDS.forEach(f=>{ data[f]=!!document.getElementById('srf-'+f).checked; });
-  db.ref(`social_links/${socialEdit.playerId}/${socialEdit.npcId}/reveal/${lvl}`).set(data).then(()=>{ showToast('Revelação salva!'); closeModal('social-reveal-modal'); });
+  db.ref(`social_links/${socialEdit.playerId}/${socialEdit.npcId}/reveal`).set(data).then(()=>{ showToast('Revelação salva!'); closeModal('social-reveal-modal'); });
 }
 
 /* ══ MODAIS ═══════════════════════════════════════════════════════════════ */

@@ -211,9 +211,6 @@
         .vinculo-card img { width: 74px; height: 90px; object-fit: cover; border-radius: 10px; border: 2px solid var(--gold); margin-bottom: 8px; background: #000; }
         .vinculo-card .vc-unknown { width: 74px; height: 90px; border-radius: 10px; border: 2px solid #555; background: linear-gradient(135deg,#1a1228,#0d0817); display: flex; align-items: center; justify-content: center; color: #5b4769; font-size: 1.6em; margin: 0 auto 8px; }
         .vinculo-card .vc-nome { font-size: .75em; font-weight: 700; color: #e7f0ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .vinculo-card .vc-lvl { font-size: .65em; color: var(--gold); margin-top: 3px; font-weight: 700; }
-        .vc-level-bar { height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; margin-top: 7px; overflow: hidden; }
-        .vc-level-fill { height: 100%; background: var(--gold); border-radius: 2px; }
         .vm-locked { color: #64748b; font-size: .75em; text-align: center; font-style: italic; border-top: 1px dashed var(--border); padding-top: 12px; }
         .chest-fx { position: absolute; inset: 0; pointer-events: none; }
         .confetti { position: absolute; width: 6px; height: 10px; opacity: 0; animation: confettiFall 1.2s ease-out forwards; }
@@ -686,23 +683,22 @@ function renderStatusEInv() {
     const chart=document.getElementById('attr-chart');
     if (chart) {
         const keys = Object.keys(attrNames);
+        const n = keys.length;
         const values = keys.map(k => getBaseVal(atributosBase, k) + (bonus[k]||0));
-        const colors = { fis: 'var(--crimson2)', res: 'var(--teal2)', vel: 'var(--emerald)', sub: 'var(--gold2)' };
+        const colors = { fis: '#dc143c', res: '#2dd4bf', vel: '#34d399', sub: '#e8c878' };
         const totalPts = values.reduce((a,b)=>a+b, 0);
-        const isV2 = totalPts > 50;
-        const max = isV2 ? 100 : 50;
+        const max = totalPts > 50 ? 100 : 50;
         const size = 220;
         const cx = size / 2;
         const cy = size / 2;
         const radius = 70;
         const rings = 4;
-        const n = keys.length;
         const angleStep = (Math.PI * 2) / n;
 
         const ringPts = (r) => {
           const pts = [];
-          for(let i=0;i<6;i++){
-            const a = -Math.PI/2 + i * (Math.PI*2/6);
+          for(let i=0;i<n;i++){
+            const a = -Math.PI/2 + i * angleStep;
             pts.push(`${(cx+Math.cos(a)*r).toFixed(1)},${(cy+Math.sin(a)*r).toFixed(1)}`);
           }
           return pts.join(' ');
@@ -713,12 +709,6 @@ function renderStatusEInv() {
             const rr = (Math.min(v, max) / max) * radius;
             return `${(cx + Math.cos(a) * rr).toFixed(1)},${(cy + Math.sin(a) * rr).toFixed(1)}`;
         }).join(' ');
-
-        const points = values.map((v, i) => {
-            const a = -Math.PI / 2 + i * angleStep;
-            const rr = (Math.min(v, max) / max) * radius;
-            return { x: (cx + Math.cos(a) * rr), y: (cy + Math.sin(a) * rr) };
-        });
 
         const axes = keys.map((_, i) => {
             const a = -Math.PI / 2 + i * angleStep;
@@ -736,29 +726,16 @@ function renderStatusEInv() {
             return `<text class="chart-label" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" fill="${color}">${attrNames[k]}</text>`;
         }).join('');
 
-        const edgeDefs = points.map((p, i) => {
-            const next = points[(i + 1) % points.length];
-            const c0 = colors[keys[i]]||'#9fb2ce', c1 = colors[keys[(i+1)%keys.length]]||'#9fb2ce';
-            return `<linearGradient id="edge-${i}" gradientUnits="userSpaceOnUse" x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${next.x.toFixed(1)}" y2="${next.y.toFixed(1)}"><stop offset="0%" stop-color="${c0}" /><stop offset="100%" stop-color="${c1}" /></linearGradient>`;
-        }).join('');
-
-        const edges = points.map((p, i) => {
-            const next = points[(i + 1) % points.length];
-            return `<line class="chart-edge" x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${next.x.toFixed(1)}" y2="${next.y.toFixed(1)}" stroke="url(#edge-${i})" />`;
-        }).join('');
-
         const ringsHtml = Array.from({length: rings}, (_, i) => {
             const r = (radius / rings) * (i + 1);
             return `<polygon class="chart-grid" points="${ringPts(r)}" />`;
         }).join('');
 
-        const v2badge = isV2 ? `<text x="${size-10}" y="16" text-anchor="end" fill="var(--gold)" font-weight="900" font-size="13" font-family="Poppins, sans-serif">V2</text>` : '';
+        const v2badge = (max===100) ? `<text x="${size-10}" y="16" text-anchor="end" fill="#e8c878" font-weight="900" font-size="13" font-family="Poppins, sans-serif">V2</text>` : '';
         chart.innerHTML = `
-            <defs>${edgeDefs}</defs>
             ${ringsHtml}
             ${axes}
             <polygon class="chart-shape" points="${polyPts}" />
-            ${edges}
             ${labels}
             ${v2badge}
         `;
@@ -1122,13 +1099,7 @@ function deckGoTo(i){window.deckIndex=i; renderDeck();}
 
 // ─── VÍNCULOS SOCIAIS ────────────────────────────────────────────────
 function getSocialEffectiveReveal(link){
-  const lvl=Math.min(10, Math.max(1, link.level||1));
-  const rev={foto:false,nome:false,classe:false,descricao:false,atributos:false,vitals:false,itens:false,skills:false};
-  Object.values(link.reveal||{}).forEach((r, i)=>{
-    const n=i+1;
-    if(n<=lvl && r){ Object.keys(rev).forEach(k=>{ if(r[k]) rev[k]=true; }); }
-  });
-  return rev;
+  return Object.assign({foto:false,nome:false,classe:false,descricao:false,atributos:false,vitals:false,itens:false,skills:false}, link.reveal||{});
 }
 function renderVinculos(){
   const box=document.getElementById('p-vinculos');
@@ -1141,7 +1112,6 @@ function renderVinculos(){
   box.innerHTML='';
   entries.forEach(([npcId,link])=>{
     const npc=charsDB[npcId];
-    const lvl=Math.min(10, Math.max(1, link.level||1));
     const rev=getSocialEffectiveReveal(link);
     const imgHtml=rev.foto&&npc
       ? `<img src="${npc.imagem||'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" alt="${npc.nome||'?'}">`
@@ -1150,8 +1120,6 @@ function renderVinculos(){
     box.innerHTML+=`<div class="vinculo-card" onclick="abrirVinculo('${escapeHTML(npcId)}')">
       ${imgHtml}
       <div class="vc-nome">${nome}</div>
-      <div class="vc-lvl">Nível ${lvl}/10</div>
-      <div class="vc-level-bar"><div class="vc-level-fill" style="width:${lvl*10}%"></div></div>
     </div>`;
   });
 }
@@ -1160,7 +1128,6 @@ function abrirVinculo(npcId){
   const npc=charsDB[npcId];
   if(!link) return;
   const rev=getSocialEffectiveReveal(link);
-  const lvl=Math.min(10, Math.max(1, link.level||1));
   document.getElementById('vm-img').src=(rev.foto&&npc?.imagem)?npc.imagem:'https://via.placeholder.com/150';
   document.getElementById('vm-img').style.opacity=(rev.foto&&npc?.imagem)?'1':'0.25';
   document.getElementById('vm-nome').textContent=rev.nome?(npc?.nome||'?'):'???';
@@ -1221,7 +1188,7 @@ function abrirVinculo(npcId){
   if(!rev.vitals) missing.push('Vitalidade');
   if(!rev.itens) missing.push('Itens');
   if(!rev.skills) missing.push('Habilidades');
-  locked.textContent=missing.length?`🔒 Bloqueado até Nv ${lvl+1}: ${missing.join(', ')}`:'✦ Vínculo no auge do conhecimento.';
+  locked.textContent=missing.length?`🔒 Info oculta: ${missing.join(', ')}`:'✦ Conhecimento completo sobre este personagem.';
   document.getElementById('vinculo-modal').classList.add('active');
 }
 function mudarAba(id,el){
