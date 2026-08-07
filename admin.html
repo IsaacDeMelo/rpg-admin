@@ -1761,7 +1761,7 @@ function sair(){ localStorage.removeItem('rpg_session'); window.location.href='i
 
 /* ── FIREBASE LISTENERS ──────────────────────────────────────────────────── */
 db.ref('characters').on('value', snap=>{
-  DB_CHARS=snap.val()||{}; renderChars();
+  DB_CHARS=snap.val()||{}; renderChars(); renderSocialSelects();
   if(document.getElementById('char-modal').classList.contains('active') && activeCharId) abrirPerfilChar(activeCharId);
 });
 db.ref('items').on('value', snap=>{ DB_ITEMS=snap.val()||{}; renderItems(); renderAdminCraftTable(); renderChestExisting(); renderChestLists(); });
@@ -3205,7 +3205,8 @@ function adicionarSocialLink(){
   if(!playerId) return showToast('Selecione um jogador.','error');
   if(!npcId) return showToast('Selecione um NPC.','error');
   if(playerId===npcId) return showToast('O NPC não pode ser o próprio jogador.','error');
-  db.ref(`social_links/${playerId}/${npcId}`).set({ reveal:{} }).then(()=>showToast('Vínculo criado!'));
+  const reveal={}; SOCIAL_REVEAL_FIELDS.forEach(f=>reveal[f]=false);
+  db.ref(`social_links/${playerId}/${npcId}`).set({ reveal }).then(()=>showToast('Vínculo criado!')).catch(err=>showToast('Erro: '+(err&&err.message||'falha ao salvar.'),'error'));
 }
 function removerSocialLink(playerId, npcId){
   if(!confirm('Remover este vínculo?')) return;

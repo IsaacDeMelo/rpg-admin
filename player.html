@@ -534,7 +534,7 @@ db.ref('items').on('value', s => { itemsDB = s.val() || {}; checkRender(); });
 db.ref('social_links/' + session).on('value', s => { socialDB = s.val() || {}; renderVinculos(); });
 db.ref('skills').on('value', s => { skillsDB = s.val() || {}; checkRender(); });
 db.ref('recipes').on('value', s => { recipesDB = s.val() || {}; });
-db.ref('characters').on('value', s => { charsDB = s.val() || {}; });
+db.ref('characters').on('value', s => { charsDB = s.val() || {}; renderVinculos(); });
 db.ref('characters/' + session).on('value', snap => {
     if (!snap.exists()) return (window.location.href = 'index.html');
     pData = snap.val();
