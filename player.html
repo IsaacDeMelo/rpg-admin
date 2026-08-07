@@ -196,6 +196,9 @@
         .pov-char-hp-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
         .pov-char-hp-fill { height: 100%; background: var(--red); transition: width .3s; }
         .card-stats { display: flex; justify-content: space-around; font-size: .6em; background: rgba(0,0,0,.5); padding: 4px; border-top: 1px solid #333; border-radius: 4px; color: #cbd5e1; }
+        .pov-unknown { width: 80px; height: 100px; border-radius: 8px; border: 3px solid var(--red); background: linear-gradient(135deg,#1a1228,#0d0817); display: flex; align-items: center; justify-content: center; color: #5b4769; font-size: 1.8em; box-shadow: 0 10px 20px rgba(0,0,0,.8); }
+        .combat-meta { display: flex; justify-content: center; margin-bottom: 8px; }
+        .combat-turn { background: rgba(160,32,32,.2); border: 1px solid var(--red); color: #ffd9d9; padding: 3px 12px; border-radius: 99px; font-size: .75em; font-weight: 700; letter-spacing: .03em; }
         .pov-char-card.defeated { animation: none; z-index: 1; }
         .pov-char-card.defeated img { filter: grayscale(100%) brightness(.6); transform: translateY(40px) rotate(90deg) scale(.8); border-color: #555 !important; }
         .pov-char-card.defeated .pov-char-details { display: none; }
@@ -944,6 +947,9 @@ db.ref('combat/sessions').on('value', snap => {
 
         combatView.innerHTML = `
             <h3 class="section-title" id="combat-scene-name"><i class="fas fa-khanda"></i> ${myCombat.name}</h3>
+            <div class="combat-meta">
+                <span class="combat-turn"><i class="fas fa-hourglass-half"></i> Turno ${myCombat.turn||1}</span>
+            </div>
             <p style="font-size:.75em; color:#94a3b8; margin-bottom:10px;">Deslize para ver. Clique num guerreiro para análise tática.</p>
             <div class="pov-viewport" id="combat-viewport" onscroll="updateParallax(this)">
                 <div class="pov-bg" id="combat-bg" style="background-image:url(${myCombat.background})"></div>
@@ -959,21 +965,47 @@ db.ref('combat/sessions').on('value', snap => {
 
         const alliesBox = document.getElementById('combat-allies');
         const enemiesBox = document.getElementById('combat-enemies');
+        const sceneDefReveal = (myCombat.scene && myCombat.scene.default_reveal) || {hp:true,fis:false,res:false,vel:false,sub:false,full:false};
+
+        const getReveal = (id) => {
+            const t = (myCombat.tokens||{})[id];
+            return Object.assign({}, sceneDefReveal, (t && t.reveal)||{});
+        };
 
         const renderChar = (id, data) => {
             const char = charsDB[id]; if (!char) return '';
+            const isAlly = (data.team === myTeam) || (id === session);
+            const rev = isAlly ? {hp:true,fis:true,res:true,vel:true,sub:true,full:true} : getReveal(id);
+            const fullyHidden = !rev.full && !rev.hp && !rev.fis && !rev.res && !rev.vel && !rev.sub;
+            const canClick = (isAlly) || rev.full || !!myCombat.public_inspection;
             let cardClass = "pov-char-card";
-            let hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, ((char.hp || 0) / char.hp_max) * 100)) : 100;
-            let hpDisplay = char.hp_max > 0 ? `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>` : '';
+            let hpDisplay = '';
+            let statsBar = '';
+            if (data.status === 'defeated') {
+                cardClass += ' defeated';
+            }
             const b = char.atributos_base || {};
-            const statsBar = `<div class="card-stats"><span>❤️${char.hp||0}</span><span>⚔️${getBaseVal(b,'fis')}</span><span>🛡️${getBaseVal(b,'res')}</span><span>💨${getBaseVal(b,'vel')}</span></div>`;
+            if (rev.hp && char.hp_max > 0) {
+                let hpPercent = Math.max(0, Math.min(100, ((char.hp || 0) / char.hp_max) * 100));
+                hpDisplay = `<div class="pov-char-hp-bar"><div class="pov-char-hp-fill" style="width:${hpPercent}%"></div></div>`;
+            }
+            const stats = [];
+            if (rev.fis) stats.push(`<span>⚔️${getBaseVal(b,'fis')}</span>`);
+            if (rev.res) stats.push(`<span>🛡️${getBaseVal(b,'res')}</span>`);
+            if (rev.vel) stats.push(`<span>💨${getBaseVal(b,'vel')}</span>`);
+            if (rev.sub) stats.push(`<span>🧠${getBaseVal(b,'sub')}</span>`);
+            if (stats.length) statsBar = `<div class="card-stats">${stats.join('')}</div>`;
+            let imgHtml;
+            if (fullyHidden) imgHtml = `<div class="pov-unknown" title="Informação oculta pelo mestre"><i class="fas fa-eye-slash"></i></div>`;
+            else imgHtml = `<img src="${char.imagem}" onclick="${canClick?`verStatsCombate('${id}', ${!!rev.full||!!myCombat.public_inspection})`:'javascript:void(0)'}">`;
+            let nameHtml = fullyHidden ? `<div class="pov-char-name" style="font-style:italic;">???</div>` : `<div class="pov-char-name">${escapeHTML(char.nome.split(' ')[0])}</div>`;
             let lootHtml = '';
             if (data.status === 'defeated') {
-                cardClass += ' defeated'; hpDisplay = `<div class="pov-char-name" style="color:var(--red);">DERROTADO</div>`;
+                hpDisplay = `<div class="pov-char-name" style="color:var(--red);">DERROTADO</div>`;
                 const loot = (myCombat.loots || {})[id];
                 if (loot && !loot.collected_by) lootHtml = `<button class="loot-btn" onclick="coletarLoot('${id}')"><i class="fas fa-gem"></i> Coletar</button>`;
             }
-            return `<div class="${cardClass}">${lootHtml}<img src="${char.imagem}" onclick="verStatsCombate('${id}', ${myCombat.public_inspection})"><div class="pov-char-details"><div class="pov-char-name">${char.nome.split(' ')[0]}</div>${hpDisplay}${data.status !== 'defeated' ? statsBar : ''}</div></div>`;
+            return `<div class="${cardClass}">${lootHtml}${imgHtml}<div class="pov-char-details">${nameHtml}${hpDisplay}${data.status !== 'defeated' ? statsBar : ''}</div></div>`;
         };
 
         const renderSummon = (summon) => {
@@ -1836,6 +1868,15 @@ function abrirItem(uniqKey,itemId,equipado,count){
         if(itemAtualDBData.effects.mp_full) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Cura MP total</span>`;
         if(itemAtualDBData.effects.sp_full) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--cyan); border-color:var(--cyan); color:white;">Cura SP total</span>`;
     }
+    if(itemAtualDBData.categoria==='Pet'&&itemAtualDBData.summon){
+        const sm=itemAtualDBData.summon;
+        const ab=sm.atributos_base||{};
+        sBox.innerHTML+=`<span class="mod-tag" style="background:var(--purple); border-color:var(--purple); color:white;">❤️ ${sm.hp_max||10} HP</span>`;
+        sBox.innerHTML+=`<span class="mod-tag" style="background:var(--purple); border-color:var(--purple); color:white;">⚔️ FIS ${ab.fis||0}</span>`;
+        sBox.innerHTML+=`<span class="mod-tag" style="background:var(--purple); border-color:var(--purple); color:white;">🛡️ RES ${ab.res||0}</span>`;
+        sBox.innerHTML+=`<span class="mod-tag" style="background:var(--purple); border-color:var(--purple); color:white;">💨 VEL ${ab.vel||0}</span>`;
+        if((ab.sub||0)>0) sBox.innerHTML+=`<span class="mod-tag" style="background:var(--purple); border-color:var(--purple); color:white;">🧠 SUB ${ab.sub||0}</span>`;
+    }
     const btn=document.getElementById('mod-btn'); btn.disabled=false;
     if(itemAtualDBData.categoria==='Consumivel'){
         btn.style.display='block'; btn.style.background='var(--cyan)'; btn.innerText='Usar'; itemAtualAction='usar';
@@ -2097,7 +2138,7 @@ function renderDeck(){
   const c=skillsDB[cId];
   if(c){
     const lv=pData.skills?.[cId]||'';
-    html+=`<div class="deck-card active slide-in"><img class="deck-card-img" src="${c.imagem}"><h4>${c.nome}</h4>${lv?`<span class="deck-card-level">Nv. ${lv}</span>`:''}<p>${c.descricao}</p><button class="btn-usar" onclick="usarSkill('${cId}')"><i class="fas fa-bolt"></i> Usar</button></div>`;
+    html+=`<div class="deck-card active slide-in"><img class="deck-card-img" src="${c.imagem}"><h4>${c.nome}</h4>${lv?`<span class="deck-card-level">Nv. ${lv}</span>`:''}<p>${c.descricao}</p></div>`;
   }
   stage.innerHTML=html;
   if(dots) dots.innerHTML=list.map((id,i)=>`<span class="deck-dot${i===idx?' active':''}" onclick="deckGoTo(${i})"></span>`).join('');

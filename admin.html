@@ -246,6 +246,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
 .check-line { display:flex; align-items:center; gap:6px; font-size:.72rem; color:var(--muted); background:rgba(0,0,0,.2); border:1px solid var(--border); border-radius:8px; padding:6px 8px; }
 .check-line input { accent-color: var(--gold2); }
 .hp-quick { display:grid; grid-template-columns:1fr auto auto; gap:8px; margin:12px 0; }
+.vital-quick { margin-bottom:14px; }
 .hp-quick input { padding:7px 8px; border-radius:8px; border:1px solid var(--border); background:rgba(0,0,0,.25); color:var(--text); }
 .hp-quick button { border:none; border-radius:8px; padding:7px 10px; font-weight:700; cursor:pointer; }
 .hp-quick .btn-dmg { background:rgba(224,80,80,.2); color:var(--red2); border:1px solid rgba(224,80,80,.4); }
@@ -320,6 +321,8 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
 .token-card:hover img { border-color:var(--blue2); }
 .token-card.defeated img { filter:grayscale(1) opacity(.45); transform:rotate(90deg); border-color:#333; }
 .token-card p { font-size:.56rem; color:var(--muted); font-family:var(--font-head); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.token-reveal-badge { position:absolute; top:-6px; right:-4px; background:var(--blue2); color:#fff; font-size:.5rem; font-weight:800; font-family:var(--font-head); padding:1px 4px; border-radius:99px; letter-spacing:.02em; box-shadow:0 1px 4px rgba(0,0,0,.5); }
+.token-card.defeated .token-reveal-badge { background:#333; }
 .char-tray { display:flex; gap:10px; overflow-x:auto; padding:12px; background:rgba(0,0,0,.22); border:1px dashed var(--border2); border-radius:10px; margin-top:14px; min-height:84px; flex-wrap:wrap; }
 
 /* Turn counter */
@@ -733,10 +736,11 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <textarea id="c-desc" rows="3" placeholder="Visível para jogadores no combate…"></textarea>
         <label class="field-label">Imagem</label>
         <div style="display:flex; gap:8px; margin-bottom:12px;">
-          <input type="text" id="c-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="updateImgPreview('c-img','c-img-preview-box','c-img-preview')">
+          <input type="text" id="c-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="togglePinBtn('c-img','c-pin-btn'); updateImgPreview('c-img','c-img-preview-box','c-img-preview')">
           <input type="file" id="c-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'c-img')">
           <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('c-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
           <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('c-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
+          <button type="button" class="btn btn-ghost w-auto" id="c-pin-btn" onclick="abrirLinkEditImg('c-img')" title="Abrir link no Pinterest" style="padding:8px 12px; display:none;"><i class="fab fa-pinterest"></i></button>
         </div>
         <div class="img-preview" id="c-img-preview-box">
           <img id="c-img-preview" alt="Prévia">
@@ -784,9 +788,15 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <input type="text" id="i-nome" placeholder="Espada das Chamas">
           <label class="field-label">Imagem</label>
           <div style="display:flex; gap:8px; margin-bottom:12px;">
-            <input type="text" id="i-img" placeholder="URL ou clique para enviar" style="flex:1;">
+            <input type="text" id="i-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="togglePinBtn('i-img','i-pin-btn'); updateImgPreview('i-img','i-img-preview-box','i-img-preview')">
             <input type="file" id="i-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'i-img')">
             <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('i-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+            <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('i-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
+            <button type="button" class="btn btn-ghost w-auto" id="i-pin-btn" onclick="abrirLinkEditImg('i-img')" title="Abrir link no Pinterest" style="padding:8px 12px; display:none;"><i class="fab fa-pinterest"></i></button>
+          </div>
+          <div class="img-preview" id="i-img-preview-box">
+            <img id="i-img-preview" alt="Prévia">
+            <span>Prévia atual da imagem.</span>
           </div>
           <label class="field-label">Raridade</label>
           <select id="i-rarity">
@@ -797,7 +807,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
             <option value="Lendário">Lendário</option>
           </select>
           <label class="field-label">Categoria</label>
-          <select id="i-cat" onchange="toggleSubcat('i-cat','i-subcat-wrapper','i-consumable-wrapper')">
+          <select id="i-cat" onchange="toggleSubcat('i-cat','i-subcat-wrapper','i-consumable-wrapper','i-pet-wrapper')">
             <option value="Material">Material (Crafting / Loot)</option>
             <option value="Consumivel">Consumível</option>
             <option value="Pet">Pet (Combate)</option>
@@ -825,6 +835,21 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
               <label class="check-line"><input type="checkbox" id="i-eff-hp-full"> Cura total HP</label>
               <label class="check-line"><input type="checkbox" id="i-eff-mp-full"> Cura total MP</label>
               <label class="check-line"><input type="checkbox" id="i-eff-sp-full"> Cura total SP</label>
+            </div>
+          </div>
+          <div id="i-pet-wrapper" style="display:none;">
+            <label class="field-label" style="color:var(--purple2);">Stats do Pet ao Invocar</label>
+            <div class="two-col">
+              <div><label class="field-label">HP Máximo</label><input type="number" id="i-pet-hp" value="10" placeholder="10"></div>
+              <div><label class="field-label">HP Inicial</label><input type="number" id="i-pet-hp-ini" value="10" placeholder="10"></div>
+            </div>
+            <div class="two-col" style="margin-top:8px;">
+              <div><label class="field-label">FIS</label><input type="number" id="i-pet-fis" value="0"></div>
+              <div><label class="field-label">RES</label><input type="number" id="i-pet-res" value="0"></div>
+            </div>
+            <div class="two-col" style="margin-top:8px;">
+              <div><label class="field-label">VEL</label><input type="number" id="i-pet-vel" value="0"></div>
+              <div><label class="field-label">SUB</label><input type="number" id="i-pet-sub" value="0"></div>
             </div>
           </div>
           <label class="field-label">Descrição</label>
@@ -936,9 +961,15 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <input type="text" id="ch-nome" placeholder="Arca Mística">
         <label class="field-label">Imagem</label>
         <div style="display:flex; gap:8px; margin-bottom:12px;">
-          <input type="text" id="ch-img" placeholder="URL ou clique para enviar" style="flex:1;">
+          <input type="text" id="ch-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="togglePinBtn('ch-img','ch-pin-btn'); updateImgPreview('ch-img','ch-img-preview-box','ch-img-preview')">
           <input type="file" id="ch-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'ch-img')">
           <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('ch-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+          <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('ch-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
+          <button type="button" class="btn btn-ghost w-auto" id="ch-pin-btn" onclick="abrirLinkEditImg('ch-img')" title="Abrir link no Pinterest" style="padding:8px 12px; display:none;"><i class="fab fa-pinterest"></i></button>
+        </div>
+        <div class="img-preview" id="ch-img-preview-box">
+          <img id="ch-img-preview" alt="Prévia">
+          <span>Prévia atual da imagem.</span>
         </div>
 
         <div class="section-divider"></div>
@@ -995,9 +1026,15 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <input type="text" id="s-nome" placeholder="Fúria dos Orcs">
           <label class="field-label">Ícone</label>
           <div style="display:flex; gap:8px; margin-bottom:12px;">
-            <input type="text" id="s-img" placeholder="URL ou clique para enviar" style="flex:1;">
+            <input type="text" id="s-img" placeholder="URL ou clique para enviar" style="flex:1;" oninput="togglePinBtn('s-img','s-pin-btn'); updateImgPreview('s-img','s-img-preview-box','s-img-preview')">
             <input type="file" id="s-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'s-img')">
             <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('s-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+            <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('s-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
+            <button type="button" class="btn btn-ghost w-auto" id="s-pin-btn" onclick="abrirLinkEditImg('s-img')" title="Abrir link no Pinterest" style="padding:8px 12px; display:none;"><i class="fab fa-pinterest"></i></button>
+          </div>
+          <div class="img-preview" id="s-img-preview-box">
+            <img id="s-img-preview" alt="Prévia">
+            <span>Prévia atual da imagem.</span>
           </div>
           <label class="field-label">Descrição do Efeito</label>
           <textarea id="s-desc" rows="4" placeholder="Ao ativar, o guerreiro entra em estado de frenesi…"></textarea>
@@ -1086,7 +1123,11 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <span class="craft-result-label"><i class="fas fa-plus" style="display:block; margin-bottom:3px;"></i>Resultado</span>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="salvarReceitaGrid()"><i class="fas fa-save"></i> Gravar Receita</button>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button class="btn btn-primary" onclick="salvarReceitaGrid()"><i class="fas fa-save"></i> <span id="craft-save-label">Gravar Receita</span></button>
+        <button class="btn btn-ghost" id="craft-cancel-btn" onclick="cancelarEdicaoReceita()" style="display:none;"><i class="fas fa-times"></i> Cancelar Edição</button>
+      </div>
+      <p class="hint" id="craft-edit-hint" style="display:none; margin-top:8px; color:var(--gold2);">Editando receita existente — Gravar Receita salvará por cima.</p>
     </div>
     <div class="page-title" style="font-size:1rem; margin-bottom:14px;">Receitas Existentes</div>
     <div id="list-recipes" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:10px;"></div>
@@ -1110,7 +1151,20 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
           <label class="field-label">Nome da Batalha</label>
           <input type="text" id="edit-combat-name" placeholder="Ex: Emboscada na Floresta" style="margin-bottom:9px;">
           <label class="field-label">Imagem de Fundo (URL)</label>
-          <input type="text" id="edit-combat-bg" placeholder="https://…" style="margin-bottom:10px;">
+          <input type="text" id="edit-combat-bg" placeholder="https://…" style="margin-bottom:10px;" oninput="updateImgPreview('edit-combat-bg','combat-bg-preview-box','combat-bg-preview')">
+          <div class="img-preview" id="combat-bg-preview-box">
+            <img id="combat-bg-preview" alt="Prévia">
+            <span>Prévia do fundo da batalha.</span>
+          </div>
+          <label class="field-label">Revelação Padrão (inimigos sem configuração própria)</label>
+          <div id="combat-default-reveal" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
+            <label class="check-line"><input type="checkbox" id="cr-hp" checked> HP</label>
+            <label class="check-line"><input type="checkbox" id="cr-fis"> FIS</label>
+            <label class="check-line"><input type="checkbox" id="cr-res"> RES</label>
+            <label class="check-line"><input type="checkbox" id="cr-vel"> VEL</label>
+            <label class="check-line"><input type="checkbox" id="cr-sub"> SUB</label>
+            <label class="check-line"><input type="checkbox" id="cr-full"> Ficha completa</label>
+          </div>
           <div style="display:flex; align-items:center; gap:9px; margin-bottom:14px;">
             <input type="checkbox" id="token-public" style="width:auto; margin:0; accent-color:var(--blue2);">
             <label for="token-public" style="color:var(--muted); font-size:.78rem; cursor:pointer;">Permitir que jogadores inspecionem fichas</label>
@@ -1237,6 +1291,14 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
     </div>
     <div class="modal-body">
       <div class="two-col" style="margin-bottom:10px;">
+        <div><label class="field-label">Categoria</label><select id="ec-tipo">
+          <option value="Jogador">Jogador</option>
+          <option value="NPC">NPC</option>
+          <option value="Criatura">Criatura</option>
+        </select></div>
+        <div><label class="field-label">Senha (Jogadores)</label><input type="text" id="ec-pass" placeholder="••••••"></div>
+      </div>
+      <div class="two-col" style="margin-bottom:10px;">
         <div><label class="field-label">Nome</label><input id="ec-nome" placeholder="Nome verdadeiro"></div>
         <div><label class="field-label">Classe</label><input id="ec-classe" placeholder="Classe"></div>
       </div>
@@ -1291,7 +1353,18 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <div>
           <input type="hidden" id="e-i-id">
           <label class="field-label">Nome</label><input type="text" id="e-i-nome">
-          <label class="field-label">Imagem</label><input type="text" id="e-i-img">
+          <label class="field-label">Imagem</label>
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <input type="text" id="e-i-img" style="flex:1;" oninput="togglePinBtn('e-i-img','e-i-pin-btn'); updateImgPreview('e-i-img','e-i-img-preview-box','e-i-img-preview')">
+            <input type="file" id="e-i-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'e-i-img')">
+            <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('e-i-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+            <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('e-i-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
+            <button type="button" class="btn btn-ghost w-auto" id="e-i-pin-btn" onclick="abrirLinkEditImg('e-i-img')" title="Abrir link no Pinterest" style="padding:8px 12px; display:none;"><i class="fab fa-pinterest"></i></button>
+          </div>
+          <div class="img-preview" id="e-i-img-preview-box">
+            <img id="e-i-img-preview" alt="Prévia">
+            <span>Prévia atual da imagem.</span>
+          </div>
           <label class="field-label">Raridade</label>
           <select id="e-i-rarity">
             <option value="Comum">Comum</option>
@@ -1301,7 +1374,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
             <option value="Lendário">Lendário</option>
           </select>
           <label class="field-label">Categoria</label>
-          <select id="e-i-cat" onchange="toggleSubcat('e-i-cat','e-i-subcat-wrapper','e-i-consumable-wrapper')">
+          <select id="e-i-cat" onchange="toggleSubcat('e-i-cat','e-i-subcat-wrapper','e-i-consumable-wrapper','e-i-pet-wrapper')">
             <option value="Material">Material</option>
             <option value="Consumivel">Consumível</option>
             <option value="Pet">Pet</option>
@@ -1329,6 +1402,21 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
               <label class="check-line"><input type="checkbox" id="e-i-eff-hp-full"> Cura total HP</label>
               <label class="check-line"><input type="checkbox" id="e-i-eff-mp-full"> Cura total MP</label>
               <label class="check-line"><input type="checkbox" id="e-i-eff-sp-full"> Cura total SP</label>
+            </div>
+          </div>
+          <div id="e-i-pet-wrapper" style="display:none;">
+            <label class="field-label" style="color:var(--purple2);">Stats do Pet ao Invocar</label>
+            <div class="two-col">
+              <div><label class="field-label">HP Máximo</label><input type="number" id="e-i-pet-hp" value="10" placeholder="10"></div>
+              <div><label class="field-label">HP Inicial</label><input type="number" id="e-i-pet-hp-ini" value="10" placeholder="10"></div>
+            </div>
+            <div class="two-col" style="margin-top:8px;">
+              <div><label class="field-label">FIS</label><input type="number" id="e-i-pet-fis" value="0"></div>
+              <div><label class="field-label">RES</label><input type="number" id="e-i-pet-res" value="0"></div>
+            </div>
+            <div class="two-col" style="margin-top:8px;">
+              <div><label class="field-label">VEL</label><input type="number" id="e-i-pet-vel" value="0"></div>
+              <div><label class="field-label">SUB</label><input type="number" id="e-i-pet-sub" value="0"></div>
             </div>
           </div>
           <label class="field-label">Valor em Ouro</label>
@@ -1413,7 +1501,18 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
         <div>
           <input type="hidden" id="e-s-id">
           <label class="field-label">Nome</label><input type="text" id="e-s-nome">
-          <label class="field-label">Ícone (URL)</label><input type="text" id="e-s-img">
+          <label class="field-label">Ícone</label>
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <input type="text" id="e-s-img" style="flex:1;" oninput="togglePinBtn('e-s-img','e-s-pin-btn'); updateImgPreview('e-s-img','e-s-img-preview-box','e-s-img-preview')">
+            <input type="file" id="e-s-img-file" accept="image/*" style="display:none;" onchange="handleFileUpload(this,'e-s-img')">
+            <button type="button" class="btn btn-ghost w-auto" onclick="document.getElementById('e-s-img-file').click()" style="padding:8px 12px;"><i class="fas fa-upload"></i></button>
+            <button type="button" class="btn btn-ghost w-auto" onclick="abrirCropper('e-s-img')" title="Cortar e ajustar posição" style="padding:8px 12px;"><i class="fas fa-crop"></i></button>
+            <button type="button" class="btn btn-ghost w-auto" id="e-s-pin-btn" onclick="abrirLinkEditImg('e-s-img')" title="Abrir link no Pinterest" style="padding:8px 12px; display:none;"><i class="fab fa-pinterest"></i></button>
+          </div>
+          <div class="img-preview" id="e-s-img-preview-box">
+            <img id="e-s-img-preview" alt="Prévia">
+            <span>Prévia atual da imagem.</span>
+          </div>
           <label class="field-label">Descrição</label><textarea id="e-s-desc" rows="4"></textarea>
           <button class="btn btn-red" onclick="excluirSkillMundo()"><i class="fas fa-trash"></i> Excluir Habilidade</button>
         </div>
@@ -1491,6 +1590,7 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
       </div>
     </div>
     <div class="modal-body">
+      <input type="text" id="picker-search" placeholder="Buscar…" style="width:100%; margin-bottom:10px;" oninput="filtrarPicker()">
       <div class="picker-grid" id="picker-grid"></div>
     </div>
   </div>
@@ -1506,10 +1606,15 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
     <div class="modal-body" style="text-align:center;">
       <img id="mi-img" style="width:68px; height:68px; border-radius:10px; border:1px solid var(--gold); margin-bottom:10px; object-fit:cover;">
       <p style="color:var(--muted); margin-bottom:14px; font-size:.82rem;">Em estoque: <strong style="color:var(--gold2);" id="mi-current-qtd">0</strong></p>
-      <div style="display:flex; gap:9px; align-items:center;">
+      <p id="mi-stat-line" style="color:var(--purple2); margin-bottom:12px; font-size:.78rem; display:none;"></p>
+      <div style="display:flex; gap:9px; align-items:center;" id="mi-qty-row">
         <input type="number" id="mi-qtd" value="1" min="1" style="text-align:center;">
         <button id="mi-remove-btn" class="btn btn-red w-auto" style="flex:1;">Remover</button>
         <button id="mi-add-btn"    class="btn btn-green w-auto" style="flex:1;">Adicionar</button>
+      </div>
+      <div style="display:none; gap:9px; align-items:center; margin-top:10px;" id="mi-single-row">
+        <button id="mi-equip-btn" class="btn btn-gold w-auto" style="flex:1;">Equipar</button>
+        <button id="mi-remove-entry-btn" class="btn btn-red w-auto" style="flex:1;">Remover da Bolsa</button>
       </div>
     </div>
   </div>
@@ -1524,7 +1629,20 @@ textarea { resize:vertical; min-height:75px; line-height:1.5; }
     </div>
     <div class="modal-body" style="text-align:center;">
       <div id="token-status-controls" style="margin-bottom:14px;"></div>
-      <button id="token-remove-btn" class="btn btn-ghost"><i class="fas fa-sign-out-alt"></i> Remover do Combate</button>
+      <label class="field-label" style="color:var(--blue3);">O que os jogadores veem</label>
+      <div id="token-reveal-controls" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:14px;">
+        <label class="check-line"><input type="checkbox" id="tr-hp" checked> HP</label>
+        <label class="check-line"><input type="checkbox" id="tr-fis"> FIS</label>
+        <label class="check-line"><input type="checkbox" id="tr-res"> RES</label>
+        <label class="check-line"><input type="checkbox" id="tr-vel"> VEL</label>
+        <label class="check-line"><input type="checkbox" id="tr-sub"> SUB</label>
+        <label class="check-line"><input type="checkbox" id="tr-full"> Ficha completa</label>
+      </div>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button class="btn btn-ghost" onclick="salvarTokenReveal()"><i class="fas fa-save"></i> Salvar Revelação</button>
+        <button class="btn btn-ghost" onclick="resetarTokenReveal()"><i class="fas fa-undo"></i> Usar Padrão</button>
+      </div>
+      <button id="token-remove-btn" class="btn btn-ghost" style="margin-top:10px;"><i class="fas fa-sign-out-alt"></i> Remover do Combate</button>
     </div>
   </div>
 </div>
@@ -1750,6 +1868,8 @@ let chestGuaranteed=[], chestChances=[];
 
 function limparBauForm(){
   ['ch-id','ch-nome','ch-img'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  togglePinBtn('ch-img','ch-pin-btn');
+  updateImgPreview('ch-img','ch-img-preview-box','ch-img-preview');
   chestGuaranteed=[]; chestChances=[];
   renderChestLists();
 }
@@ -1815,6 +1935,8 @@ function carregarModeloBau(id){
   document.getElementById('ch-id').value=tpl.id||'';
   document.getElementById('ch-nome').value=tpl.nome||'';
   document.getElementById('ch-img').value=tpl.imagem||'';
+  togglePinBtn('ch-img','ch-pin-btn');
+  updateImgPreview('ch-img','ch-img-preview-box','ch-img-preview');
   chestGuaranteed=[...(tpl.guaranteed||[])];
   chestChances=[...(tpl.chances||[])];
   renderChestLists();
@@ -1834,8 +1956,13 @@ function renderChestTemplates(){
           <div class="card-name">${t.nome||'Modelo'}</div>
           <div class="card-sub">${id}</div>
         </div>
+        <button class="card-export-btn" style="opacity:1; position:static; width:30px; height:30px; background:var(--red2);" onclick="event.stopPropagation(); excluirModeloBau('${id}')" title="Excluir modelo"><i class="fas fa-trash"></i></button>
       </div>`;
   }).join('');
+}
+function excluirModeloBau(id){
+  if(!confirm('Excluir este modelo de baú?')) return;
+  db.ref('chest_templates/'+id).remove().then(()=>showToast('Modelo excluído!'));
 }
 
 function renderChestExisting(){
@@ -1852,8 +1979,13 @@ function renderChestExisting(){
           <div class="card-name">${b.nome||'Baú'}</div>
           <div class="card-sub">${id}</div>
         </div>
+        <button class="card-export-btn" style="opacity:1; position:static; width:30px; height:30px; background:var(--red2);" onclick="event.stopPropagation(); excluirBauExistente('${id}')" title="Excluir baú"><i class="fas fa-trash"></i></button>
       </div>`;
   }).join('');
+}
+function excluirBauExistente(id){
+  if(!confirm('Excluir este baú permanentemente? Isso também remove de todos os inventários.')) return;
+  db.ref('items/'+id).remove().then(()=>showToast('Baú excluído!'));
 }
 
 function carregarBauExistente(id){
@@ -1861,6 +1993,8 @@ function carregarBauExistente(id){
   document.getElementById('ch-id').value=id;
   document.getElementById('ch-nome').value=b.nome||'';
   document.getElementById('ch-img').value=b.imagem||'';
+  togglePinBtn('ch-img','ch-pin-btn');
+  updateImgPreview('ch-img','ch-img-preview-box','ch-img-preview');
   chestGuaranteed=[...(b.chest?.guaranteed||[])];
   chestChances=[...(b.chest?.chances||[])];
   renderChestLists();
@@ -1969,12 +2103,13 @@ let activeCharId=null;
 function isPinterestUrl(u){ return /pinterest\.com|pinimg\.com|pin\.it/i.test(u||''); }
 function escJs(s){ return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function abrirLink(u){ if(u) window.open(u,'_blank'); }
-function togglePinBtn(){
-  const btn=document.getElementById('ec-pin-btn');
-  if(btn) btn.style.display=isPinterestUrl(document.getElementById('ec-img').value)?'':'none';
+function togglePinBtn(inputId, btnId){
+  const inp=document.getElementById(inputId||'ec-img');
+  const btn=document.getElementById(btnId||'ec-pin-btn');
+  if(btn&&inp) btn.style.display=isPinterestUrl(inp.value)?'':'none';
 }
-function abrirLinkEditImg(){
-  const u=document.getElementById('ec-img').value;
+function abrirLinkEditImg(inputId){
+  const u=document.getElementById(inputId||'ec-img').value;
   if(!isPinterestUrl(u)) return showToast('A imagem não é um link do Pinterest.','error');
   window.open(u,'_blank');
 }
@@ -1997,9 +2132,15 @@ function abrirPerfilChar(charId){
 
   let habHtml = '';
   if(c.habilidades) Object.entries(c.habilidades).forEach(([hName, hLevel])=>{
+    const hSafe=escJs(hName);
     habHtml += `<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;margin-bottom:4px;">
-      <span style="font-size:.75rem;color:var(--text);">${hName}</span>
-      <span style="font-size:.7rem;font-weight:700;color:var(--gold2);">Nv. ${hLevel}/9</span>
+      <span style="font-size:.75rem;color:var(--text);">${escHtml(hName)}</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:.7rem;font-weight:700;color:var(--gold2);">Nv. ${hLevel}/9</span>
+        <button class="inline-btn" style="padding:2px 7px;" onclick="ajustarHabilidade('${charId}','${hSafe}',-1)" title="Diminuir nível"><i class="fas fa-minus"></i></button>
+        <button class="inline-btn" style="padding:2px 7px;" onclick="ajustarHabilidade('${charId}','${hSafe}',1)" title="Aumentar nível"><i class="fas fa-plus"></i></button>
+        <button class="inline-btn" style="padding:2px 7px;color:var(--red2);" onclick="removerHabilidade('${charId}','${hSafe}')" title="Remover perícia"><i class="fas fa-trash"></i></button>
+      </div>
     </div>`;
   });
   if(!habHtml) habHtml = '<span class="hint">Nenhuma perícia atribuída.</span>';
@@ -2020,7 +2161,7 @@ function abrirPerfilChar(charId){
     if(c.inventario) Object.entries(c.inventario).forEach(([key,item])=>{ const idb=DB_ITEMS[item.item_id]; if(idb&&(idb.categoria==='Material'||idb.categoria==='Consumivel'||idb.categoria==='Bau')) invMap[item.item_id]=(invMap[item.item_id]||0)+1; else equipableInv[key]=item; });
     let invHtml='';
     Object.entries(invMap).forEach(([itemId,qtd])=>{ const idb=DB_ITEMS[itemId]; if(idb) invHtml+=`<div class="inv-item" onclick="abrirGerenciadorItem('${charId}','${itemId}',${qtd})"><img src="${idb.imagem}" title="${idb.nome}"><span class="qty">x${qtd}</span></div>`; });
-    Object.entries(equipableInv).forEach(([key,item])=>{ const idb=DB_ITEMS[item.item_id]; if(idb) invHtml+=`<div class="inv-item ${item.equipado?'equipped':''}"><img src="${idb.imagem}" title="${idb.nome}"></div>`; });
+    Object.entries(equipableInv).forEach(([key,item])=>{ const idb=DB_ITEMS[item.item_id]; if(idb) invHtml+=`<div class="inv-item ${item.equipado?'equipped':''}" onclick="abrirGerenciadorItem('${charId}','${item.item_id}',1,'${key}')" title="${idb.nome}"><img src="${idb.imagem}"></div>`; });
     let skillsHtml='';
     if(c.skills) Object.keys(c.skills).forEach(sId=>{ const sk=DB_SKILLS[sId]; if(sk) skillsHtml+=`<div class="skill-item"><img src="${sk.imagem}"><div class="skill-item-info"><div class="skill-item-name">${sk.nome}</div><div class="skill-item-remove" onclick="removerSkill('${charId}','${sId}')"><i class="fas fa-times"></i> Remover</div></div></div>`; });
     rightHtml=`
@@ -2046,11 +2187,23 @@ function abrirPerfilChar(charId){
       <button class="btn btn-gold" style="margin-bottom:12px;" onclick="abrirCardExport('char','${charId}')"><i class="fas fa-id-card"></i> Exportar Card</button>
       ${isPinterestUrl(c.imagem)?`<button class="btn btn-ghost" style="margin-bottom:12px;" onclick="abrirLink('${escJs(c.imagem)}')"><i class="fab fa-pinterest"></i> Ver no Pinterest</button>`:''}
       <button class="btn btn-ghost" style="margin-bottom:12px;" onclick="abrirEditChar('${charId}')"><i class="fas fa-edit"></i> Editar</button>
-      <div class="profile-section-title" style="margin-top:0;">Ajuste Rapido de HP</div>
-      <div class="hp-quick">
-        <input type="number" id="hp-quick-${charId}" value="1" min="1" placeholder="Qtd">
-        <button class="btn-dmg" onclick="ajustarHp('${charId}', -1)">-Dano</button>
-        <button class="btn-heal" onclick="ajustarHp('${charId}', 1)">+Cura</button>
+      <div class="profile-section-title" style="margin-top:0;">Ajuste Rápido</div>
+      <div class="vital-quick">
+        <div class="hp-quick">
+          <input type="number" id="vital-hp-${charId}" value="1" min="1" placeholder="Qtd">
+          <button class="btn-dmg" onclick="ajustarVital('${charId}','hp',-1)">-HP</button>
+          <button class="btn-heal" onclick="ajustarVital('${charId}','hp',1)">+HP</button>
+        </div>
+        ${(c.mp_max||0)>0?`<div class="hp-quick">
+          <input type="number" id="vital-mp-${charId}" value="1" min="1" placeholder="Qtd">
+          <button class="btn-dmg" onclick="ajustarVital('${charId}','mp',-1)">-MP</button>
+          <button class="btn-heal" onclick="ajustarVital('${charId}','mp',1)">+MP</button>
+        </div>`:''}
+        ${(c.sp_max||0)>0?`<div class="hp-quick">
+          <input type="number" id="vital-sp-${charId}" value="1" min="1" placeholder="Qtd">
+          <button class="btn-dmg" onclick="ajustarVital('${charId}','sp',-1)">-SP</button>
+          <button class="btn-heal" onclick="ajustarVital('${charId}','sp',1)">+SP</button>
+        </div>`:''}
       </div>
       ${statsHtml}
       ${c.description?`<p style="margin-top:14px; font-size:.78rem; color:var(--muted); line-height:1.5; font-style:italic;">${c.description}</p>`:''}
@@ -2068,22 +2221,25 @@ function salvarNotas(charId){
   db.ref(`characters/${charId}/notes`).set(notes).then(()=>showToast('Notas salvas!'));
 }
 
-function ajustarHp(charId, direction){
-  const input=document.getElementById(`hp-quick-${charId}`);
+function ajustarVital(charId, stat, direction){
+  const input=document.getElementById(`vital-${stat}-${charId}`);
   const amount=Math.max(1, parseInt(input?.value)||1);
   const c=DB_CHARS[charId]; if(!c) return;
-  const max=Number(c.hp_max)||0;
-  const cur=Number(c.hp)||0;
+  const max=Number(c[stat+'_max'])||0;
+  const cur=Number(c[stat])||0;
   const delta=amount * (direction<0?-1:1);
   let next=cur+delta;
   if(max>0) next=Math.min(max, next);
   next=Math.max(0, next);
-  db.ref(`characters/${charId}/hp`).set(next).then(()=>showToast('HP atualizado!'));
+  const label={hp:'HP',mp:'MP',sp:'SP'}[stat]||stat.toUpperCase();
+  db.ref(`characters/${charId}/${stat}`).set(next).then(()=>showToast(label+' atualizado!'));
 }
 
 function abrirEditChar(charId){
   const c=DB_CHARS[charId]; if(!c) return;
   ['nome','classe'].forEach(f=>document.getElementById('ec-'+f).value=c[f]||'');
+  document.getElementById('ec-tipo').value=c.tipo||'Jogador';
+  document.getElementById('ec-pass').value=c.senha||'';
   document.getElementById('ec-cerne').value=c.cerne||'';
   document.getElementById('ec-img').value=c.imagem||'';
   togglePinBtn();
@@ -2108,6 +2264,7 @@ function salvarEditChar(){
     attrBase[main] = { total, ...subs };
   });
   db.ref(`characters/${activeCharId}`).update({
+    tipo:document.getElementById('ec-tipo').value, senha:document.getElementById('ec-pass').value,
     nome:document.getElementById('ec-nome').value, classe:document.getElementById('ec-classe').value,
     cerne:document.getElementById('ec-cerne').value.trim(),
     imagem:document.getElementById('ec-img').value, pontos:Number(document.getElementById('ec-pts').value),
@@ -2122,14 +2279,47 @@ function salvarEditChar(){
 function removerSkill(cId,sId){ db.ref(`characters/${cId}/skills/${sId}`).remove(); }
 function removerLoot(cId,iId){ if(confirm('Remover este drop?')) db.ref(`characters/${cId}/loots/${iId}`).remove(); }
 function deletarChar(id){ if(confirm('Apagar permanentemente?')){ db.ref('characters/'+id).remove(); closeModal('char-modal'); activeCharId=null; } }
-function abrirGerenciadorItem(charId,itemId,currentQtd){
+function abrirGerenciadorItem(charId,itemId,currentQtd,invKey){
   const idb=DB_ITEMS[itemId]; if(!idb) return;
   document.getElementById('mi-title').textContent=`Gerenciar: ${idb.nome}`;
   document.getElementById('mi-img').src=idb.imagem;
   document.getElementById('mi-current-qtd').textContent=currentQtd;
-  document.getElementById('mi-add-btn').onclick=()=>gerenciarQtdItem(charId,itemId,'add');
-  document.getElementById('mi-remove-btn').onclick=()=>gerenciarQtdItem(charId,itemId,'remove');
+  const isPet=idb.categoria==='Pet';
+  const single=!!invKey;
+  document.getElementById('mi-qty-row').style.display=(single||isPet)?'none':'flex';
+  document.getElementById('mi-single-row').style.display=single?'flex':'none';
+  const eqBtn=document.getElementById('mi-equip-btn');
+  if(isPet) eqBtn.style.display='none';
+  else eqBtn.style.display='';
+  if(single){
+    const item=(DB_CHARS[charId]?.inventario||{})[invKey];
+    const eq=!!item?.equipado;
+    if(!isPet){
+      eqBtn.textContent=eq?'Desequipar':'Equipar';
+      eqBtn.onclick=()=>adminToggleEquipItem(charId,invKey);
+    }
+    document.getElementById('mi-remove-entry-btn').onclick=()=>removerItemBolsa(charId,invKey);
+  } else {
+    document.getElementById('mi-add-btn').onclick=()=>gerenciarQtdItem(charId,itemId,'add');
+    document.getElementById('mi-remove-btn').onclick=()=>gerenciarQtdItem(charId,itemId,'remove');
+  }
+  const statLine=document.getElementById('mi-stat-line');
+  if(statLine){
+    if(isPet&&idb.summon){
+      const sm=idb.summon, ab=sm.atributos_base||{};
+      statLine.textContent=`❤️ ${sm.hp_max||10} HP  ·  FIS ${ab.fis||0}  RES ${ab.res||0}  VEL ${ab.vel||0}${(ab.sub||0)>0?'  SUB '+ab.sub:''}`;
+      statLine.style.display='block';
+    } else statLine.style.display='none';
+  }
   document.getElementById('manage-item-modal').classList.add('active');
+}
+function adminToggleEquipItem(charId,invKey){
+  const item=(DB_CHARS[charId]?.inventario||{})[invKey]; if(!item) return;
+  db.ref(`characters/${charId}/inventario/${invKey}/equipado`).set(!item.equipado).then(()=>{ showToast(item.equipado?'Item desequipado!':'Item equipado!'); closeModal('manage-item-modal'); });
+}
+function removerItemBolsa(charId,invKey){
+  if(!confirm('Remover este item da bolsa?')) return;
+  db.ref(`characters/${charId}/inventario/${invKey}`).remove().then(()=>{ showToast('Item removido!'); closeModal('manage-item-modal'); });
 }
 function gerenciarQtdItem(charId,itemId,action){
   const qtd=Number(document.getElementById('mi-qtd').value);
@@ -2152,18 +2342,23 @@ function renderAdminEquipGrid(charData){
   if(grid) grid.innerHTML=`${rs(sl.cabeca,'fa-hat-wizard','cabeca')}${rs(sl.peitoral,'fa-tshirt','peitoral')}${rs(sl.pernas,'fa-shoe-prints','pernas')}${rs(sl.arma1,'fa-hand-fist','arma1')}${rs(sl.arma2,'fa-hand-fist','arma2')}${rs(sl.acessorio,'fa-ring','acessorio')}`;
 }
 function adminEquipFromSlot(slotType){
-  const pg=document.getElementById('picker-grid'); pg.innerHTML=''; let found=false;
+  pickerCtx={type:'equip_item',slotIndex:null,equipSlot:slotType};
+  const pg=document.getElementById('picker-grid');
+  const searchEl=document.getElementById('picker-search');
+  if(pg) pg.innerHTML='';
+  if(searchEl) searchEl.value='';
+  pickerItems=[];
   Object.entries(DB_CHARS[activeCharId].inventario||{}).forEach(([key,invItem])=>{
     const idb=DB_ITEMS[invItem.item_id]; if(!idb||invItem.equipado) return;
     let match=false;
     if((slotType==='arma1'||slotType==='arma2')&&idb.categoria==='Arma') match=true;
     if(slotType==='acessorio'&&idb.categoria==='Acessorio') match=true;
     if(idb.categoria==='Armadura'){ if(slotType==='cabeca'&&idb.slot_type==='Cabeça') match=true; if(slotType==='peitoral'&&idb.slot_type==='Peitoral') match=true; if(slotType==='pernas'&&idb.slot_type==='Pernas') match=true; }
-    if(match){ found=true; pg.innerHTML+=`<div class="picker-item" onclick="adminFinalizeEquip('${key}')"><img src="${idb.imagem}"><span>${idb.nome}</span></div>`; }
+    if(match) pickerItems.push({key,id:key,img:idb.imagem,nome:idb.nome||'Item',cat:idb.categoria||''});
   });
-  if(!found) pg.innerHTML='<p class="hint" style="grid-column:1/-1; text-align:center;">Nenhum item compatível na bolsa.</p>';
   document.getElementById('picker-title').textContent='Equipar';
   document.getElementById('picker-qtd-box').style.display='none';
+  renderPickerGrid();
   document.getElementById('picker-modal').classList.add('active');
 }
 function adminFinalizeEquip(k){ db.ref(`characters/${activeCharId}/inventario/${k}/equipado`).set(true); closeModal('picker-modal'); }
@@ -2194,10 +2389,11 @@ function preencherMods(p,mods){
     });
   });
 }
-function toggleSubcat(catId,wrapperId,consumableId){
+function toggleSubcat(catId,wrapperId,consumableId,petId){
   const cat=document.getElementById(catId).value;
   document.getElementById(wrapperId).style.display=cat==='Armadura'?'block':'none';
   document.getElementById(consumableId).style.display=cat==='Consumivel'?'block':'none';
+  if(petId) document.getElementById(petId).style.display=cat==='Pet'?'block':'none';
 }
 function criarItem(){
   const id=ensureId(document.getElementById('i-id').value,'ID'); if(!id) return;
@@ -2206,6 +2402,7 @@ function criarItem(){
     mods:coletarMods('m')};
   if(d.categoria==='Armadura') d.slot_type=document.getElementById('i-subcat').value;
   if(d.categoria==='Consumivel') d.effects={hp:toNumber(document.getElementById('i-eff-hp').value),mp:toNumber(document.getElementById('i-eff-mp').value),sp:toNumber(document.getElementById('i-eff-sp').value),hp_full:!!document.getElementById('i-eff-hp-full')?.checked,mp_full:!!document.getElementById('i-eff-mp-full')?.checked,sp_full:!!document.getElementById('i-eff-sp-full')?.checked};
+  if(d.categoria==='Pet') d.summon={hp:toNumber(document.getElementById('i-pet-hp-ini').value),hp_max:toNumber(document.getElementById('i-pet-hp').value),atributos_base:{fis:toNumber(document.getElementById('i-pet-fis').value),res:toNumber(document.getElementById('i-pet-res').value),vel:toNumber(document.getElementById('i-pet-vel').value),sub:toNumber(document.getElementById('i-pet-sub').value)}};
   db.ref('items/'+id).set(d).then(()=>{ showToast('Item forjado!'); nav('sec-lib-items'); });
 }
 function renderItems(){
@@ -2224,13 +2421,16 @@ function abrirPerfilItem(itemId){
   document.getElementById('e-i-id').value=itemId;
   document.getElementById('e-i-nome').value=item.nome;
   document.getElementById('e-i-img').value=item.imagem;
+  togglePinBtn('e-i-img','e-i-pin-btn');
+  updateImgPreview('e-i-img','e-i-img-preview-box','e-i-img-preview');
   document.getElementById('e-i-cat').value=item.categoria;
   document.getElementById('e-i-rarity').value=item.rarity||'Comum';
   document.getElementById('e-i-valor').value=item.valor||0;
   document.getElementById('e-i-desc').value=item.descricao||'';
-  toggleSubcat('e-i-cat','e-i-subcat-wrapper','e-i-consumable-wrapper');
+  toggleSubcat('e-i-cat','e-i-subcat-wrapper','e-i-consumable-wrapper','e-i-pet-wrapper');
   if(item.categoria==='Armadura') document.getElementById('e-i-subcat').value=item.slot_type;
   if(item.categoria==='Consumivel'){ const ef=item.effects||{}; document.getElementById('e-i-eff-hp').value=ef.hp||0; document.getElementById('e-i-eff-mp').value=ef.mp||0; document.getElementById('e-i-eff-sp').value=ef.sp||0; document.getElementById('e-i-eff-hp-full').checked=!!ef.hp_full; document.getElementById('e-i-eff-mp-full').checked=!!ef.mp_full; document.getElementById('e-i-eff-sp-full').checked=!!ef.sp_full; }
+  if(item.categoria==='Pet'){ const sm=item.summon||{}; document.getElementById('e-i-pet-hp').value=sm.hp_max||10; document.getElementById('e-i-pet-hp-ini').value=sm.hp||10; const ab=sm.atributos_base||{}; document.getElementById('e-i-pet-fis').value=ab.fis||0; document.getElementById('e-i-pet-res').value=ab.res||0; document.getElementById('e-i-pet-vel').value=ab.vel||0; document.getElementById('e-i-pet-sub').value=ab.sub||0; }
   preencherMods('e-m',item.mods||{});
   document.getElementById('edit-item-modal').classList.add('active');
 }
@@ -2241,6 +2441,9 @@ function salvarEdicaoItem(){
   if(d.categoria==='Armadura') d.slot_type=document.getElementById('e-i-subcat').value;
   if(d.categoria==='Consumivel') d.effects={hp:toNumber(document.getElementById('e-i-eff-hp').value),mp:toNumber(document.getElementById('e-i-eff-mp').value),sp:toNumber(document.getElementById('e-i-eff-sp').value),hp_full:!!document.getElementById('e-i-eff-hp-full')?.checked,mp_full:!!document.getElementById('e-i-eff-mp-full')?.checked,sp_full:!!document.getElementById('e-i-eff-sp-full')?.checked};
   else d.effects=null;
+  if(d.categoria==='Bau') d.chest=DB_ITEMS[id]?.chest||null;
+  if(d.categoria==='Pet') d.summon={hp:toNumber(document.getElementById('e-i-pet-hp-ini').value),hp_max:toNumber(document.getElementById('e-i-pet-hp').value),atributos_base:{fis:toNumber(document.getElementById('e-i-pet-fis').value),res:toNumber(document.getElementById('e-i-pet-res').value),vel:toNumber(document.getElementById('e-i-pet-vel').value),sub:toNumber(document.getElementById('e-i-pet-sub').value)}};
+  else if(d.categoria!=='Pet') d.summon=null;
   db.ref('items/'+id).set(d).then(()=>{ showToast('Relíquia atualizada!'); closeModal('edit-item-modal'); });
 }
 function excluirItemMundo(){ const id=document.getElementById('e-i-id').value; if(confirm('Excluir permanentemente?')) db.ref('items/'+id).remove().then(()=>closeModal('edit-item-modal')); }
@@ -2270,6 +2473,8 @@ function abrirPerfilSkill(skillId){
   document.getElementById('e-s-id').value=skillId;
   document.getElementById('e-s-nome').value=sk.nome;
   document.getElementById('e-s-img').value=sk.imagem;
+  togglePinBtn('e-s-img','e-s-pin-btn');
+  updateImgPreview('e-s-img','e-s-img-preview-box','e-s-img-preview');
   document.getElementById('e-s-desc').value=sk.descricao||'';
   preencherMods('e-sb',sk.buffs||{});
   document.getElementById('edit-skill-modal').classList.add('active');
@@ -2292,6 +2497,11 @@ const DEFAULT_HABILIDADES = [
 function atribuirHabilidade(charId, habName, level){
   db.ref(`characters/${charId}/habilidades/${habName}`).set(level).then(()=>{ showToast(`Perícia "${habName}" atribuída!`); abrirPerfilChar(charId); });
 }
+function ajustarHabilidade(charId, habName, delta){
+  const cur=Number((DB_CHARS[charId]?.habilidades||{})[habName])||0;
+  const next=Math.max(0, Math.min(9, cur+delta));
+  db.ref(`characters/${charId}/habilidades/${habName}`).set(next).then(()=>{ showToast(`Perícia "${habName}" → Nv.${next}`); abrirPerfilChar(charId); });
+}
 function removerHabilidade(charId, habName){
   if(!confirm(`Remover perícia "${habName}"?`)) return;
   db.ref(`characters/${charId}/habilidades/${habName}`).remove().then(()=>{ showToast('Perícia removida!'); abrirPerfilChar(charId); });
@@ -2311,6 +2521,7 @@ function limparDatabase(){
 
 /* ══ PICKER ═══════════════════════════════════════════════════════════════ */
 let pickerCtx={type:null,targetId:null,slotIndex:null};
+let pickerItems=[];
 function abrirPicker(type,targetId=null,slotIndex=null){
   if(!type) return showToast('Tipo de seletor inválido','error');
   pickerCtx={type,targetId,slotIndex};
@@ -2321,32 +2532,46 @@ function abrirPicker(type,targetId=null,slotIndex=null){
   const qtdInput=document.getElementById('picker-qtd');
   const titleEl=document.getElementById('picker-title');
   const modal=document.getElementById('picker-modal');
+  const searchEl=document.getElementById('picker-search');
   if(!titleEl||!modal||!qtdInput) return;
   qtdInput.value=1;
+  if(searchEl) searchEl.value='';
+  pickerItems=[];
   if(type==='give_item'||type==='craft_ing'||type==='resultado_craft'||type==='give_loot'||type==='chest_guaranteed'||type==='chest_chance'){
     titleEl.textContent='Selecionar Item';
     if(qtdBox) qtdBox.style.display='flex';
-    if(type==='craft_ing') pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker(null)" style="border-color:rgba(224,80,80,.3);"><div style="width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--red2);font-family:var(--font-head);font-size:.68rem;"><i class="fas fa-times"></i></div></div>`;
-    Object.keys(DB_ITEMS).forEach(id=>{
-      const item=DB_ITEMS[id];
-      if(item) pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker('${id}')"><img src="${item.imagem}" onerror="this.src='${PLACEHOLDER_IMG}'"><span>${item.nome||'Item'}</span></div>`;
-    });
+    pickerItems=Object.keys(DB_ITEMS).map(id=>({id,img:DB_ITEMS[id].imagem,nome:DB_ITEMS[id].nome||'Item',cat:DB_ITEMS[id].categoria||''}));
   } else if(type==='give_skill'){
     titleEl.textContent='Selecionar Habilidade';
     if(qtdBox) qtdBox.style.display='none';
-    Object.keys(DB_SKILLS).forEach(id=>{
-      const skill=DB_SKILLS[id];
-      if(skill) pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker('${id}')"><img src="${skill.imagem}" onerror="this.src='${PLACEHOLDER_IMG}'"><span>${skill.nome||'Habilidade'}</span></div>`;
-    });
+    pickerItems=Object.keys(DB_SKILLS).map(id=>({id,img:DB_SKILLS[id].imagem,nome:DB_SKILLS[id].nome||'Habilidade',cat:''}));
   } else if(type==='give_habilidade'){
     titleEl.textContent='Selecionar Perícia';
     if(qtdBox) qtdBox.style.display='none';
-    DEFAULT_HABILIDADES.forEach(h=>{
-      pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker('${h}')" style="border-color:var(--green2);"><div style="width:100%;min-height:60px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:.72rem;padding:4px;">${h}</div></div>`;
-    });
+    pickerItems=DEFAULT_HABILIDADES.map(h=>({id:h,img:null,nome:h,cat:''}));
   }
+  renderPickerGrid();
   modal.classList.add('active');
 }
+function renderPickerGrid(){
+  const pg=document.getElementById('picker-grid'); if(!pg) return;
+  const q=((document.getElementById('picker-search')?.value||'').trim().toLowerCase());
+  const filtered=pickerItems.filter(it=>!q||`${it.nome} ${it.id} ${it.cat}`.toLowerCase().includes(q));
+  pg.innerHTML='';
+  const extra=((pickerCtx?.type==='craft_ing')&&!q)?`<div class="picker-item" onclick="selecionarPicker(null)" style="border-color:rgba(224,80,80,.3);"><div style="width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--red2);font-family:var(--font-head);font-size:.68rem;"><i class="fas fa-times"></i></div></div>`:'';
+  pg.innerHTML+=extra;
+  if(!filtered.length){ pg.innerHTML+=`<p class="hint" style="grid-column:1/-1; text-align:center;">Nada encontrado.</p>`; return; }
+  filtered.forEach(it=>{
+    if(pickerCtx?.type==='equip_item'){
+      pg.innerHTML+=`<div class="picker-item" onclick="adminFinalizeEquip('${escJs(it.key)}')"><img src="${it.img}" onerror="this.src='${PLACEHOLDER_IMG}'"><span>${escHtml(it.nome)}</span></div>`;
+    } else if(pickerCtx?.type==='give_habilidade'){
+      pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker('${escJs(it.id)}')" style="border-color:var(--green2);"><div style="width:100%;min-height:60px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:.72rem;padding:4px;">${escHtml(it.nome)}</div></div>`;
+    } else {
+      pg.innerHTML+=`<div class="picker-item" onclick="selecionarPicker('${escJs(it.id)}')"><img src="${it.img}" onerror="this.src='${PLACEHOLDER_IMG}'"><span>${escHtml(it.nome)}</span></div>`;
+    }
+  });
+}
+function filtrarPicker(){ renderPickerGrid(); }
 function selecionarPicker(id){
   if(!pickerCtx) return;
   const qtdInput=document.getElementById('picker-qtd');
@@ -2398,7 +2623,7 @@ function selecionarPicker(id){
 }
 
 /* ══ CRAFTING ═════════════════════════════════════════════════════════════ */
-let adminCraftGrid=new Array(9).fill(null), adminCraftResult=null;
+let adminCraftGrid=new Array(9).fill(null), adminCraftResult=null, editingRecipeId=null;
 function renderAdminCraftTable(){
   const table=document.getElementById('admin-craft-table');
   if(!table) return;
@@ -2425,9 +2650,37 @@ function renderAdminCraftTable(){
 }
 function salvarReceitaGrid(){
   if(!adminCraftResult) return showToast('Defina o item resultante!','warn');
-  db.ref('recipes/rec_'+Date.now()).set({grid:adminCraftGrid.map(s=>s||''),resultado:adminCraftResult}).then(()=>{
-    showToast('Receita gravada!'); adminCraftGrid=new Array(9).fill(null); adminCraftResult=null; renderAdminCraftTable();
+  const ref=editingRecipeId?db.ref('recipes/'+editingRecipeId):db.ref('recipes/rec_'+Date.now());
+  ref.set({grid:adminCraftGrid.map(s=>s||''),resultado:adminCraftResult}).then(()=>{
+    showToast(editingRecipeId?'Receita atualizada!':'Receita gravada!');
+    adminCraftGrid=new Array(9).fill(null); adminCraftResult=null; editingRecipeId=null;
+    renderAdminCraftTable();
   });
+}
+function editarReceita(rId){
+  const r=DB_RECIPES[rId]; if(!r||!r.grid||!r.resultado) return;
+  editingRecipeId=rId;
+  adminCraftGrid=r.grid.map(s=>{ if(typeof s==='string'){ if(s==='') return null; return {id:s,qtd:1}; } return s||null; });
+  adminCraftResult=(typeof r.resultado==='string')?{id:r.resultado,qtd:1}:r.resultado;
+  renderAdminCraftTable();
+  const saveLabel=document.getElementById('craft-save-label');
+  const cancelBtn=document.getElementById('craft-cancel-btn');
+  const hint=document.getElementById('craft-edit-hint');
+  if(saveLabel) saveLabel.textContent='Atualizar Receita';
+  if(cancelBtn) cancelBtn.style.display='';
+  if(hint) hint.style.display='';
+  nav('sec-crafting');
+  showToast('Edite a receita e clique em Gravar Receita.');
+}
+function cancelarEdicaoReceita(){
+  editingRecipeId=null; adminCraftGrid=new Array(9).fill(null); adminCraftResult=null;
+  renderAdminCraftTable();
+  const saveLabel=document.getElementById('craft-save-label');
+  const cancelBtn=document.getElementById('craft-cancel-btn');
+  const hint=document.getElementById('craft-edit-hint');
+  if(saveLabel) saveLabel.textContent='Gravar Receita';
+  if(cancelBtn) cancelBtn.style.display='none';
+  if(hint) hint.style.display='none';
 }
 function renderReceitasGrid(){
   const list=document.getElementById('list-recipes');
@@ -2463,9 +2716,16 @@ function renderReceitasGrid(){
         </div>
         <span style="font-size:.75rem;color:var(--text);font-family:var(--font-head);font-weight:700;">${DB_ITEMS[resId].nome}</span>
       </div>
-      <button class="btn btn-red w-auto" style="padding:7px 12px;" onclick="db.ref('recipes/${rId}').remove()"><i class="fas fa-trash"></i></button>
+      <div style="display:flex; align-items:center; gap:7px; flex-shrink:0;">
+        <button class="btn btn-ghost w-auto" style="padding:7px 12px;" onclick="editarReceita('${rId}')" title="Editar receita"><i class="fas fa-pen"></i></button>
+        <button class="btn btn-red w-auto" style="padding:7px 12px;" onclick="excluirReceita('${rId}')"><i class="fas fa-trash"></i></button>
+      </div>
     </div>`;
   });
+}
+function excluirReceita(rId){
+  if(!confirm('Excluir esta receita?')) return;
+  db.ref('recipes/'+rId).remove().then(()=>showToast('Receita excluída!'));
 }
 
 /* ══ COMBATES ═════════════════════════════════════════════════════════════ */
@@ -2484,7 +2744,15 @@ function renderCombatList(){
     list.innerHTML+=`<div class="combat-session-btn ${id===activeCombatId?'active':''}" onclick="abrirCombateEditor('${id}')">
       <span>${combat.name||'Nova Batalha'}</span>
       <span class="combat-status ${isActive?'status-active':'status-paused'}">${isActive?'ATIVO':'PAUSADO'}</span>
+      <button class="card-export-btn" style="opacity:1; position:static; width:28px; height:28px; background:var(--red2);" onclick="event.stopPropagation(); excluirCombate('${id}')" title="Excluir batalha"><i class="fas fa-trash"></i></button>
     </div>`;
+  });
+}
+function excluirCombate(id){
+  if(!confirm('Excluir esta batalha permanentemente?')) return;
+  db.ref('combat/sessions/'+id).remove().then(()=>{
+    showToast('Batalha excluída!');
+    if(activeCombatId===id) hideCombatEditor();
   });
 }
 function criarNovoCombate(){ const id='combat_'+Date.now(); db.ref(`combat/sessions/${id}`).set({name:'Nova Batalha',background:'',status:'paused',turn:1,tokens:{}}); abrirCombateEditor(id); }
@@ -2498,11 +2766,33 @@ function updateActiveCombatView(){
   const turnEl=document.getElementById('turn-display');
   if(nameEl) nameEl.value=c.name||'';
   if(bgEl) bgEl.value=c.background||'';
+  updateImgPreview('edit-combat-bg','combat-bg-preview-box','combat-bg-preview');
   if(pubEl) pubEl.checked=!!c.public_inspection;
   if(turnEl) turnEl.textContent=c.turn||1;
+  const def=(c.scene&&c.scene.default_reveal)||{};
+  setRevealChecks('cr-', def, {hp:true,fis:false,res:false,vel:false,sub:false,full:false});
   renderCombatSetup();
 }
-function salvarCombateSettings(){ if(!activeCombatId) return; db.ref(`combat/sessions/${activeCombatId}`).update({name:document.getElementById('edit-combat-name').value,background:document.getElementById('edit-combat-bg').value,public_inspection:document.getElementById('token-public').checked}).then(()=>showToast('Configurações salvas!')); }
+function getDefaultReveal(){
+  return {hp:document.getElementById('cr-hp').checked,fis:document.getElementById('cr-fis').checked,res:document.getElementById('cr-res').checked,vel:document.getElementById('cr-vel').checked,sub:document.getElementById('cr-sub').checked,full:document.getElementById('cr-full').checked};
+}
+function setRevealChecks(prefix, obj, defaults){
+  Object.keys(defaults).forEach(k=>{
+    const el=document.getElementById(prefix+k);
+    if(el) el.checked=!!(obj&&obj[k]);
+  });
+}
+function salvarCombateSettings(){
+  if(!activeCombatId) return;
+  db.ref(`combat/sessions/${activeCombatId}`).update({
+    name:document.getElementById('edit-combat-name').value,
+    background:document.getElementById('edit-combat-bg').value,
+    public_inspection:document.getElementById('token-public').checked,
+    scene:{
+      default_reveal:getDefaultReveal()
+    }
+  }).then(()=>showToast('Configurações salvas!'));
+}
 function hideCombatEditor(){ document.getElementById('active-combat-editor').style.display='none'; activeCombatId=null; renderCombatList(); }
 function mudarTurno(delta){
   if(!activeCombatId) return;
@@ -2529,8 +2819,18 @@ function renderCombatSetup(){
     if(inCombat.has(id)&&combat.tokens[id]){
       status=combat.tokens[id].status||'alive';
     }
+    let revBadge='';
+    if(inCombat.has(id)){
+      const rev=getTokenReveal(combat,id);
+      const labels=[];
+      if(rev.full) labels.push('FICHA');
+      else{ if(rev.hp) labels.push('HP'); if(rev.fis) labels.push('FIS'); if(rev.res) labels.push('RES'); if(rev.vel) labels.push('VEL'); if(rev.sub) labels.push('SUB'); }
+      const label=labels.length?labels.join('·'):'????';
+      revBadge=`<span class="token-reveal-badge" title="Revelado: ${label}">${label}</span>`;
+    }
     const card=`<div class="token-card ${status==='defeated'?'defeated':''}" draggable="true" ondragstart="drag(event,'${id}')" ontouchstart="touchStartDrag(event,'${id}')" ontouchend="touchEndDrag(event,'tray')" onclick="abrirTokenMenu('${id}')">
       <img src="${char.imagem||PLACEHOLDER_IMG}" onerror="this.src='${PLACEHOLDER_IMG}'" alt="${char.nome||''}">
+      ${revBadge}
       <p>${(char.nome||'?').split(' ')[0]}</p></div>`;
     if(inCombat.has(id)){
       if(combat.tokens[id]&&combat.tokens[id].team==='A') teamA.innerHTML+=card;
@@ -2597,8 +2897,39 @@ function abrirTokenMenu(tId){
       closeModal('token-menu-modal');
     };
   }
+  const combatScene=combat.scene||{};
+  const defReveal=combatScene.default_reveal||{hp:true,fis:false,res:false,vel:false,sub:false,full:false};
+  const tokenReveal=token.reveal||defReveal;
+  setRevealChecks('tr-', tokenReveal, defReveal);
   const modal=document.getElementById('token-menu-modal');
   if(modal) modal.classList.add('active');
+}
+function salvarTokenReveal(){
+  if(!activeCombatId||!currentTokenId) return;
+  const reveal=getRevealFromChecks('tr-', {hp:document.getElementById('tr-hp').checked,fis:document.getElementById('tr-fis').checked,res:document.getElementById('tr-res').checked,vel:document.getElementById('tr-vel').checked,sub:document.getElementById('tr-sub').checked,full:document.getElementById('tr-full').checked});
+  db.ref(`combat/sessions/${activeCombatId}/tokens/${currentTokenId}/reveal`).set(reveal).then(()=>{
+    showToast('Revelação salva!'); closeModal('token-menu-modal');
+  });
+}
+function resetarTokenReveal(){
+  if(!activeCombatId||!currentTokenId) return;
+  db.ref(`combat/sessions/${activeCombatId}/tokens/${currentTokenId}/reveal`).remove().then(()=>{
+    showToast('Usando revelação padrão da cena!'); closeModal('token-menu-modal');
+  });
+}
+function getRevealFromChecks(prefix, checks){
+  const out={};
+  Object.keys(checks).forEach(k=>{
+    const el=document.getElementById(prefix+k);
+    out[k]=el?el.checked:!!checks[k];
+  });
+  return out;
+}
+function getTokenReveal(combat, charId){
+  const scene=combat.scene||{};
+  const def=scene.default_reveal||{hp:true,fis:false,res:false,vel:false,sub:false,full:false};
+  const t=combat.tokens?combat.tokens[charId]:null;
+  return Object.assign({}, def, (t&&t.reveal)||{});
 }
 function setTokenStatus(tId,status){
   if(!activeCombatId||!['alive','defeated'].includes(status)) return;
@@ -2644,7 +2975,11 @@ function renderDiceHistory(){
     return `<div class="dice-log-item"><span class="dice-log-die">${who} · ${h.qtd}d${h.faces}${h.mod!==0?(h.mod>0?'+'+h.mod:h.mod):''}</span><span style="color:var(--muted);font-size:.7rem;">${time}</span><span class="dice-log-val ${cls}">${h.grand}</span></div>`;
   }).join('');
 }
-function limparHistoricoDados(){ document.getElementById('dice-result-area').innerHTML='<div style="color:var(--muted);font-size:.82rem;">Clique em um dado para rolar</div>'; }
+function limparHistoricoDados(){
+  document.getElementById('dice-result-area').innerHTML='<div style="color:var(--muted);font-size:.82rem;">Clique em um dado para rolar</div>';
+  if(!confirm('Apagar também o histórico de rolagens do banco?')) return;
+  db.ref('dice/history').remove().then(()=>showToast('Histórico limpo do banco!')).catch(err=>showToast('Erro: '+err,'error'));
+}
 
 /* ══ EXPORTAR FICHAS ══════════════════════════════════════════════════════ */
 function exportarFicha(){
@@ -2659,6 +2994,21 @@ function exportarFicha(){
     txt+=`HP: ${c.hp||0}/${c.hp_max||0}  MP: ${c.mp||0}/${c.mp_max||0}  SP: ${c.sp||0}/${c.sp_max||0}\n`;
     txt+=`OURO: ${c.gold||0} | PTS LIVRES: ${c.pontos||0}\n`;
     txt+=`ATRIBUTOS: FIS${getBaseVal(b,'fis')} RES${getBaseVal(b,'res')} VEL${getBaseVal(b,'vel')} SUB${getBaseVal(b,'sub')}\n`;
+    if(c.habilidades){
+      const habs=Object.entries(c.habilidades).map(([n,lvl])=>`${n} (Nv.${lvl})`).join(', ');
+      if(habs) txt+=`PERÍCIAS: ${habs}\n`;
+    }
+    if(c.skills){
+      const mags=Object.keys(c.skills).map(id=>DB_SKILLS[id]?.nome||id).join(', ');
+      if(mags) txt+=`MAGIAS: ${mags}\n`;
+    }
+    if(c.inventario){
+      const itens=Object.values(c.inventario).map(item=>{
+        const idb=DB_ITEMS[item.item_id]; if(!idb) return null;
+        return `${idb.nome||item.item_id}${item.equipado?' (equipado)':''}`;
+      }).filter(Boolean).join(', ');
+      if(itens) txt+=`INVENTÁRIO: ${itens}\n`;
+    }
     if(c.description) txt+=`LORE: ${c.description}\n`;
     txt+=`\n`;
   });
@@ -3040,7 +3390,7 @@ async function cropSave(){
   const input=document.getElementById(cropState.target);
   if(input) input.value=data;
   updateImgPreview(cropState.target, cropState.target+'-preview-box', cropState.target+'-preview');
-  if(cropState.target==='ec-img') togglePinBtn();
+  togglePinBtn(cropState.target, cropState.target+'-pin-btn');
   closeModal('crop-modal');
   showToast('Imagem cortada!');
 }
